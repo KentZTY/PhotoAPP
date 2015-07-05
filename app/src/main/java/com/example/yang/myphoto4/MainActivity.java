@@ -13,7 +13,7 @@ import android.widget.ImageView;
 public class MainActivity extends Activity
 {
     private static final int SELECT_PICTURE = 1;
-    private String selectedImagePath;
+    private String selectedImagePath1;
     private ImageView img;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,8 @@ public class MainActivity extends Activity
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
-                selectedImagePath = getPath(selectedImageUri);
-                System.out.println("Image Path : " + selectedImagePath);
+                selectedImagePath1 = getPath(selectedImageUri);
+                System.out.println("Image Path : " + selectedImagePath1);
                 img.setImageURI(selectedImageUri);
                 Intent intent1 = new Intent();
                 intent1.setClass(MainActivity.this, DisplayImageActivity.class);
