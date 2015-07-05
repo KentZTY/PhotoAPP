@@ -22,6 +22,9 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
+         Select image button. Use intent to open gallery and select image.
+         **/
         (findViewById(R.id.button01))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
@@ -30,6 +33,11 @@ public class MainActivity extends Activity
                         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
                     }
                 });
+
+        /*
+        Camera function button. Check out SD card.
+        Use intent to open local applications for camera(image capture).
+         **/
         (findViewById(R.id.button02))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
@@ -39,12 +47,15 @@ public class MainActivity extends Activity
                             startActivityForResult(getImageByCamera, REQUEST_CAPTURE_CAMERA);
                         }
                         else {
-                            Toast.makeText(getApplicationContext(), "Make sure you've insert SD card.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
-
+        /*
+        Get image data(uri) and image path.
+        Deliver image Uri to DisplayImageActivity.
+         **/
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
@@ -55,11 +66,12 @@ public class MainActivity extends Activity
                 intent1.setClass(MainActivity.this, DisplayImageActivity.class);
                 intent1.setData(selectedImageUri);
                 startActivity(intent1);
-                this.finish();
             }
         }
     }
-
+        /*
+        Get path function.
+         */
     public String getPath(Uri uri) {
         String[] projection = { MediaStore.Images.Media.DATA };
         Cursor cursor = managedQuery(uri, projection, null, null, null);

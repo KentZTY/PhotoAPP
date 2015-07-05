@@ -1,5 +1,6 @@
 package com.example.yang.myphoto4;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,7 +9,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 
-public class DisplayImageActivity extends ActionBarActivity {
+public class DisplayImageActivity extends Activity {
 
     private ImageView myImg = null;
 
@@ -17,6 +18,11 @@ public class DisplayImageActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
+
+        /*
+        Receive image uri. Set image uri to local.
+        Display it in local image view.
+         */
         Uri uri = getIntent().getData();
         myImg = (ImageView)findViewById(R.id.imageView);
         myImg.setImageURI(uri);
