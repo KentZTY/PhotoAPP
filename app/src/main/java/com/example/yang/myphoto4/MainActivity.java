@@ -64,7 +64,6 @@ public class MainActivity extends Activity
                                     intent.putExtra(MediaStore.EXTRA_OUTPUT, u);
                                     startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
                                 } catch (ActivityNotFoundException e) {
-                                 // TODO Auto-generated catch block
                                     Toast.makeText(MainActivity.this, "No storage directory.",Toast.LENGTH_LONG).show();
                                 }
                         }
@@ -96,7 +95,6 @@ public class MainActivity extends Activity
                         uri = Uri.parse(android.provider.MediaStore.Images.Media.insertImage(getContentResolver(),
                                         f.getAbsolutePath(), null, null));
                     } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     break;
@@ -106,7 +104,6 @@ public class MainActivity extends Activity
             intent.setData(uri);
             startActivity(intent);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
         /*
          * Get path function.
