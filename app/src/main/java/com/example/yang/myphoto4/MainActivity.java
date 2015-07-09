@@ -25,6 +25,8 @@ public class MainActivity extends Activity
     private String selectedImagePath1;
     private Uri uri;
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
