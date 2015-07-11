@@ -1,8 +1,10 @@
 package com.example.yang.myphoto4;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.widget.ImageView;
 
@@ -11,46 +13,64 @@ import android.widget.ImageView;
  * Created by Ree on 2015/7/9.
  */
 public class ImageOperation extends Activity {
-    private ImageView imageView;
-    private ImageView imageView2;
-    private ImageView imageView3;
-    private ImageView imageView4;
-    private ImageView imageView5;
-    private ImageView imageView6;
-    private ImageView imageView7;
-    private ImageView imageView8;
-    private ImageView imageView9;
-    private ImageView imageView10;
+    private ImageView[] imageView;
+
     private Bitmap photoBitmap, stickerBitmap;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
-        imageView=(ImageView)findViewById(R.id.imageView);
-        imageView2=(ImageView)findViewById(R.id.imageView2);
-        imageView3=(ImageView)findViewById(R.id.imageView3);
-        imageView4=(ImageView)findViewById(R.id.imageView4);
-        imageView5=(ImageView)findViewById(R.id.imageView5);
-        imageView6=(ImageView)findViewById(R.id.imageView6);
-        imageView7=(ImageView)findViewById(R.id.imageView7);
-        imageView8=(ImageView)findViewById(R.id.imageView8);
-        imageView9=(ImageView)findViewById(R.id.imageView9);
-        imageView10=(ImageView)findViewById(R.id.imageView10);
+        imageView[0]=(ImageView)findViewById(R.id.imageView);//origin image
+        imageView[2]=(ImageView)findViewById(R.id.imageView2);//enhanced image 1
+        imageView[3]=(ImageView)findViewById(R.id.imageView3);//enhanced image 2
+        imageView[4]=(ImageView)findViewById(R.id.imageView4);//enhanced image 3
+        imageView[5]=(ImageView)findViewById(R.id.imageView5);//combined stickers layer
+        imageView[6]=(ImageView)findViewById(R.id.imageView6);//sticker layer 1
+        imageView[7]=(ImageView)findViewById(R.id.imageView7);//sticker layer 2
+        imageView[8]=(ImageView)findViewById(R.id.imageView8);//sticker layer 3
+        imageView[9]=(ImageView)findViewById(R.id.imageView9);//sticker layer 4
+        imageView[10]=(ImageView)findViewById(R.id.imageView10);//border layer
+
 
     }
-    public ImageView combine (ImageView a, ImageView b){
-        ImageView combined;
-        Bitmap bitA = ((BitmapDrawable)a.getDrawable()).getBitmap();
-        Bitmap bitB = ((BitmapDrawable)b.getDrawable()).getBitmap();
 
+    //add a new sticker in layer 9, high layers imported to lower one and import the newest into layer 9
+    public void newSticker(Bitmap nS){
+        imageView[0].setImageBitmap(combine(imageView[5],imageView[6]));
+        for (int i=6;i<10;i++){
+            imageView[i]=imageView[i+1];
+        }
+        imageView[9].setImageBitmap(nS);
+    }
 
-
-
-
-
-        combined=a;
+    //combine two imageView and output a bitmap
+    public Bitmap combine (ImageView a, ImageView b){
+        Bitmap combined=null;
+        try{
+            //output resolution needed _Ree
+            combined = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(combined);
+            Resources res = getResources();
+            //drawable1.setBounds(100, 100, 400, 400);
+            //drawable2.setBounds(150, 150, 350, 350);
+            a.getDrawable().draw(c);
+            b.getDrawable().draw(c);
+        }
+        catch (Exception e){
+        }
         return combined;
+    }
 
+    //combine all the layers into a bitmap
+    public Bitmap outputImage (ImageView[] imageView){
+        Bitmap output=null;
+        output = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(output);
+        for(int i=0;i<=10;i++){
+            imageView[i].getDrawable().draw(c);
+        }
+        return output;
     }
 }
+
 
