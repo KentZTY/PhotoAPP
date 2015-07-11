@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 
 /**
  * Created by Ree on 2015/7/9.
@@ -102,6 +105,26 @@ public class ImageOperation extends Activity {
     //print debug info
     public void print(String info){
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+    }
+
+    //save bitmap to local
+    public void saveBitmap(Bitmap bmp, String fileName){
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(fileName);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 
