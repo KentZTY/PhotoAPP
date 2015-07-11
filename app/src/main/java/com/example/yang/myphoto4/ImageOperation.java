@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 /**
@@ -36,11 +37,15 @@ public class ImageOperation extends Activity {
 
     //add a new sticker in layer 9, high layers imported to lower one and import the newest into layer 9
     public void newSticker(Bitmap nS){
-        imageView[0].setImageBitmap(combine(imageView[5],imageView[6]));
-        for (int i=6;i<10;i++){
-            imageView[i]=imageView[i+1];
+        if(imageView[9]==null){
+            imageView[9].setImageBitmap(nS);
+        }else{
+            imageView[0].setImageBitmap(combine(imageView[5],imageView[6]));
+            for (int i=6;i<10;i++){
+                imageView[i]=imageView[i+1];
+            }
+            imageView[9].setImageBitmap(nS);
         }
-        imageView[9].setImageBitmap(nS);
     }
 
     //combine two imageView and output a bitmap
@@ -70,6 +75,33 @@ public class ImageOperation extends Activity {
             imageView[i].getDrawable().draw(c);
         }
         return output;
+    }
+
+    //undo a sticker
+    public void undoSticker(){
+        for(int i=9;i>5;i--){
+            if(imageView[i].getDrawable()== null){
+
+            }else{
+                imageView[i].setImageDrawable(null);
+                break;
+            }
+            if(i==6){
+            print("Can not undo");
+            }
+        }
+    }
+
+    //clear all stickers
+    public void clearStickers(){
+        for(int i=9;i>4;i--){
+            imageView[i].setImageDrawable(null);
+        }
+    }
+
+    //print debug info
+    public void print(String info){
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
     }
 }
 
