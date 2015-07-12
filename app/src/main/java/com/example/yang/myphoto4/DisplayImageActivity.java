@@ -2,6 +2,7 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import java.io.IOException;
@@ -20,16 +22,16 @@ public class DisplayImageActivity extends Activity {
 
     private ImageView myImg = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
         myImg = (ImageView)findViewById(R.id.imageView);
+
         /*
          * Receive image uri. Get image path.
          **/
-        Uri uri = getIntent().getData();
+        final Uri uri = getIntent().getData();
         ContentResolver cr = this.getContentResolver();
         Cursor cursor = cr.query(uri, null, null, null, null);
         cursor.moveToFirst();
@@ -44,6 +46,14 @@ public class DisplayImageActivity extends Activity {
         Bitmap bitmapOld=BitmapFactory.decodeFile(filePath,opts);
         Bitmap bitmap = rotatingImageView(degree, bitmapOld);
         myImg.setImageBitmap(bitmap);
+
+        (findViewById(R.id.button04))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        shareImage(uri);
+                    }
+                });
+
     }
 
     /*
@@ -106,5 +116,11 @@ public class DisplayImageActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void shareImage(Uri uri){
+            Intent intent = new Intent();
+            intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
+        intent.setData(uri);
+            startActivity(intent);
     }
 }

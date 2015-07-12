@@ -8,4 +8,9 @@
     <string name="button1">SELECT</string>
     <string name="CAMERA">CAMERA</string>
     <string name="SELECT">SELECT</string>
+    <string name="title_activity_share_image">ShareImageActivity</string>
+    <string name="SHARE">button01</string>
+    <string name="NEXT">button04</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

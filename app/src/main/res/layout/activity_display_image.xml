@@ -56,4 +56,13 @@
         android:layout_height="fill_parent"
         android:id="@+id/imageView10" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEXT"
+        android:id="@+id/button04"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="61dp" />
+
 </RelativeLayout>
