@@ -10,15 +10,18 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.io.IOException;
 
 
-public class DisplayImageActivity extends Activity {
+public class DisplayImageActivity extends Activity implements View.OnTouchListener, OnGestureListener{
 
     private ImageView myImg = null;
 
@@ -122,5 +125,40 @@ public class DisplayImageActivity extends Activity {
             intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
         intent.setData(uri);
             startActivity(intent);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
     }
 }
