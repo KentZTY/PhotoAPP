@@ -1,11 +1,17 @@
 package com.example.yang.myphoto4;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -34,9 +40,44 @@ public class ImageOperation extends Activity {
         imageView[8]=(ImageView)findViewById(R.id.imageView8);//sticker layer 3
         imageView[9]=(ImageView)findViewById(R.id.imageView9);//sticker layer 4
         imageView[10]=(ImageView)findViewById(R.id.imageView10);//border layer
+        Button add=(Button)findViewById(R.id.add);
+        Button undo=(Button)findViewById(R.id.undo);
+        Button export=(Button)findViewById(R.id.export);
+        Demo test=new Demo();
 
+
+                (findViewById(R.id.add))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+
+                        testAdd();
+                    }
+                });
+        (findViewById(R.id.undo))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        testUndo();
+                    }
+                });
+        (findViewById(R.id.export))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        testExport();
+                    }
+                });
 
     }
+
+    public int trick(int n){
+        int test=0;
+        if(n==5){
+            n=0;
+        }else{
+            n++;
+        }
+        return n;
+    }
+
 
     //add a new sticker in layer 9, high layers imported to lower one and import the newest into layer 9
     public void newSticker(Bitmap nS){
@@ -126,6 +167,29 @@ public class ImageOperation extends Activity {
             }
         }
     }
+
+    //test method
+    public void testAdd(){
+        for(int i=0;i<6;i++){
+            newSticker(getResource(i));
+        }
+    }
+    public void testUndo(){
+        undoSticker();
+    }
+    public void testExport(){
+        saveBitmap(outputImage(imageView),"testFile");
+
+    }
+
+    public Bitmap getResource(int i){
+        String name=i+"";
+        ApplicationInfo appInfo = getApplicationInfo();
+        int resID = getResources().getIdentifier(name, "drawable", appInfo.packageName);
+        return BitmapFactory.decodeResource(getResources(),resID);
+    }
+
+
 }
 
 

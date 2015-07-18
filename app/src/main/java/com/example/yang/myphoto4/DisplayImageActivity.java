@@ -10,12 +10,12 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.IOException;
@@ -24,6 +24,7 @@ import java.io.IOException;
 public class DisplayImageActivity extends Activity implements View.OnTouchListener, OnGestureListener{
 
     private ImageView myImg = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
