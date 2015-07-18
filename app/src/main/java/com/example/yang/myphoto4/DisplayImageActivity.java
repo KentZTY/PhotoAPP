@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
@@ -37,7 +38,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
         myImg = (ImageView)findViewById(R.id.imageView);
-        imageView[0]=(ImageView)findViewById(R.id.imageView);//origin image
+        imageView[1]=(ImageView)findViewById(R.id.imageView);//origin image
         imageView[2]=(ImageView)findViewById(R.id.imageView2);//enhanced image 1
         imageView[3]=(ImageView)findViewById(R.id.imageView3);//enhanced image 2
         imageView[4]=(ImageView)findViewById(R.id.imageView4);//enhanced image 3
@@ -47,6 +48,11 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         imageView[8]=(ImageView)findViewById(R.id.imageView8);//sticker layer 3
         imageView[9]=(ImageView)findViewById(R.id.imageView9);//sticker layer 4
         imageView[10]=(ImageView)findViewById(R.id.imageView10);//border layer
+        /*
+        for (int i=1;i<11;i++){
+            imageView[i].setBackgroundColor(Color.TRANSPARENT);
+        }
+        */
 
         (findViewById(R.id.add))
                 .setOnClickListener(new View.OnClickListener() {
@@ -106,7 +112,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         if(imageView[9]==null){
             imageView[9].setImageBitmap(nS);
         }else{
-            imageView[0].setImageBitmap(combine(imageView[5],imageView[6]));
+            imageView[5].setImageBitmap(combine(imageView[5],imageView[6]));
             for (int i=6;i<10;i++){
                 imageView[i]=imageView[i+1];
             }
