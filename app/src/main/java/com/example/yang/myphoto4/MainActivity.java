@@ -40,6 +40,7 @@ public class MainActivity extends Activity
                     public void onClick(View arg0) {
                         Intent intent = new Intent(Intent.ACTION_PICK);
                         intent.setType("image/*");
+                        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
                     }
                 });
@@ -54,19 +55,19 @@ public class MainActivity extends Activity
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
-                                /*try {
+                                try {
                                     File dir=new File(Environment.getExternalStorageDirectory() + "/"+ "localTempImgDir");
                                     if(!dir.exists()) {
                                         dir.mkdirs();
-                                    }*/
+                                    }
                                     Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                                   // File f=new File(dir, "localTempImgFileName");
-                                   // Uri u=Uri.fromFile(f);
-                                   // intent.putExtra(MediaStore.EXTRA_OUTPUT, u);
+                                   File f=new File(dir, "localTempImgFileName");
+                                   Uri u=Uri.fromFile(f);
+                                   intent.putExtra(MediaStore.EXTRA_OUTPUT, u);
                                     startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
-                               /* } catch (ActivityNotFoundException e) {
+                                } catch (ActivityNotFoundException e) {
                                     Toast.makeText(MainActivity.this, "No storage directory.",Toast.LENGTH_LONG).show();
-                                }*/
+                                }
                         }
                         else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
@@ -89,7 +90,7 @@ public class MainActivity extends Activity
                     selectedImagePath1 = getPath(uri);
                     System.out.println("Image Path : " + selectedImagePath1);
                     break;
-                /*case REQUEST_CAPTURE_CAMERA:
+                case REQUEST_CAPTURE_CAMERA:
                     File f=new File(Environment.getExternalStorageDirectory()
                             +"/"+"localTempImgDir"+"/"+"localTempImgFileName");
                     try {
@@ -98,12 +99,12 @@ public class MainActivity extends Activity
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    break;*/
-                case REQUEST_CAPTURE_CAMERA:
+                    break;
+                /*case REQUEST_CAPTURE_CAMERA:
                     uri = data.getData();
                     break;
                 default:
-                    break;
+                    break;*/
             }
             intent.setData(uri);
             startActivity(intent);
@@ -114,10 +115,12 @@ public class MainActivity extends Activity
          **/
 
     public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
         ContentResolver cr = this.getContentResolver();
-        Cursor cursor = cr.query(uri, null, null, null, null);
+        Cursor cursor = cr.query(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
-        String filePath = cursor.getString(cursor.getColumnIndex("_data"));
+        String filePath = cursor.getString(column_index);
         return filePath;
     }
 
