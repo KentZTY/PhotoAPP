@@ -40,16 +40,12 @@ public class ImageOperation extends Activity {
         imageView[8]=(ImageView)findViewById(R.id.imageView8);//sticker layer 3
         imageView[9]=(ImageView)findViewById(R.id.imageView9);//sticker layer 4
         imageView[10]=(ImageView)findViewById(R.id.imageView10);//border layer
-        Button add=(Button)findViewById(R.id.add);
-        Button undo=(Button)findViewById(R.id.undo);
-        Button export=(Button)findViewById(R.id.export);
-        Demo test=new Demo();
 
 
-                (findViewById(R.id.add))
+
+        (findViewById(R.id.add))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
-
                         testAdd();
                     }
                 });
@@ -63,6 +59,12 @@ public class ImageOperation extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         testExport();
+                    }
+                });
+        (findViewById(R.id.export))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        clearStickers();
                     }
                 });
 
@@ -172,21 +174,24 @@ public class ImageOperation extends Activity {
     public void testAdd(){
         for(int i=0;i<6;i++){
             newSticker(getResource(i));
+            print("test add");
         }
     }
     public void testUndo(){
         undoSticker();
+        print("test undo");
     }
     public void testExport(){
         saveBitmap(outputImage(imageView),"testFile");
-
+        print("test export");
     }
 
     public Bitmap getResource(int i){
-        String name=i+"";
+        String name="a"+i;
         ApplicationInfo appInfo = getApplicationInfo();
         int resID = getResources().getIdentifier(name, "drawable", appInfo.packageName);
         return BitmapFactory.decodeResource(getResources(),resID);
+        //return null;
     }
 
 

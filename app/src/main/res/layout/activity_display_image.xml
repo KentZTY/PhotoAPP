@@ -71,9 +71,9 @@
         android:layout_height="wrap_content"
         android:text="add"
         android:id="@+id/add"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/button04"
-        android:layout_toEndOf="@+id/button04" />
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/undo"
+        android:layout_toStartOf="@+id/undo" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -81,9 +81,9 @@
         android:layout_height="wrap_content"
         android:text="undo"
         android:id="@+id/undo"
-        android:layout_below="@+id/add"
-        android:layout_alignLeft="@+id/add"
-        android:layout_alignStart="@+id/add" />
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/button04"
+        android:layout_alignStart="@+id/button04" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -91,8 +91,18 @@
         android:layout_height="wrap_content"
         android:text="export"
         android:id="@+id/export"
-        android:layout_below="@+id/undo"
-        android:layout_alignLeft="@+id/undo"
-        android:layout_alignStart="@+id/undo" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="clear"
+        android:id="@+id/clear"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/button04"
+        android:layout_toEndOf="@+id/button04" />
 
 </RelativeLayout>
