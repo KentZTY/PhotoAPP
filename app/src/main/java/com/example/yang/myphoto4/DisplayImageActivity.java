@@ -73,7 +73,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
                         testExport();
                     }
                 });
-        (findViewById(R.id.export))
+        (findViewById(R.id.clear))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         clearStickers();
@@ -117,8 +117,9 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
             imageView[9].setImageBitmap(nS);
         }else{
             imageView[5].setImageBitmap(combine(imageView[5],imageView[6]));
-            for (int i=6;i<10;i++){
-                imageView[i]=imageView[i+1];
+            for (int i=6;i<9;i++){
+                imageView[i].setImageDrawable(imageView[i+1].getDrawable());
+
             }
             imageView[9].setImageBitmap(nS);
         }
@@ -157,6 +158,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
     public void undoSticker(){
         for(int i=9;i>5;i--){
             if(imageView[i].getDrawable()== null){
+                print(i+" is null");
 
             }else{
                 imageView[i].setImageDrawable(null);
@@ -177,7 +179,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
 
     //print debug info
     public void print(String info){
-        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
     //save bitmap to local
@@ -204,12 +206,12 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
     public void testAdd(){
         for(int i=0;i<6;i++){
             newSticker(getResource(i));
-            print("test add");
+           // print("test add");
         }
     }
     public void testUndo(){
         undoSticker();
-        print("test undo");
+        //print("test undo");
     }
     public void testExport(){
         saveBitmap(outputImage(imageView),"testFile");
