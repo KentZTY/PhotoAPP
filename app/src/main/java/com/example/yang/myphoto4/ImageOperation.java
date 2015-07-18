@@ -25,11 +25,13 @@ import java.io.IOException;
 public class ImageOperation extends Activity {
     private ImageView[] imageView;
 
+
     private Bitmap photoBitmap, stickerBitmap;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
+        imageView=new ImageView[11];
         imageView[0]=(ImageView)findViewById(R.id.imageView);//origin image
         imageView[2]=(ImageView)findViewById(R.id.imageView2);//enhanced image 1
         imageView[3]=(ImageView)findViewById(R.id.imageView3);//enhanced image 2

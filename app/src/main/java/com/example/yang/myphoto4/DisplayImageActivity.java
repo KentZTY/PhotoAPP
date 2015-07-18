@@ -24,6 +24,7 @@ import java.io.IOException;
 public class DisplayImageActivity extends Activity implements View.OnTouchListener, OnGestureListener{
 
     private ImageView myImg = null;
+    private ImageView[] imageView;
 
 
     @Override
@@ -31,6 +32,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
         myImg = (ImageView)findViewById(R.id.imageView);
+        imageView=new ImageView[11];
 
         /*
          * Receive image uri. Get image path.
