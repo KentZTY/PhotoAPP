@@ -14,6 +14,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -83,10 +84,13 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
          * Receive image uri. Get image path.
          **/
         final Uri uri = getIntent().getData();
+        String[] projection = { MediaStore.Images.Media.DATA };
         ContentResolver cr = this.getContentResolver();
-        Cursor cursor = cr.query(uri, null, null, null, null);
+        Cursor cursor = cr.query(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
-        String filePath = cursor.getString(cursor.getColumnIndex("_data"));
+        String filePath = cursor.getString(column_index);
+        System.out.print(filePath);
 
         /*
          * Get image orientation.
@@ -94,9 +98,9 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         int degree = readPictureDegree(filePath);
         BitmapFactory.Options opts=new BitmapFactory.Options();
         opts.inSampleSize=2;
-        Bitmap bitmapOld=BitmapFactory.decodeFile(filePath,opts);
-        Bitmap bitmap = rotatingImageView(degree, bitmapOld);
-        myImg.setImageBitmap(bitmap);
+        Bitmap bitmapOld = BitmapFactory.decodeFile(filePath,opts);
+        Bitmap bitmapNew = rotatingImageView(degree, bitmapOld);
+        myImg.setImageBitmap(bitmapNew);
 
         (findViewById(R.id.button04))
                 .setOnClickListener(new View.OnClickListener() {
@@ -252,8 +256,10 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         Matrix matrix = new Matrix();;
         matrix.postRotate(angle);
         System.out.println("angle2=" + angle);
+        int bWidth = bitmap.getWidth();
+        int bHeight = bitmap.getHeight();
         Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
-                bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                bWidth, bHeight, matrix, true);
         return resizedBitmap;
     }
 
