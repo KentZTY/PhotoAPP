@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 
 public class DisplayImageActivity extends Activity implements View.OnTouchListener, OnGestureListener{
@@ -130,13 +131,14 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         Bitmap combined=null;
         try{
             //output resolution needed _Ree
-            combined = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+            combined = Bitmap.createBitmap(720, 720, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(combined);
             Resources res = getResources();
             //drawable1.setBounds(100, 100, 400, 400);
             //drawable2.setBounds(150, 150, 350, 350);
             a.getDrawable().draw(c);
             b.getDrawable().draw(c);
+
         }
         catch (Exception e){
         }
@@ -165,7 +167,8 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
                 break;
             }
             if(i==6){
-                print("Can not undo");
+                //print("Can not undo");
+                Toast.makeText(getApplicationContext(), "Can not undo", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -179,7 +182,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
 
     //print debug info
     public void print(String info){
-        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
     //save bitmap to local
@@ -204,10 +207,12 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
 
     //test method
     public void testAdd(){
-        for(int i=0;i<6;i++){
-            newSticker(getResource(i));
-           // print("test add");
-        }
+        Random random=new Random();
+        int i=random.nextInt();
+        i=random.nextInt(4)+1;
+        newSticker(getResource(i));
+        // print("test add");
+
     }
     public void testUndo(){
         undoSticker();
