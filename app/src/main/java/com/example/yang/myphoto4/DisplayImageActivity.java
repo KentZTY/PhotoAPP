@@ -131,11 +131,11 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         Bitmap combined=null;
         try{
             //output resolution needed _Ree
-            combined = Bitmap.createBitmap(720, 720, Bitmap.Config.ARGB_8888);
+            combined = Bitmap.createBitmap(2560, 1440, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(combined);
             Resources res = getResources();
-            //drawable1.setBounds(100, 100, 400, 400);
-            //drawable2.setBounds(150, 150, 350, 350);
+            //a.setBounds(100, 100, 400, 400);
+            //b.setBounds(150, 150, 350, 350);
             a.getDrawable().draw(c);
             b.getDrawable().draw(c);
 
