@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
@@ -20,7 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,7 +28,7 @@ import java.io.IOException;
 import java.util.Random;
 
 
-public class DisplayImageActivity extends Activity implements View.OnTouchListener, OnGestureListener{
+public class DisplayImageActivity extends Activity implements OnTouchListener, OnGestureListener {
 
     private ImageView myImg = null;
     private ImageView[] imageView = new ImageView[11];
@@ -50,13 +49,13 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         imageView[8]=(ImageView)findViewById(R.id.imageView8);//sticker layer 3
         imageView[9]=(ImageView)findViewById(R.id.imageView9);//sticker layer 4
         imageView[10]=(ImageView)findViewById(R.id.imageView10);//border layer
+
         /*
         for (int i=1;i<11;i++){
             imageView[i].setBackgroundColor(Color.TRANSPARENT);
         }
         */
-
-        (findViewById(R.id.add))
+                (findViewById(R.id.add))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         testAdd();
@@ -82,27 +81,16 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
                 });
 
         /*
-         * Receive image uri. Get image path.
+         * Receive image uri. Get image path. Display image.
          **/
         final Uri uri = getIntent().getData();
-        String[] projection = { MediaStore.Images.Media.DATA };
-        ContentResolver cr = this.getContentResolver();
-        Cursor cursor = cr.query(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String filePath = cursor.getString(column_index);
+        String filePath = getPath(uri);
         System.out.print(filePath);
+        myImg.setImageBitmap(getBitmap(filePath));
 
         /*
-         * Get image orientation.
-         **/
-        int degree = readPictureDegree(filePath);
-        BitmapFactory.Options opts=new BitmapFactory.Options();
-        opts.inSampleSize=2;
-        Bitmap bitmapOld = BitmapFactory.decodeFile(filePath,opts);
-        Bitmap bitmapNew = rotatingImageView(degree, bitmapOld);
-        myImg.setImageBitmap(bitmapNew);
-
+        Send image to the next activity.
+         */
         (findViewById(R.id.button04))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
@@ -124,6 +112,25 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
             }
             imageView[9].setImageBitmap(nS);
         }
+    }
+
+    public Bitmap getBitmap(String filePath){
+        int degree = readPictureDegree(filePath);
+        BitmapFactory.Options opts=new BitmapFactory.Options();
+        opts.inSampleSize=2;
+        Bitmap bitmapOld = BitmapFactory.decodeFile(filePath,opts);
+        Bitmap bitmapNew = rotatingImageView(degree, bitmapOld);
+        return bitmapNew;
+    }
+
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        ContentResolver cr = this.getContentResolver();
+        Cursor cursor = cr.query(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String filePath = cursor.getString(column_index);
+        return filePath;
     }
 
     //combine two imageView and output a bitmap
@@ -209,7 +216,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
     public void testAdd(){
         Random random=new Random();
         int i=random.nextInt();
-        i=random.nextInt(4)+1;
+        i=random.nextInt(4) + 1;
         newSticker(getResource(i));
         // print("test add");
 
@@ -219,7 +226,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         //print("test undo");
     }
     public void testExport(){
-        saveBitmap(outputImage(imageView),"testFile");
+        saveBitmap(outputImage(imageView), "testFile");
         print("test export");
     }
 
@@ -270,6 +277,7 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         return resizedBitmap;
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -294,11 +302,13 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         return super.onOptionsItemSelected(item);
     }
     public void shareImage(Uri uri){
-            Intent intent = new Intent();
-            intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
+        Intent intent = new Intent();
+        intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
         intent.setData(uri);
-            startActivity(intent);
+        startActivity(intent);
     }
+
+
 
     @Override
     public boolean onDown(MotionEvent e) {
@@ -335,3 +345,5 @@ public class DisplayImageActivity extends Activity implements View.OnTouchListen
         return false;
     }
 }
+
+
