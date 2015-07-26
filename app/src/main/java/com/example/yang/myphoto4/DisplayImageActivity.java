@@ -14,7 +14,7 @@ import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.GestureDetector.OnGestureListener;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -28,17 +28,17 @@ import java.io.IOException;
 import java.util.Random;
 
 
-public class DisplayImageActivity extends Activity implements OnTouchListener, OnGestureListener {
+public class DisplayImageActivity extends Activity {
 
-    private ImageView myImg = null;
     private ImageView[] imageView = new ImageView[11];
+    private int screenWidth;
+    private int screenHeight;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
-        myImg = (ImageView)findViewById(R.id.imageView);
         imageView[1]=(ImageView)findViewById(R.id.imageView);//origin image
         imageView[2]=(ImageView)findViewById(R.id.imageView2);//enhanced image 1
         imageView[3]=(ImageView)findViewById(R.id.imageView3);//enhanced image 2
@@ -50,16 +50,31 @@ public class DisplayImageActivity extends Activity implements OnTouchListener, O
         imageView[9]=(ImageView)findViewById(R.id.imageView9);//sticker layer 4
         imageView[10]=(ImageView)findViewById(R.id.imageView10);//border layer
 
+        imageView[1].setOnTouchListener(movingEventListener);
+        imageView[2].setOnTouchListener(movingEventListener);
+        imageView[3].setOnTouchListener(movingEventListener);
+        imageView[4].setOnTouchListener(movingEventListener);
+        imageView[5].setOnTouchListener(movingEventListener);
+        imageView[6].setOnTouchListener(movingEventListener);
+        imageView[7].setOnTouchListener(movingEventListener);
+        imageView[8].setOnTouchListener(movingEventListener);
+        imageView[9].setOnTouchListener(movingEventListener);
+        imageView[10].setOnTouchListener(movingEventListener);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels - 50;
+
+
         /*
         for (int i=1;i<11;i++){
             imageView[i].setBackgroundColor(Color.TRANSPARENT);
         }
         */
                 (findViewById(R.id.add))
-                .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View arg0) {
-                        testAdd();
-                    }
+                        .setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View arg0) {
+                                testAdd();
+                            }
                 });
         (findViewById(R.id.undo))
                 .setOnClickListener(new View.OnClickListener() {
@@ -86,7 +101,7 @@ public class DisplayImageActivity extends Activity implements OnTouchListener, O
         final Uri uri = getIntent().getData();
         String filePath = getPath(uri);
         System.out.print(filePath);
-        myImg.setImageBitmap(getBitmap(filePath));
+        imageView[1].setImageBitmap(getBitmap(filePath));
 
         /*
         Send image to the next activity.
@@ -118,9 +133,8 @@ public class DisplayImageActivity extends Activity implements OnTouchListener, O
         int degree = readPictureDegree(filePath);
         BitmapFactory.Options opts=new BitmapFactory.Options();
         opts.inSampleSize=2;
-        Bitmap bitmapOld = BitmapFactory.decodeFile(filePath,opts);
-        Bitmap bitmapNew = rotatingImageView(degree, bitmapOld);
-        return bitmapNew;
+        Bitmap bitmapOld = BitmapFactory.decodeFile(filePath, opts);
+        return rotatingImageView(degree, bitmapOld);
     }
 
     public String getPath(Uri uri) {
@@ -129,8 +143,7 @@ public class DisplayImageActivity extends Activity implements OnTouchListener, O
         Cursor cursor = cr.query(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
-        String filePath = cursor.getString(column_index);
-        return filePath;
+        return cursor.getString(column_index);
     }
 
     //combine two imageView and output a bitmap
@@ -272,9 +285,8 @@ public class DisplayImageActivity extends Activity implements OnTouchListener, O
         System.out.println("angle2=" + angle);
         int bWidth = bitmap.getWidth();
         int bHeight = bitmap.getHeight();
-        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+        return Bitmap.createBitmap(bitmap, 0, 0,
                 bWidth, bHeight, matrix, true);
-        return resizedBitmap;
     }
 
 
@@ -308,42 +320,54 @@ public class DisplayImageActivity extends Activity implements OnTouchListener, O
         startActivity(intent);
     }
 
+    private OnTouchListener movingEventListener = new OnTouchListener() {
+        int lastX, lastY;
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    lastX = (int) event.getRawX();
+                    lastY = (int) event.getRawY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    int dx = (int) event.getRawX() - lastX;
+                    int dy = (int) event.getRawY() - lastY;
 
+                    int left = v.getLeft() + dx;
+                    int top = v.getTop() + dy;
+                    int right = v.getRight() + dx;
+                    int bottom = v.getBottom() + dy;
 
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
+                    if (left < 0) {
+                        left = 0;
+                        right = left + v.getWidth();
+                    }
 
-    @Override
-    public void onShowPress(MotionEvent e) {
+                    if (right > screenWidth) {
+                        right = screenWidth;
+                        left = right - v.getWidth();
+                    }
 
-    }
+                    if (top < 0) {
+                        top = 0;
+                        bottom = top + v.getHeight();
+                    }
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
+                    if (bottom > screenHeight) {
+                        bottom = screenHeight;
+                        top = bottom - v.getHeight();
+                    }
 
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
+                    v.layout(left, top, right, bottom);
 
-    @Override
-    public void onLongPress(MotionEvent e) {
+                    lastX = (int) event.getRawX();
+                    lastY = (int) event.getRawY();
 
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
-    }
+                    break;
+            }
+            return true;
+        }
+    };
 }
 
 
