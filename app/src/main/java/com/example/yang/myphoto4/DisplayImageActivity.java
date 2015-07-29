@@ -31,32 +31,25 @@ import java.io.IOException;
 public class DisplayImageActivity extends Activity implements OnClickListener{
     private int screenWidth;
     private int screenHeight;
-    private int stickerNumber = 5;
-    private int i = 0;
-    private imageBorderView[] imageView = new imageBorderView[stickerNumber+1];
+    private int stickerNumber;
+    private int i;
+    private imageBorderView[] imageView;
+    RelativeLayout mainLayout;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
-        ImageView myImage =(ImageView)findViewById(R.id.imageView);//origin image
-        /*imageView[2]=(imageBorderView)findViewById(R.id.imageView2);//enhanced image 1
-        imageView[3]=(imageBorderView)findViewById(R.id.imageView3);//enhanced image 2
-        imageView[4]=(imageBorderView)findViewById(R.id.imageView4);//enhanced image 3
-        imageView[5]=(imageBorderView)findViewById(R.id.imageView5);//combined stickers layer
-        imageView[6]=(imageBorderView)findViewById(R.id.imageView6);//sticker layer 1
-        imageView[7]=(imageBorderView)findViewById(R.id.imageView7);//sticker layer 2
-        imageView[8]=(imageBorderView)findViewById(R.id.imageView8);//sticker layer 3
-        imageView[9]=(imageBorderView)findViewById(R.id.imageView9);//sticker layer 4
-        imageView[10]=(imageBorderView)findViewById(R.id.imageView10);//border layer
-
-        for(int i=2;i<11;i++){
-            imageView[i].setOnClickListener(this);
-        }*/
+        ImageView myImage =(ImageView)findViewById(R.id.imageView);
+        i = 0;
+        stickerNumber = 5;
+        imageView = new imageBorderView[stickerNumber+1];
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
-        screenHeight = dm.heightPixels - 50;
-
+        screenHeight = dm.heightPixels - 100;
+        mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
 
 
         /*
@@ -67,7 +60,7 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
         (findViewById(R.id.add))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
-                       testAdd();
+                        testAdd();
                     }
                 });
         (findViewById(R.id.undo))
@@ -76,12 +69,12 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
                         testUndo();
                     }
                 });
-        (findViewById(R.id.export))
+       /* (findViewById(R.id.export))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         testExport();
                     }
-                });
+                });*/
         (findViewById(R.id.clear))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
@@ -127,8 +120,6 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
         imageView.setBorderWidth(10);
         imageView.setColour(Color.RED);
     }
-
-
 
     public Bitmap getBitmap(String filePath){
         int degree = readPictureDegree(filePath);
@@ -179,18 +170,19 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
 
     //undo a sticker
     public void undoSticker(){
-        for(int a= i;a>0;a--){
-            if(imageView[a].getDrawable()== null){
-                print(a + " is null");
-
-            }else{
-                imageView[a].setImageDrawable(null);
-                i--;
-                break;
-            }
+        for(int a= i;a>=0;a--){
             if(i==0){
                 //print("Can not undo");
                 Toast.makeText(getApplicationContext(), "Can not undo", Toast.LENGTH_SHORT).show();
+            }else{
+            if(imageView[a].getDrawable()== null){
+                print(a + " is null");
+            }else{
+                imageView[a].setImageDrawable(null);
+                mainLayout.removeView(imageView[a]);
+                i--;
+                break;
+            }
             }
         }
     }
@@ -199,6 +191,7 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
     public void clearStickers(){
         for(int a= i;a>0;a--){
             imageView[a].setImageDrawable(null);
+            mainLayout.removeView(imageView[a]);
         }
         i = 0;
     }
@@ -230,38 +223,31 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
 
     //test method
     public void testAdd(){
-        /*Random random=new Random();
-        int i=random.nextInt();
-        i=random.nextInt(4) + 1;
-        newSticker(getResource(i));*/
-        // print("test add");
         if(i<stickerNumber){
             i++;
-            RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
-            imageBorderView mySticker = new imageBorderView(this);
-            mySticker.setImageBitmap(getResource(i));
-            //mySticker.setId(110);
-            mySticker.setOnClickListener(this);
-            mySticker.setBackgroundResource(R.drawable.selector);
-            imageView[i] = mySticker;
+            imageView[i] = new imageBorderView(this);
+            imageView[i].setImageBitmap(getResource(i));
+            imageView[i].setOnClickListener(this);
+            imageView[i].setBackgroundResource(R.drawable.selector);
             RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             lp1.height = 500;
             lp1.width = 500;
-            lp1.addRule(RelativeLayout.ALIGN_TOP);
+            //lp1.addRule(RelativeLayout.ALIGN_TOP);
             //lp1.setMargins(0,0,0,20);//(int left, int top, int right, int bottom)
             mainLayout.addView(imageView[i],lp1);}
         else{
             print("MAX");
         }
     }
+
     public void testUndo(){
         undoSticker();
         //print("test undo");
     }
-    public void testExport(){
+    /*public void testExport(){
         saveBitmap(outputImage(imageView), "testFile");
         print("test export");
-    }
+    }*/
 
     public Bitmap getResource(int i){
         String name="a"+i;
