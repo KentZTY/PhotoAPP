@@ -42,6 +42,7 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
+        mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
         ImageView myImage =(ImageView)findViewById(R.id.imageView);
         i = 0;
         stickerNumber = 5;
@@ -49,7 +50,7 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels - 100;
-        mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
+
 
 
         /*
