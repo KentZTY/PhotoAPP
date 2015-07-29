@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
@@ -19,8 +20,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
@@ -28,41 +31,34 @@ import java.io.IOException;
 import java.util.Random;
 
 
-public class DisplayImageActivity extends Activity {
+public class DisplayImageActivity extends Activity implements OnClickListener{
 
-    private ImageView[] imageView = new ImageView[11];
+    private imageBorderView[] imageView = new imageBorderView[11];
     private int screenWidth;
     private int screenHeight;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
-        imageView[1]=(ImageView)findViewById(R.id.imageView);//origin image
-        imageView[2]=(ImageView)findViewById(R.id.imageView2);//enhanced image 1
-        imageView[3]=(ImageView)findViewById(R.id.imageView3);//enhanced image 2
-        imageView[4]=(ImageView)findViewById(R.id.imageView4);//enhanced image 3
-        imageView[5]=(ImageView)findViewById(R.id.imageView5);//combined stickers layer
-        imageView[6]=(ImageView)findViewById(R.id.imageView6);//sticker layer 1
-        imageView[7]=(ImageView)findViewById(R.id.imageView7);//sticker layer 2
-        imageView[8]=(ImageView)findViewById(R.id.imageView8);//sticker layer 3
-        imageView[9]=(ImageView)findViewById(R.id.imageView9);//sticker layer 4
-        imageView[10]=(ImageView)findViewById(R.id.imageView10);//border layer
+        ImageView myImage =(ImageView)findViewById(R.id.imageView);//origin image
+        /*imageView[2]=(imageBorderView)findViewById(R.id.imageView2);//enhanced image 1
+        imageView[3]=(imageBorderView)findViewById(R.id.imageView3);//enhanced image 2
+        imageView[4]=(imageBorderView)findViewById(R.id.imageView4);//enhanced image 3
+        imageView[5]=(imageBorderView)findViewById(R.id.imageView5);//combined stickers layer
+        imageView[6]=(imageBorderView)findViewById(R.id.imageView6);//sticker layer 1
+        imageView[7]=(imageBorderView)findViewById(R.id.imageView7);//sticker layer 2
+        imageView[8]=(imageBorderView)findViewById(R.id.imageView8);//sticker layer 3
+        imageView[9]=(imageBorderView)findViewById(R.id.imageView9);//sticker layer 4
+        imageView[10]=(imageBorderView)findViewById(R.id.imageView10);//border layer
 
-        imageView[1].setOnTouchListener(movingEventListener);
-        imageView[2].setOnTouchListener(movingEventListener);
-        imageView[3].setOnTouchListener(movingEventListener);
-        imageView[4].setOnTouchListener(movingEventListener);
-        imageView[5].setOnTouchListener(movingEventListener);
-        imageView[6].setOnTouchListener(movingEventListener);
-        imageView[7].setOnTouchListener(movingEventListener);
-        imageView[8].setOnTouchListener(movingEventListener);
-        imageView[9].setOnTouchListener(movingEventListener);
-        imageView[10].setOnTouchListener(movingEventListener);
+        for(int i=2;i<11;i++){
+            imageView[i].setOnClickListener(this);
+        }*/
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels - 50;
+
 
 
         /*
@@ -70,26 +66,26 @@ public class DisplayImageActivity extends Activity {
             imageView[i].setBackgroundColor(Color.TRANSPARENT);
         }
         */
-                (findViewById(R.id.add))
-                        .setOnClickListener(new View.OnClickListener() {
-                            public void onClick(View arg0) {
-                                testAdd();
-                            }
+        (findViewById(R.id.add))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(View arg0) {
+                       testAdd();
+                    }
                 });
         (findViewById(R.id.undo))
-                .setOnClickListener(new View.OnClickListener() {
+                .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         testUndo();
                     }
                 });
         (findViewById(R.id.export))
-                .setOnClickListener(new View.OnClickListener() {
+                .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         testExport();
                     }
                 });
         (findViewById(R.id.clear))
-                .setOnClickListener(new View.OnClickListener() {
+                .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         clearStickers();
                     }
@@ -101,13 +97,13 @@ public class DisplayImageActivity extends Activity {
         final Uri uri = getIntent().getData();
         String filePath = getPath(uri);
         System.out.print(filePath);
-        imageView[1].setImageBitmap(getBitmap(filePath));
+        myImage.setImageBitmap(getBitmap(filePath));
 
         /*
         Send image to the next activity.
          */
         (findViewById(R.id.button04))
-                .setOnClickListener(new View.OnClickListener() {
+                .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         shareImage(uri);
                     }
@@ -128,6 +124,13 @@ public class DisplayImageActivity extends Activity {
             imageView[9].setImageBitmap(nS);
         }
     }
+
+    public void drawBorder(imageBorderView imageView){
+        imageView.setBorderWidth(20);
+        imageView.setColour(Color.RED);
+    }
+
+
 
     public Bitmap getBitmap(String filePath){
         int degree = readPictureDegree(filePath);
@@ -227,12 +230,26 @@ public class DisplayImageActivity extends Activity {
 
     //test method
     public void testAdd(){
+        /*Random random=new Random();
+        int i=random.nextInt();
+        i=random.nextInt(4) + 1;
+        newSticker(getResource(i));*/
+        // print("test add");
+
         Random random=new Random();
         int i=random.nextInt();
         i=random.nextInt(4) + 1;
-        newSticker(getResource(i));
-        // print("test add");
-
+        RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
+        imageBorderView mySticker = new imageBorderView(this);
+        mySticker.setImageBitmap(getResource(i));
+        //mySticker.setId(110);
+        mySticker.setOnClickListener(this);
+        RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp1.height = 500;
+        lp1.width = 500;
+        lp1.addRule(RelativeLayout.ALIGN_TOP);
+        //lp1.setMargins(0,0,0,20);//(int left, int top, int right, int bottom)
+        mainLayout.addView(mySticker,lp1);
     }
     public void testUndo(){
         undoSticker();
@@ -320,14 +337,18 @@ public class DisplayImageActivity extends Activity {
         startActivity(intent);
     }
 
+
+
+
     private OnTouchListener movingEventListener = new OnTouchListener() {
         int lastX, lastY;
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    lastX = (int) event.getRawX();
-                    lastY = (int) event.getRawY();
+                        lastX = (int) event.getRawX();
+                        lastY = (int) event.getRawY();
                     break;
                 case MotionEvent.ACTION_MOVE:
                     int dx = (int) event.getRawX() - lastX;
@@ -364,10 +385,18 @@ public class DisplayImageActivity extends Activity {
                     lastY = (int) event.getRawY();
 
                     break;
+                case MotionEvent.ACTION_UP:
+                    break;
             }
             return true;
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        drawBorder((imageBorderView) v);
+        v.setOnTouchListener(movingEventListener);
+    }
 }
 
 
