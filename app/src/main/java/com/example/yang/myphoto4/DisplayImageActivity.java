@@ -25,17 +25,15 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Random;
-
 
 public class DisplayImageActivity extends Activity implements OnClickListener{
-
-    private imageBorderView[] imageView = new imageBorderView[11];
     private int screenWidth;
     private int screenHeight;
+    private int stickerNumber = 5;
+    private int i = 0;
+    private imageBorderView[] imageView = new imageBorderView[stickerNumber+1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +110,7 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
     }
 
     //add a new sticker in layer 9, high layers imported to lower one and import the newest into layer 9
-    public void newSticker(Bitmap nS){
+    /*public void newSticker(Bitmap nS){
         if(imageView[9]==null){
             imageView[9].setImageBitmap(nS);
         }else{
@@ -123,10 +121,10 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
             }
             imageView[9].setImageBitmap(nS);
         }
-    }
+    }*/
 
     public void drawBorder(imageBorderView imageView){
-        imageView.setBorderWidth(20);
+        imageView.setBorderWidth(10);
         imageView.setColour(Color.RED);
     }
 
@@ -181,15 +179,16 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
 
     //undo a sticker
     public void undoSticker(){
-        for(int i=9;i>5;i--){
-            if(imageView[i].getDrawable()== null){
-                print(i+" is null");
+        for(int a= i;a>0;a--){
+            if(imageView[a].getDrawable()== null){
+                print(a + " is null");
 
             }else{
-                imageView[i].setImageDrawable(null);
+                imageView[a].setImageDrawable(null);
+                i--;
                 break;
             }
-            if(i==6){
+            if(i==0){
                 //print("Can not undo");
                 Toast.makeText(getApplicationContext(), "Can not undo", Toast.LENGTH_SHORT).show();
             }
@@ -198,9 +197,10 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
 
     //clear all stickers
     public void clearStickers(){
-        for(int i=9;i>4;i--){
-            imageView[i].setImageDrawable(null);
+        for(int a= i;a>0;a--){
+            imageView[a].setImageDrawable(null);
         }
+        i = 0;
     }
 
     //print debug info
@@ -235,21 +235,24 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
         i=random.nextInt(4) + 1;
         newSticker(getResource(i));*/
         // print("test add");
-
-        Random random=new Random();
-        int i=random.nextInt();
-        i=random.nextInt(4) + 1;
-        RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
-        imageBorderView mySticker = new imageBorderView(this);
-        mySticker.setImageBitmap(getResource(i));
-        //mySticker.setId(110);
-        mySticker.setOnClickListener(this);
-        RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp1.height = 500;
-        lp1.width = 500;
-        lp1.addRule(RelativeLayout.ALIGN_TOP);
-        //lp1.setMargins(0,0,0,20);//(int left, int top, int right, int bottom)
-        mainLayout.addView(mySticker,lp1);
+        if(i<stickerNumber){
+            i++;
+            RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
+            imageBorderView mySticker = new imageBorderView(this);
+            mySticker.setImageBitmap(getResource(i));
+            //mySticker.setId(110);
+            mySticker.setOnClickListener(this);
+            mySticker.setBackgroundResource(R.drawable.selector);
+            imageView[i] = mySticker;
+            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp1.height = 500;
+            lp1.width = 500;
+            lp1.addRule(RelativeLayout.ALIGN_TOP);
+            //lp1.setMargins(0,0,0,20);//(int left, int top, int right, int bottom)
+            mainLayout.addView(imageView[i],lp1);}
+        else{
+            print("MAX");
+        }
     }
     public void testUndo(){
         undoSticker();
