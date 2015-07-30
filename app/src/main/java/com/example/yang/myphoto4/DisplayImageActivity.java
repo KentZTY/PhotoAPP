@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
@@ -28,13 +29,15 @@ import android.widget.Toast;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class DisplayImageActivity extends Activity implements OnClickListener{
+public class DisplayImageActivity extends Activity{
     private int screenWidth;
     private int screenHeight;
     private int stickerNumber;
     private int i;
-    private imageBorderView[] imageView;
+    private ImageView currentImage = null;
+    private ImageView[] imageView;
     RelativeLayout mainLayout;
+    private ImageView myImage;
 
 
 
@@ -43,13 +46,16 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
         mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
-        ImageView myImage =(ImageView)findViewById(R.id.imageView);
+        myImage =(ImageView)findViewById(R.id.imageView);
         i = 0;
         stickerNumber = 5;
-        imageView = new imageBorderView[stickerNumber+1];
+        imageView = new ImageView[stickerNumber+1];
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels - 100;
+        currentImage = myImage;
+        myImage.setOnTouchListener(movingEventListener);
+
 
 
 
@@ -117,10 +123,10 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
         }
     }*/
 
-    public void drawBorder(imageBorderView imageView){
+    /*public void drawBorder(imageBorderView imageView){
         imageView.setBorderWidth(10);
         imageView.setColour(Color.RED);
-    }
+    }*/
 
     public Bitmap getBitmap(String filePath){
         int degree = readPictureDegree(filePath);
@@ -199,7 +205,7 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
 
     //print debug info
     public void print(String info){
-        //Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
     //save bitmap to local
@@ -226,10 +232,10 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
     public void testAdd(){
         if(i<stickerNumber){
             i++;
-            imageView[i] = new imageBorderView(this);
+            imageView[i] = new ImageView(this);
             imageView[i].setImageBitmap(getResource(i));
-            imageView[i].setOnClickListener(this);
-            imageView[i].setBackgroundResource(R.drawable.selector);
+            imageView[i].setOnTouchListener(movingEventListener);
+            //imageView[i].setBackgroundResource(R.drawable.border);
             RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             lp1.height = 500;
             lp1.width = 500;
@@ -337,8 +343,15 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    if(v!=myImage && v!= null){
+                        currentImage.setBackground(null);
                         lastX = (int) event.getRawX();
                         lastY = (int) event.getRawY();
+                        v.setBackgroundResource(R.drawable.border);
+                        currentImage =(ImageView) v;}
+                    if(v == myImage){
+                        currentImage.setBackground(null);
+                    }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     int dx = (int) event.getRawX() - lastX;
@@ -382,11 +395,11 @@ public class DisplayImageActivity extends Activity implements OnClickListener{
         }
     };
 
-    @Override
+   /* @Override
     public void onClick(View v) {
-        drawBorder((imageBorderView) v);
+        //drawBorder((imageBorderView) v);
         v.setOnTouchListener(movingEventListener);
-    }
+    }*/
 }
 
 
