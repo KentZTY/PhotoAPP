@@ -1,6 +1,7 @@
 package com.example.yang.myphoto4;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
@@ -23,6 +24,8 @@ public class Sticker_Selector extends Activity {
                                     int position, long id) {
                 Toast.makeText(Sticker_Selector.this, "" + position,
                         Toast.LENGTH_SHORT).show();
+                Intent i=new Intent(Sticker_Selector.this,DisplayImageActivity.class);
+                i.putExtra("id",id);
             }
         });
 

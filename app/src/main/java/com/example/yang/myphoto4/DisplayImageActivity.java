@@ -63,7 +63,6 @@ public class DisplayImageActivity extends Activity{
                     }
                 });
 
-
         /*
         for (int i=1;i<11;i++){
             imageView[i].setBackgroundColor(Color.TRANSPARENT);
@@ -111,7 +110,6 @@ public class DisplayImageActivity extends Activity{
     private void chooseSticker() {
         Intent intent = new Intent();
         intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
-
         startActivity(intent);
     }
 
