@@ -5,7 +5,6 @@
     android:layout_height="fill_parent"
     android:id="@+id/stickerView"
     android:gravity="center">
-
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -15,23 +14,14 @@
         android:layout_alignParentBottom="true" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NEXT"
-        android:id="@+id/button04"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="61dp" />
-
-    <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="add"
-        android:id="@+id/add"
+        android:text="clear"
+        android:id="@+id/clear"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/undo"
-        android:layout_toStartOf="@+id/undo" />
+        android:layout_toRightOf="@+id/undo"
+        android:layout_toEndOf="@+id/undo" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -40,17 +30,26 @@
         android:text="undo"
         android:id="@+id/undo"
         android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/button04"
-        android:layout_alignStart="@+id/button04" />
+        android:layout_toRightOf="@+id/add"
+        android:layout_toEndOf="@+id/add" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="clear"
-        android:id="@+id/clear"
+        android:text="add"
+        android:id="@+id/add"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/button04"
-        android:layout_toEndOf="@+id/button04" />
+        android:layout_alignRight="@+id/button04"
+        android:layout_alignEnd="@+id/button04" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEXT"
+        android:id="@+id/button04"
+        android:layout_marginBottom="54dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

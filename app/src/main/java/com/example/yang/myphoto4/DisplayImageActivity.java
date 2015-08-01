@@ -2,6 +2,7 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
@@ -9,13 +10,12 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -123,11 +123,6 @@ public class DisplayImageActivity extends Activity{
         }
     }*/
 
-    /*public void drawBorder(imageBorderView imageView){
-        imageView.setBorderWidth(10);
-        imageView.setColour(Color.RED);
-    }*/
-
     public Bitmap getBitmap(String filePath){
         int degree = readPictureDegree(filePath);
         BitmapFactory.Options opts=new BitmapFactory.Options();
@@ -233,14 +228,15 @@ public class DisplayImageActivity extends Activity{
         if(i<stickerNumber){
             i++;
             imageView[i] = new ImageView(this);
-            imageView[i].setImageBitmap(getResource(i));
+            Bitmap mBitmap = getResource(i);
+            imageView[i].setImageBitmap(mBitmap);
             imageView[i].setOnTouchListener(movingEventListener);
             //imageView[i].setBackgroundResource(R.drawable.border);
             RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             lp1.height = 500;
             lp1.width = 500;
             //lp1.addRule(RelativeLayout.ALIGN_TOP);
-            //lp1.setMargins(0,0,0,20);//(int left, int top, int right, int bottom)
+            //lp1.setMargins(200,400,0,0);//(int left, int top, int right, int bottom)
             mainLayout.addView(imageView[i],lp1);}
         else{
             print("MAX");
@@ -341,6 +337,7 @@ public class DisplayImageActivity extends Activity{
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+            RelativeLayout.LayoutParams myLayout = (RelativeLayout.LayoutParams) v.getLayoutParams();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     if(v!=myImage && v!= null){
@@ -382,7 +379,8 @@ public class DisplayImageActivity extends Activity{
                         top = bottom - v.getHeight();
                     }
 
-                    v.layout(left, top, right, bottom);
+                    myLayout.setMargins(left,top,0,0);
+                    v.setLayoutParams(myLayout);
 
                     lastX = (int) event.getRawX();
                     lastY = (int) event.getRawY();
@@ -394,12 +392,6 @@ public class DisplayImageActivity extends Activity{
             return true;
         }
     };
-
-   /* @Override
-    public void onClick(View v) {
-        //drawBorder((imageBorderView) v);
-        v.setOnTouchListener(movingEventListener);
-    }*/
 }
 
 
