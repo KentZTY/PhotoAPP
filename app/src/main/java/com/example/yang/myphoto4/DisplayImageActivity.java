@@ -56,7 +56,12 @@ public class DisplayImageActivity extends Activity{
         currentImage = myImage;
         myImage.setOnTouchListener(movingEventListener);
 
-
+        (findViewById(R.id.chooser))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(View arg0) {
+                        chooseSticker();
+                    }
+                });
 
 
         /*
@@ -76,12 +81,6 @@ public class DisplayImageActivity extends Activity{
                         testUndo();
                     }
                 });
-       /* (findViewById(R.id.export))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
-                        testExport();
-                    }
-                });*/
         (findViewById(R.id.clear))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
@@ -106,6 +105,10 @@ public class DisplayImageActivity extends Activity{
                         shareImage(uri);
                     }
                 });
+
+    }
+
+    private void chooseSticker() {
 
     }
 
@@ -150,7 +153,7 @@ public class DisplayImageActivity extends Activity{
         Bitmap combined=null;
         try{
             //output resolution needed _Ree
-            combined = Bitmap.createBitmap(2560, 1440, Bitmap.Config.ARGB_8888);
+            combined = Bitmap.createBitmap(screenHeight, screenWidth, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(combined);
             Resources res = getResources();
             //a.setBounds(100, 100, 400, 400);
@@ -167,7 +170,7 @@ public class DisplayImageActivity extends Activity{
     //combine all the layers into a bitmap
     public Bitmap outputImage (ImageView[] imageView){
         Bitmap output=null;
-        output = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+        output = Bitmap.createBitmap(screenHeight, screenWidth, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(output);
         for(int i=0;i<=10;i++){
             imageView[i].getDrawable().draw(c);

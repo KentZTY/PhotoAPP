@@ -53,4 +53,15 @@
         android:layout_toRightOf="@+id/button04"
         android:layout_toEndOf="@+id/button04" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="choose"
+        android:id="@+id/chooser"
+        android:layout_below="@+id/add"
+        android:layout_toLeftOf="@+id/clear"
+        android:layout_toStartOf="@+id/clear"
+        android:layout_marginTop="55dp" />
+
 </RelativeLayout>
