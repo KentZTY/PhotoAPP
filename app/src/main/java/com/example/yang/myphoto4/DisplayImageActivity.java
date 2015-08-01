@@ -109,7 +109,10 @@ public class DisplayImageActivity extends Activity{
     }
 
     private void chooseSticker() {
+        Intent intent = new Intent();
+        intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
 
+        startActivity(intent);
     }
 
     //add a new sticker in layer 9, high layers imported to lower one and import the newest into layer 9
