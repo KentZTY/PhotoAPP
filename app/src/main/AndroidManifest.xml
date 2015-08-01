@@ -36,6 +36,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
         </activity>
+        <activity
+            android:name=".Sticker_Selector"
+            android:label="@string/title_activity_share_image"
+            android:parentActivityName=".DisplayImageActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.yang.myphoto4.DisplayImageActivity" />
+        </activity>
     </application>
 
 </manifest>
