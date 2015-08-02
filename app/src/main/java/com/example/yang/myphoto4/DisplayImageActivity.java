@@ -36,6 +36,8 @@ public class DisplayImageActivity extends Activity{
     private ImageView[] imageView;
     RelativeLayout mainLayout;
     private ImageView myImage;
+    private static final int sticker = 1;
+    private static final int original = 0;
 
 
 
@@ -60,12 +62,6 @@ public class DisplayImageActivity extends Activity{
                         chooseSticker();
                     }
                 });
-
-        /*
-        for (int i=1;i<11;i++){
-            imageView[i].setBackgroundColor(Color.TRANSPARENT);
-        }
-        */
         (findViewById(R.id.add))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
@@ -86,12 +82,12 @@ public class DisplayImageActivity extends Activity{
                 });
 
         /*
-         * Receive image uri. Get image path. Display image.
-         **/
         final Uri uri = getIntent().getData();
         String filePath = getPath(uri);
         System.out.print(filePath);
         myImage.setImageBitmap(getBitmap(filePath));
+        */
+
 
         /*
         Send image to the next activity.
@@ -99,16 +95,44 @@ public class DisplayImageActivity extends Activity{
         (findViewById(R.id.button04))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
-                        shareImage(uri);
+                        //shareImage(uri);
+                        //uri移动到了子模块，这里暂时注释掉了
                     }
                 });
 
+        }
+    @Override
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        print(""+requestCode);
+        print(""+resultCode);
+        switch (requestCode){
+            case sticker:
+                Bundle stickerBundle = data.getExtras();
+                String stickerPosition = stickerBundle.getString("id");
+                print(stickerPosition);
+                testAddSticker(stickerPosition);
+                break;
+            case original:
+                createBack();
+                break;
+        }
+    }
+     /*
+         * Receive image uri. Get image path. Display image.
+         **/
+
+    private Uri createBack(){
+        final Uri uri = getIntent().getData();
+        String filePath = getPath(uri);
+        System.out.print(filePath);
+        myImage.setImageBitmap(getBitmap(filePath));
+        return uri;
     }
 
     private void chooseSticker() {
         Intent intent = new Intent();
         intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
-        startActivity(intent);
+        startActivityForResult(intent,sticker);
     }
 
     //add a new sticker in layer 9, high layers imported to lower one and import the newest into layer 9
@@ -243,6 +267,23 @@ public class DisplayImageActivity extends Activity{
         else{
             print("MAX");
         }
+    }
+
+    //test method
+    public void testAddSticker(String name){
+            //int i = Integer.parseInt(name);
+            imageView[i] = new ImageView(this);
+            Bitmap mBitmap = getResource(i);
+            imageView[i].setImageBitmap(mBitmap);
+            imageView[i].setOnTouchListener(movingEventListener);
+            //imageView[i].setBackgroundResource(R.drawable.border);
+            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp1.height = 500;
+            lp1.width = 500;
+            //lp1.addRule(RelativeLayout.ALIGN_TOP);
+            //lp1.setMargins(200,400,0,0);//(int left, int top, int right, int bottom)
+            mainLayout.addView(imageView[i],lp1);
+
     }
 
     public void testUndo(){

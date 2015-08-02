@@ -25,7 +25,8 @@ public class Sticker_Selector extends Activity {
                 //Toast.makeText(Sticker_Selector.this, "" + position, Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(Sticker_Selector.this,DisplayImageActivity.class);
                 intent.putExtra("id", position);
-                startActivity(intent);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
 

@@ -107,7 +107,7 @@ public class MainActivity extends Activity
                     break;
             }
             intent.setData(uri);
-            startActivity(intent);
+            startActivityForResult(intent,0);
         }
     }
         /*
