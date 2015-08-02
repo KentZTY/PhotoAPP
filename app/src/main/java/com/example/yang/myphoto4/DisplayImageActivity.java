@@ -108,8 +108,19 @@ public class DisplayImageActivity extends Activity{
         switch (requestCode){
             case sticker:
                 Bundle stickerBundle = data.getExtras();
-                String stickerPosition = stickerBundle.getString("id");
-                print(stickerPosition);
+                //print(stickerBundle.toString());
+                String stickerPosition;
+                if (stickerBundle == null) {
+                    Bundle extras = getIntent().getExtras();
+                    if(extras == null) {
+                        stickerPosition= null;
+                    } else {
+                        stickerPosition= extras.getString("id");
+                    }
+                } else {
+                    stickerPosition= (String) stickerBundle.getSerializable("id");
+                }
+                //print(stickerPosition);
                 testAddSticker(stickerPosition);
                 break;
             /*
@@ -273,18 +284,19 @@ public class DisplayImageActivity extends Activity{
 
     //test method
     public void testAddSticker(String name){
-            //int i = Integer.parseInt(name);
-            imageView[i] = new ImageView(this);
-            Bitmap mBitmap = getResource(i);
-            imageView[i].setImageBitmap(mBitmap);
-            imageView[i].setOnTouchListener(movingEventListener);
-            //imageView[i].setBackgroundResource(R.drawable.border);
-            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp1.height = 500;
-            lp1.width = 500;
-            //lp1.addRule(RelativeLayout.ALIGN_TOP);
-            //lp1.setMargins(200,400,0,0);//(int left, int top, int right, int bottom)
-            mainLayout.addView(imageView[i],lp1);
+        int i = Integer.parseInt(name);
+        i++;
+        imageView[i] = new ImageView(this);
+        Bitmap mBitmap = getResource(i);
+        imageView[i].setImageBitmap(mBitmap);
+        imageView[i].setOnTouchListener(movingEventListener);
+        //imageView[i].setBackgroundResource(R.drawable.border);
+        RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp1.height = 500;
+        lp1.width = 500;
+        //lp1.addRule(RelativeLayout.ALIGN_TOP);
+        //lp1.setMargins(200,400,0,0);//(int left, int top, int right, int bottom)
+        mainLayout.addView(imageView[i],lp1);
 
     }
 

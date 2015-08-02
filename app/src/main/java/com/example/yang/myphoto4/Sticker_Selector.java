@@ -23,10 +23,13 @@ public class Sticker_Selector extends Activity {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 //Toast.makeText(Sticker_Selector.this, "" + position, Toast.LENGTH_SHORT).show();
+
                 Intent intent=new Intent(Sticker_Selector.this,DisplayImageActivity.class);
-                intent.putExtra("id", position);
+
+                intent.putExtra("id", position+"");
                 setResult(RESULT_OK, intent);
                 finish();
+
             }
         });
 
