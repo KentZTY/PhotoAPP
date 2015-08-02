@@ -37,7 +37,7 @@ public class DisplayImageActivity extends Activity{
     RelativeLayout mainLayout;
     private ImageView myImage;
     private static final int sticker = 1;
-    private static final int original = 0;
+
 
 
 
@@ -87,7 +87,7 @@ public class DisplayImageActivity extends Activity{
         System.out.print(filePath);
         myImage.setImageBitmap(getBitmap(filePath));
         */
-
+        createBack();
 
         /*
         Send image to the next activity.
@@ -103,8 +103,8 @@ public class DisplayImageActivity extends Activity{
         }
     @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        print(""+requestCode);
-        print(""+resultCode);
+        //print(""+requestCode);
+        //print(""+resultCode);
         switch (requestCode){
             case sticker:
                 Bundle stickerBundle = data.getExtras();
@@ -112,9 +112,11 @@ public class DisplayImageActivity extends Activity{
                 print(stickerPosition);
                 testAddSticker(stickerPosition);
                 break;
-            case original:
+            /*
+            default:
                 createBack();
                 break;
+            */
         }
     }
      /*
@@ -226,7 +228,7 @@ public class DisplayImageActivity extends Activity{
 
     //print debug info
     public void print(String info){
-        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
     }
 
     //save bitmap to local

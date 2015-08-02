@@ -22,7 +22,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        return null;
+        return mThumbIds[position];
     }
 
     public long getItemId(int position) {
