@@ -1,5 +1,6 @@
 package com.example.yang.myphoto4;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
@@ -9,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 
-public class ShareImageActivity extends ActionBarActivity {
+public class ShareImageActivity extends Activity {
 
 
     @Override

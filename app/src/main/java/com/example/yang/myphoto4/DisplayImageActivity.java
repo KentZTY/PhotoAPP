@@ -2,7 +2,6 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
@@ -15,7 +14,6 @@ import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.widget.ViewDragHelper;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -149,7 +147,7 @@ public class DisplayImageActivity extends Activity{
         Bitmap combined=null;
         try{
             //output resolution needed _Ree
-            combined = Bitmap.createBitmap(screenHeight, screenWidth, Bitmap.Config.ARGB_8888);
+            combined = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(combined);
             Resources res = getResources();
             //a.setBounds(100, 100, 400, 400);
@@ -166,7 +164,7 @@ public class DisplayImageActivity extends Activity{
     //combine all the layers into a bitmap
     public Bitmap outputImage (ImageView[] imageView){
         Bitmap output=null;
-        output = Bitmap.createBitmap(screenHeight, screenWidth, Bitmap.Config.ARGB_8888);
+        output = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(output);
         for(int i=0;i<=10;i++){
             imageView[i].getDrawable().draw(c);
@@ -344,7 +342,7 @@ public class DisplayImageActivity extends Activity{
             RelativeLayout.LayoutParams myLayout = (RelativeLayout.LayoutParams) v.getLayoutParams();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    if(v!=myImage && v!= null){
+                    if(v!=myImage){
                         currentImage.setBackground(null);
                         lastX = (int) event.getRawX();
                         lastY = (int) event.getRawY();

@@ -40,8 +40,8 @@
         android:text="add"
         android:id="@+id/add"
         android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/button04"
-        android:layout_alignEnd="@+id/button04" />
+        android:layout_toLeftOf="@+id/button04"
+        android:layout_toStartOf="@+id/button04" />
 
     <Button
         android:layout_width="wrap_content"
@@ -58,9 +58,8 @@
         android:layout_height="wrap_content"
         android:text="choose"
         android:id="@+id/chooser"
-        android:layout_below="@+id/add"
-        android:layout_toLeftOf="@+id/clear"
-        android:layout_toStartOf="@+id/clear"
-        android:layout_marginTop="55dp" />
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/clear"
+        android:layout_toEndOf="@+id/clear" />
 
 </RelativeLayout>
