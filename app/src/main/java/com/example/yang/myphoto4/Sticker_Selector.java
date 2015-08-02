@@ -22,10 +22,10 @@ public class Sticker_Selector extends Activity {
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(Sticker_Selector.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
-                Intent i=new Intent(Sticker_Selector.this,DisplayImageActivity.class);
-                i.putExtra("id",id);
+                //Toast.makeText(Sticker_Selector.this, "" + position, Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(Sticker_Selector.this,DisplayImageActivity.class);
+                intent.putExtra("id", position);
+                startActivity(intent);
             }
         });
 
