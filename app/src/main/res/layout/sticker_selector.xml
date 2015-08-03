@@ -7,5 +7,12 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/gridView"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="2dp"
+        android:horizontalSpacing="2dp"
+        android:gravity="center"
+        android:drawSelectorOnTop="false"
+        android:columnWidth="100dp"
+        android:choiceMode="singleChoice" />
 </LinearLayout>
