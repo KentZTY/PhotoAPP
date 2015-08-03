@@ -48,7 +48,7 @@ public class DisplayImageActivity extends Activity{
         mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
         myImage =(ImageView)findViewById(R.id.imageView);
         i = 0;
-        stickerNumber = 5;
+        stickerNumber = 10;
         imageView = new ImageView[stickerNumber+1];
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
@@ -120,7 +120,7 @@ public class DisplayImageActivity extends Activity{
                 } else {
                     stickerPosition= (String) stickerBundle.getSerializable("id");
                 }
-                //print(stickerPosition);
+                print(stickerPosition);
                 testAddSticker(stickerPosition);
                 break;
             /*
