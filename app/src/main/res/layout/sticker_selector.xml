@@ -13,6 +13,9 @@
         android:horizontalSpacing="2dp"
         android:gravity="center"
         android:drawSelectorOnTop="false"
-        android:columnWidth="100dp"
-        android:choiceMode="singleChoice" />
+        android:columnWidth="80dp"
+        android:choiceMode="singleChoice"
+        android:stretchMode="spacingWidthUniform"
+        android:layout_margin="0dp"
+        style="@style/Platform.AppCompat" />
 </LinearLayout>
