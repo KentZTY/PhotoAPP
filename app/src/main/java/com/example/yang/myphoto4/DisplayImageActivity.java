@@ -9,12 +9,14 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -24,8 +26,13 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DisplayImageActivity extends Activity{
     private int screenWidth;
@@ -62,7 +69,7 @@ public class DisplayImageActivity extends Activity{
                         chooseSticker();
                     }
                 });
-        (findViewById(R.id.add))
+       /* (findViewById(R.id.add))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         testAdd();
@@ -73,7 +80,7 @@ public class DisplayImageActivity extends Activity{
                     public void onClick(View arg0) {
                         testUndo();
                     }
-                });
+                });*/
         (findViewById(R.id.clear))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
@@ -95,8 +102,7 @@ public class DisplayImageActivity extends Activity{
         (findViewById(R.id.button04))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
-                        //shareImage(uri);
-                        //uri移动到了子模块，这里暂时注释掉了
+                        shareImage();
                     }
                 });
 
@@ -106,6 +112,8 @@ public class DisplayImageActivity extends Activity{
         //print(""+requestCode);
         //print(""+resultCode);
         switch (requestCode){
+            case RESULT_CANCELED:
+            break;
             case sticker:
                 Bundle stickerBundle = data.getExtras();
                 //print(stickerBundle.toString());
@@ -145,7 +153,7 @@ public class DisplayImageActivity extends Activity{
     private void chooseSticker() {
         Intent intent = new Intent();
         intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
-        startActivityForResult(intent,sticker);
+        startActivityForResult(intent, sticker);
     }
 
     //add a new sticker in layer 9, high layers imported to lower one and import the newest into layer 9
@@ -180,7 +188,7 @@ public class DisplayImageActivity extends Activity{
     }
 
     //combine two imageView and output a bitmap
-    public Bitmap combine (ImageView a, ImageView b){
+    /*public Bitmap combine (ImageView a, ImageView b){
         Bitmap combined=null;
         try{
             //output resolution needed _Ree
@@ -196,21 +204,30 @@ public class DisplayImageActivity extends Activity{
         catch (Exception e){
         }
         return combined;
-    }
+    }*/
 
     //combine all the layers into a bitmap
     public Bitmap outputImage (ImageView[] imageView){
         Bitmap output=null;
         output = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(output);
-        for(int i=0;i<=10;i++){
-            imageView[i].getDrawable().draw(c);
+        myImage.draw(c);
+        for(int a= i;a>0;a--){
+            int left = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).leftMargin;
+            int right = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).rightMargin;
+            int top = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).topMargin;
+            int bottom = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).bottomMargin;
+
+
+            //imageView[a].getDrawable().setBounds(left, top, right, bottom);
+
+            imageView[a].getDrawable().draw(c);
         }
         return output;
     }
 
     //undo a sticker
-    public void undoSticker(){
+    /*public void undoSticker(){
         for(int a= i;a>=0;a--){
             if(i==0){
                 //print("Can not undo");
@@ -226,7 +243,7 @@ public class DisplayImageActivity extends Activity{
             }
             }
         }
-    }
+    }*/
 
     //clear all stickers
     public void clearStickers(){
@@ -239,7 +256,7 @@ public class DisplayImageActivity extends Activity{
 
     //print debug info
     public void print(String info){
-        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
     //save bitmap to local
@@ -263,7 +280,7 @@ public class DisplayImageActivity extends Activity{
     }
 
     //test method
-    public void testAdd(){
+    /*public void testAdd(){
         if(i<stickerNumber){
             i++;
             imageView[i] = new ImageView(this);
@@ -280,14 +297,14 @@ public class DisplayImageActivity extends Activity{
         else{
             print("MAX");
         }
-    }
+    }*/
 
     //test method
     public void testAddSticker(String name){
-        int i = Integer.parseInt(name);
+        int a = Integer.parseInt(name)+1;
         i++;
         imageView[i] = new ImageView(this);
-        Bitmap mBitmap = getResource(i);
+        Bitmap mBitmap = getResource(a);
         imageView[i].setImageBitmap(mBitmap);
         imageView[i].setOnTouchListener(movingEventListener);
         //imageView[i].setBackgroundResource(R.drawable.border);
@@ -300,7 +317,7 @@ public class DisplayImageActivity extends Activity{
 
     }
 
-    public void testUndo(){
+   /* public void testUndo(){
         undoSticker();
         //print("test undo");
     }
@@ -379,11 +396,42 @@ public class DisplayImageActivity extends Activity{
 
         return super.onOptionsItemSelected(item);
     }
-    public void shareImage(Uri uri){
-        Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
-        intent.setData(uri);
-        startActivity(intent);
+    public void shareImage(){
+        //Intent intent = new Intent();
+       // intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
+        Bitmap bm = outputImage(imageView);
+        saveBitmap(bm);
+        //intent.putExtra("Bitmap", bm);
+        // startActivity(intent);
+    }
+
+    public void saveBitmap(Bitmap bm) {
+
+        print("save");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+        Date now = new Date();
+        String fileName = formatter.format(now) + ".png";
+        File f = new File("/sdcard/DCIM/Screenshots", fileName);
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+
+            print("success");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            print("1");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            print("2");
+        }
+
     }
 
 
@@ -436,8 +484,9 @@ public class DisplayImageActivity extends Activity{
                         top = bottom - v.getHeight();
                     }
 
-                    myLayout.setMargins(left,top,0,0);
+                    myLayout.setMargins(left, top, 0, 0);
                     v.setLayoutParams(myLayout);
+
 
                     lastX = (int) event.getRawX();
                     lastY = (int) event.getRawY();
