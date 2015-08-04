@@ -28,7 +28,11 @@ public class Sticker_Selector extends Activity {
 
                 intent.putExtra("id", position+"");
                 setResult(RESULT_OK, intent);
+
+                setContentView(R.layout.null_layout);
+                //finishActivity(1);
                 finish();
+
 
             }
         });

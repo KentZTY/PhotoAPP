@@ -404,6 +404,8 @@ public class DisplayImageActivity extends Activity{
         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(),bm,null,null));
         intent.setData(uri);
         startActivity(intent);
+        setContentView(R.layout.null_layout);
+        finish();
     }
 
     public void saveBitmap(Bitmap bm) {
