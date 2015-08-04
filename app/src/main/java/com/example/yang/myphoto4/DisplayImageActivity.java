@@ -397,17 +397,16 @@ public class DisplayImageActivity extends Activity{
         return super.onOptionsItemSelected(item);
     }
     public void shareImage(){
-        //Intent intent = new Intent();
-       // intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
+        Intent intent = new Intent();
+        intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
         Bitmap bm = outputImage(imageView);
         saveBitmap(bm);
-        //intent.putExtra("Bitmap", bm);
-        // startActivity(intent);
+        Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(),bm,null,null));
+        intent.setData(uri);
+        startActivity(intent);
     }
 
     public void saveBitmap(Bitmap bm) {
-
-        print("save");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
         Date now = new Date();
         String fileName = formatter.format(now) + ".png";
@@ -420,16 +419,12 @@ public class DisplayImageActivity extends Activity{
             bm.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.flush();
             out.close();
-
-            print("success");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            print("1");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            print("2");
         }
 
     }

@@ -2,7 +2,6 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -21,15 +20,11 @@ public class ShareImageActivity extends Activity {
         (findViewById(R.id.button03))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
-                        Intent intent=getIntent();
-                        if(intent!=null)
-                        {
-                            Bitmap bitmap=intent.getParcelableExtra("bitmap");
-                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                            shareIntent.setType("image/*");
-                            shareIntent.putExtra(Intent.EXTRA_STREAM, bitmap);
-                            startActivity(Intent.createChooser(shareIntent, "Please select"));
-                        }
+                        Uri uri = getIntent().getData();
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.setType("image/*");
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                        startActivity(Intent.createChooser(shareIntent, "Please select"));
                     }
                 });
     }
