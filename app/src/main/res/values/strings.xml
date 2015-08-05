@@ -15,4 +15,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_gesture_control">GestureControlActivity</string>
     <string name="test">test</string>
+
+    <string name="saturation">饱和度</string>
+    <string name="contrast">色相</string>
+    <string name="lightness">亮度</string>
 </resources>
