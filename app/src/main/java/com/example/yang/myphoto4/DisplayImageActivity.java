@@ -72,18 +72,6 @@ public class DisplayImageActivity extends Activity{
                         chooseSticker();
                     }
                 });
-       /* (findViewById(R.id.add))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
-                        testAdd();
-                    }
-                });
-        (findViewById(R.id.undo))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
-                        testUndo();
-                    }
-                });*/
         (findViewById(R.id.clear))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
@@ -91,12 +79,6 @@ public class DisplayImageActivity extends Activity{
                     }
                 });
 
-        /*
-        final Uri uri = getIntent().getData();
-        String filePath = getPath(uri);
-        System.out.print(filePath);
-        myImage.setImageBitmap(getBitmap(filePath));
-        */
         createBack();
 
         /*
@@ -159,20 +141,6 @@ public class DisplayImageActivity extends Activity{
         startActivityForResult(intent, sticker);
     }
 
-    //add a new sticker in layer 9, high layers imported to lower one and import the newest into layer 9
-    /*public void newSticker(Bitmap nS){
-        if(imageView[9]==null){
-            imageView[9].setImageBitmap(nS);
-        }else{
-            imageView[5].setImageBitmap(combine(imageView[5],imageView[6]));
-            for (int i=6;i<9;i++){
-                imageView[i].setImageDrawable(imageView[i+1].getDrawable());
-
-            }
-            imageView[9].setImageBitmap(nS);
-        }
-    }*/
-
     public Bitmap getBitmap(String filePath){
         int degree = readPictureDegree(filePath);
         BitmapFactory.Options opts=new BitmapFactory.Options();
@@ -220,93 +188,12 @@ public class DisplayImageActivity extends Activity{
             int top = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).topMargin;
             int width = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).width;
             int height = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).height;
-            //Bitmap btm=BitmapFactory.decodeResource(imageView[a].getDrawable(),)
-
-            //imageView[a].getDrawable().setBounds(left, top, right, bottom);
-            //drawImage(c,btm,);
             imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
-            //imageView[a].getDrawable().setBounds()
             imageView[a].getDrawable().draw(c);
         }
         return output;
     }
-/*
-    public static void drawImage(Canvas canvas, Bitmap blt, int x, int y,
-                                 int w, int h, int bx, int by) {
-        Rect src = new Rect();// 图片 >>原矩形
-        Rect dst = new Rect();// 屏幕 >>目标矩形
 
-        src.left = bx;
-        src.top = by;
-        src.right = bx + w;
-        src.bottom = by + h;
-
-        dst.left = x;
-        dst.top = y;
-        dst.right = x + w;
-        dst.bottom = y + h;
-        // 画出指定的位图，位图将自动--》缩放/自动转换，以填补目标矩形
-        // 这个方法的意思就像 将一个位图按照需求重画一遍，画后的位图就是我们需要的了
-        canvas.drawBitmap(blt, null, dst, null);
-        src = null;
-        dst = null;
-    }*/
-
-    /**
-     * 绘制一个Bitmap
-     *
-     * @param //canvas 画布
-     * @param //bitmap 图片
-     * @param //x 屏幕上的x坐标
-     * @param //y 屏幕上的y坐标
-     */
-     /*
-
-    public static void drawImage(Canvas canvas, Bitmap bitmap, int x, int y) {
-        // 绘制图像 将bitmap对象显示在坐标 x,y上
-        canvas.drawBitmap(bitmap, x, y, null);
-    }
-
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-        Bitmap bitmap = null;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }*/
-
-    //undo a sticker
-    /*public void undoSticker(){
-        for(int a= i;a>=0;a--){
-            if(i==0){
-                //print("Can not undo");
-                Toast.makeText(getApplicationContext(), "Can not undo", Toast.LENGTH_SHORT).show();
-            }else{
-            if(imageView[a].getDrawable()== null){
-                print(a + " is null");
-            }else{
-                imageView[a].setImageDrawable(null);
-                mainLayout.removeView(imageView[a]);
-                i--;
-                break;
-            }
-            }
-        }
-    }*/
 
     //clear all stickers
     public void clearStickers(){
@@ -342,25 +229,6 @@ public class DisplayImageActivity extends Activity{
         }
     }
 
-    //test method
-    /*public void testAdd(){
-        if(i<stickerNumber){
-            i++;
-            imageView[i] = new ImageView(this);
-            Bitmap mBitmap = getResource(i);
-            imageView[i].setImageBitmap(mBitmap);
-            imageView[i].setOnTouchListener(movingEventListener);
-            //imageView[i].setBackgroundResource(R.drawable.border);
-            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp1.height = 500;
-            lp1.width = 500;
-            //lp1.addRule(RelativeLayout.ALIGN_TOP);
-            //lp1.setMargins(200,400,0,0);//(int left, int top, int right, int bottom)
-            mainLayout.addView(imageView[i],lp1);}
-        else{
-            print("MAX");
-        }
-    }*/
 
     //test method
     public void testAddSticker(String name){
@@ -380,14 +248,6 @@ public class DisplayImageActivity extends Activity{
 
     }
 
-   /* public void testUndo(){
-        undoSticker();
-        //print("test undo");
-    }
-    /*public void testExport(){
-        saveBitmap(outputImage(imageView), "testFile");
-        print("test export");
-    }*/
 
     public Bitmap getResource(int i){
         String name="a"+i;
