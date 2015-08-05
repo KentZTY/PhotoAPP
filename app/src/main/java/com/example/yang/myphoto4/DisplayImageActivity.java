@@ -255,11 +255,12 @@ public class DisplayImageActivity extends Activity{
     /**
      * 绘制一个Bitmap
      *
-     * @param canvas 画布
-     * @param bitmap 图片
-     * @param x 屏幕上的x坐标
-     * @param y 屏幕上的y坐标
-     *//*
+     * @param //canvas 画布
+     * @param //bitmap 图片
+     * @param //x 屏幕上的x坐标
+     * @param //y 屏幕上的y坐标
+     */
+     /*
 
     public static void drawImage(Canvas canvas, Bitmap bitmap, int x, int y) {
         // 绘制图像 将bitmap对象显示在坐标 x,y上
