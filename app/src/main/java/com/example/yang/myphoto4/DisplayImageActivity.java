@@ -10,6 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
@@ -214,17 +217,76 @@ public class DisplayImageActivity extends Activity{
         myImage.draw(c);
         for(int a= i;a>0;a--){
             int left = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).leftMargin;
-            int right = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).rightMargin;
             int top = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).topMargin;
-            int bottom = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).bottomMargin;
-
+            int width = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).width;
+            int height = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).height;
+            //Bitmap btm=BitmapFactory.decodeResource(imageView[a].getDrawable(),)
 
             //imageView[a].getDrawable().setBounds(left, top, right, bottom);
-
+            //drawImage(c,btm,);
+            imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
+            //imageView[a].getDrawable().setBounds()
             imageView[a].getDrawable().draw(c);
         }
         return output;
     }
+/*
+    public static void drawImage(Canvas canvas, Bitmap blt, int x, int y,
+                                 int w, int h, int bx, int by) {
+        Rect src = new Rect();// 图片 >>原矩形
+        Rect dst = new Rect();// 屏幕 >>目标矩形
+
+        src.left = bx;
+        src.top = by;
+        src.right = bx + w;
+        src.bottom = by + h;
+
+        dst.left = x;
+        dst.top = y;
+        dst.right = x + w;
+        dst.bottom = y + h;
+        // 画出指定的位图，位图将自动--》缩放/自动转换，以填补目标矩形
+        // 这个方法的意思就像 将一个位图按照需求重画一遍，画后的位图就是我们需要的了
+        canvas.drawBitmap(blt, null, dst, null);
+        src = null;
+        dst = null;
+    }*/
+
+    /**
+     * 绘制一个Bitmap
+     *
+     * @param canvas 画布
+     * @param bitmap 图片
+     * @param x 屏幕上的x坐标
+     * @param y 屏幕上的y坐标
+     *//*
+
+    public static void drawImage(Canvas canvas, Bitmap bitmap, int x, int y) {
+        // 绘制图像 将bitmap对象显示在坐标 x,y上
+        canvas.drawBitmap(bitmap, x, y, null);
+    }
+
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if(bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }*/
 
     //undo a sticker
     /*public void undoSticker(){
