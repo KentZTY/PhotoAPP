@@ -88,6 +88,7 @@ public class DisplayImageActivity extends Activity{
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         shareImage();
+                        finish();
                     }
                 });
 
