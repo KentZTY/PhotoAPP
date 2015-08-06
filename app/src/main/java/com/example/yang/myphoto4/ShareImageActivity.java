@@ -3,30 +3,27 @@ package com.example.yang.myphoto4;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-
 public class ShareImageActivity extends Activity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_image);
         (findViewById(R.id.button03))
-                .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View arg0) {
-                        Uri uri = getIntent().getData();
-                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                        shareIntent.setType("image/*");
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                        startActivity(Intent.createChooser(shareIntent, "Please select"));
-                    }
-                });
+            .setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+                    Uri uri = getIntent().getData();
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("image/*");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(shareIntent, "Please select"));
+                }
+            });
     }
 
     @Override

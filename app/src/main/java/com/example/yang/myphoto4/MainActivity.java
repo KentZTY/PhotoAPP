@@ -1,7 +1,6 @@
 package com.example.yang.myphoto4;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -13,19 +12,11 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
-
-
-public class MainActivity extends Activity
-{
+public class MainActivity extends Activity implements View.OnClickListener{
     private static final int SELECT_PICTURE = 1;
     private static final int REQUEST_CAPTURE_CAMERA = 2;
     private String selectedImagePath1;
     private Uri uri;
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,5 +118,12 @@ public class MainActivity extends Activity
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.button03){
+            startActivity(new Intent(MainActivity.this, OperatorImageActivity.class));
+        }
     }
 }

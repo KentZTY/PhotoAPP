@@ -21,8 +21,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/button02"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="198dp"
+        android:layout_centerInParent="true"
         android:text="@string/CAMERA" />
+
+    <Button
+        android:id="@+id/button03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button02"
+        android:onClick="onClick"
+        android:layout_marginTop="84dp"
+        android:text="OperatorImage"/>
 
 </RelativeLayout>
