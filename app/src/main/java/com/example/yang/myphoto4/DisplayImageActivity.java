@@ -196,6 +196,7 @@ public class DisplayImageActivity extends Activity{
         output = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(output);
         myImage.draw(c);
+        borderImage.draw(c);
         for(int a= i;a>0;a--){
             int left = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).leftMargin;
             int top = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).topMargin;

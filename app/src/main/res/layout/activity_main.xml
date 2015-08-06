@@ -11,26 +11,18 @@
         android:layout_height="wrap_content"
         android:text="@string/SELECT"
         android:id="@+id/button01"
-        android:layout_above="@+id/button02"
+        android:layout_marginTop="127dp"
+        android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/button02"
-        android:layout_alignStart="@+id/button02"
-        android:layout_marginBottom="84dp" />
+        android:layout_alignStart="@+id/button02" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button02"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:text="@string/CAMERA" />
-
-    <Button
-        android:id="@+id/button03"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button02"
-        android:onClick="onClick"
-        android:layout_marginTop="84dp"
-        android:text="OperatorImage"/>
+        android:text="@string/CAMERA"
+        android:layout_below="@+id/button01"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="121dp" />
 
 </RelativeLayout>

@@ -55,7 +55,8 @@
         android:layout_height="wrap_content"
         android:text="border"
         android:id="@+id/border"
-        android:layout_below="@+id/clear"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/sticker"
+        android:layout_toStartOf="@+id/sticker" />
 
 </RelativeLayout>
