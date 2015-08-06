@@ -36,7 +36,7 @@ public class DisplayImageActivity extends Activity{
     private int stickerNumber;
     private int i;
     private ImageView currentImage = null;
-    private ImageView[] imageView;
+    private myImageView[] imageView;
     RelativeLayout mainLayout;
     private ImageView myImage;
     private ImageView borderImage;
@@ -56,7 +56,7 @@ public class DisplayImageActivity extends Activity{
         borderImage.setImageDrawable(null);
         i = 0;
         stickerNumber = 10;
-        imageView = new ImageView[stickerNumber+1];
+        imageView = new myImageView[stickerNumber+1];
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels - 100;
@@ -86,7 +86,7 @@ public class DisplayImageActivity extends Activity{
         /*
         Send image to the next activity.
          */
-        (findViewById(R.id.button04))
+        (findViewById(R.id.save))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         shareImage();
@@ -249,18 +249,16 @@ public class DisplayImageActivity extends Activity{
     public void testAddSticker(String name){
         int a = Integer.parseInt(name)+1;
         i++;
-        imageView[i] = new ImageView(this);
-        Bitmap mBitmap = getResource(a);
-        imageView[i].setImageBitmap(mBitmap);
-        imageView[i].setOnTouchListener(movingEventListener);
+        imageView[i] = new myImageView(this, getResource(a));
+        //imageView[i].setImageBitmap(mBitmap);
+        //imageView[i].setOnTouchListener(movingEventListener);
         //imageView[i].setBackgroundResource(R.drawable.border);
         RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp1.height = 500;
-        lp1.width = 500;
+        lp1.height = 200;
+        lp1.width = 200;
         //lp1.addRule(RelativeLayout.ALIGN_TOP);
         //lp1.setMargins(200,400,0,0);//(int left, int top, int right, int bottom)
         mainLayout.addView(imageView[i],lp1);
-
     }
 
     //test method

@@ -27,14 +27,14 @@
         android:text="clear"
         android:id="@+id/clear"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/button04"
-        android:layout_toEndOf="@+id/button04" />
+        android:layout_toRightOf="@+id/save"
+        android:layout_toEndOf="@+id/save" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NEXT"
-        android:id="@+id/button04"
+        android:text="SAVE "
+        android:id="@+id/save"
         android:layout_marginBottom="54dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
@@ -46,8 +46,8 @@
         android:text="sticker"
         android:id="@+id/sticker"
         android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/button04"
-        android:layout_alignStart="@+id/button04" />
+        android:layout_alignLeft="@+id/save"
+        android:layout_alignStart="@+id/save" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
