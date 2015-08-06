@@ -116,7 +116,7 @@ public class DisplayImageActivity extends Activity{
                 } else {
                     stickerPosition= (String) stickerBundle.getSerializable("id");
                 }
-                testAddSticker(stickerPosition);
+                AddSticker(stickerPosition);
                 break;
             case border:
                 Bundle boarderBundle = data.getExtras();
@@ -224,6 +224,12 @@ public class DisplayImageActivity extends Activity{
         i = 0;
     }
 
+    //delete sticker
+    public void deleteSticker(int a){
+        imageView[a].setImageDrawable(null);
+        mainLayout.removeView(imageView[a]);
+    }
+
     //save bitmap to local
     public void saveBitmap(Bitmap bmp, String fileName){
         FileOutputStream out = null;
@@ -245,11 +251,12 @@ public class DisplayImageActivity extends Activity{
     }
 
 
-    //test method
-    public void testAddSticker(String name){
+    //add sticker
+    public void AddSticker(String name){
         int a = Integer.parseInt(name)+1;
         i++;
         imageView[i] = new myImageView(this, getResource(a));
+        imageView[i].setID(i);
         //imageView[i].setImageBitmap(mBitmap);
         //imageView[i].setOnTouchListener(movingEventListener);
         //imageView[i].setBackgroundResource(R.drawable.border);
@@ -260,6 +267,8 @@ public class DisplayImageActivity extends Activity{
         //lp1.setMargins(200,400,0,0);//(int left, int top, int right, int bottom)
         mainLayout.addView(imageView[i],lp1);
     }
+
+
 
     //test method
     public void addBorder(String name){

@@ -18,7 +18,8 @@
         android:layout_height="fill_parent"
         android:id="@+id/borderView"
         android:focusableInTouchMode="true"
-        android:clickable="false" />
+        android:clickable="false"
+        android:scaleType="fitXY" />
 
     <Button
         style="?android:attr/buttonStyleSmall"

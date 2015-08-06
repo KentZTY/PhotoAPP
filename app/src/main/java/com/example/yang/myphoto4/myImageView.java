@@ -59,6 +59,14 @@ public class myImageView extends ImageView {
     Point np3;
     Point np4;
     int dx, dy;
+    int id;
+
+    public void setID(int i){
+        id=i;
+    }
+    public int getID(){
+        return id;
+    }
 
     public myImageView(Context context, Bitmap mBitmap) {
         super(context);
@@ -520,6 +528,7 @@ public class myImageView extends ImageView {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
+
 
     // private void doubleClick(float x, float y) {
     // float p[] = new float[9];
