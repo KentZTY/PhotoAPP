@@ -16,7 +16,7 @@
     <string name="title_activity_gesture_control">GestureControlActivity</string>
     <string name="test">test</string>
 
-    <string name="saturation">饱和度</string>
-    <string name="contrast">色相</string>
-    <string name="lightness">亮度</string>
+    <string name="saturation">saturation</string>
+    <string name="contrast">contrast</string>
+    <string name="lightness">lightness</string>
 </resources>
