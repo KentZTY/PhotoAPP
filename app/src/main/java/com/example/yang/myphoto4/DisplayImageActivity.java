@@ -204,12 +204,12 @@ public class DisplayImageActivity extends Activity{
             imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
             imageView[a].getDrawable().draw(c);
         }
-        /*
+
         if(borderImage.getDrawable()!=null){
             borderImage.getDrawable().setBounds(0,0,0,0);
             borderImage.getDrawable().draw(c);
         }
-        */
+
         return output;
     }
 
