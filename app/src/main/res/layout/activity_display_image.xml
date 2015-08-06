@@ -13,6 +13,13 @@
         android:longClickable="false"
         android:layout_alignParentBottom="true" />
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/borderView"
+        android:focusableInTouchMode="true"
+        android:clickable="false" />
+
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -36,10 +43,19 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="choose"
-        android:id="@+id/chooser"
+        android:text="sticker"
+        android:id="@+id/sticker"
         android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/button04"
         android:layout_alignStart="@+id/button04" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="border"
+        android:id="@+id/border"
+        android:layout_below="@+id/clear"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

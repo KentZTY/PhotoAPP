@@ -11,21 +11,21 @@ import android.widget.GridView;
 /**
  * Created by Ree on 2015/7/31.
  */
-public class Sticker_Selector extends Activity {
+public class Border_Selector extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sticker_selector);
         GridView gridView=(GridView)findViewById(R.id.gridView);
-        gridView.setAdapter(new ImageAdapter(this));
+        gridView.setAdapter(new BorderAdapter(this));
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 //Toast.makeText(Sticker_Selector.this, "" + position, Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(Sticker_Selector.this, DisplayImageActivity.class);
+                Intent intent=new Intent(Border_Selector.this,DisplayImageActivity.class);
 
-                intent.putExtra("id", position + "");
+                intent.putExtra("id", position+"");
                 setResult(RESULT_OK, intent);
 
                 setContentView(R.layout.null_layout);

@@ -4,22 +4,16 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -29,7 +23,6 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -46,7 +39,9 @@ public class DisplayImageActivity extends Activity{
     private ImageView[] imageView;
     RelativeLayout mainLayout;
     private ImageView myImage;
+    private ImageView borderImage;
     private static final int sticker = 1;
+    private static final int border = 2;
 
 
 
@@ -57,6 +52,8 @@ public class DisplayImageActivity extends Activity{
         setContentView(R.layout.activity_display_image);
         mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
         myImage =(ImageView)findViewById(R.id.imageView);
+        borderImage =(ImageView)findViewById(R.id.borderView);
+        borderImage.setImageDrawable(null);
         i = 0;
         stickerNumber = 10;
         imageView = new ImageView[stickerNumber+1];
@@ -66,7 +63,7 @@ public class DisplayImageActivity extends Activity{
         currentImage = myImage;
         myImage.setOnTouchListener(movingEventListener);
 
-        (findViewById(R.id.chooser))
+        (findViewById(R.id.sticker))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         chooseSticker();
@@ -78,7 +75,12 @@ public class DisplayImageActivity extends Activity{
                         clearStickers();
                     }
                 });
-
+        (findViewById(R.id.border))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(View arg0) {
+                        chooseBorder();
+                    }
+                });
         createBack();
 
         /*
@@ -114,8 +116,24 @@ public class DisplayImageActivity extends Activity{
                 } else {
                     stickerPosition= (String) stickerBundle.getSerializable("id");
                 }
-                print(stickerPosition);
                 testAddSticker(stickerPosition);
+                break;
+            case border:
+                Bundle boarderBundle = data.getExtras();
+                //print(stickerBundle.toString());
+                String boarderPosition;
+                if (boarderBundle == null) {
+                    Bundle extras = getIntent().getExtras();
+                    if(extras == null) {
+                        boarderPosition= null;
+                    } else {
+                        boarderPosition= extras.getString("id");
+                    }
+                } else {
+                    boarderPosition= (String) boarderBundle.getSerializable("id");
+                }
+                addBorder(boarderPosition);
+                //print(boarderPosition);
                 break;
             /*
             default:
@@ -136,12 +154,24 @@ public class DisplayImageActivity extends Activity{
         return uri;
     }
 
+    //Creat a intent to choose stickers
     private void chooseSticker() {
         Intent intent = new Intent();
         intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
+        //intent.putExtra("type", "sticker");
         startActivityForResult(intent, sticker);
     }
 
+    //Creat a intent to choose boarders
+    private void chooseBorder() {
+        Intent intent = new Intent();
+        intent.setClass(DisplayImageActivity.this, Border_Selector.class);
+        //intent.putExtra("type", "border");
+        startActivityForResult(intent, border);
+        //print("success");
+    }
+
+    //get the bitmap from filepath
     public Bitmap getBitmap(String filePath){
         int degree = readPictureDegree(filePath);
         BitmapFactory.Options opts=new BitmapFactory.Options();
@@ -150,6 +180,7 @@ public class DisplayImageActivity extends Activity{
         return rotatingImageView(degree, bitmapOld);
     }
 
+    //get the filepath from uri
     public String getPath(Uri uri) {
         String[] projection = { MediaStore.Images.Media.DATA };
         ContentResolver cr = this.getContentResolver();
@@ -158,25 +189,6 @@ public class DisplayImageActivity extends Activity{
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
-
-    //combine two imageView and output a bitmap
-    /*public Bitmap combine (ImageView a, ImageView b){
-        Bitmap combined=null;
-        try{
-            //output resolution needed _Ree
-            combined = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(combined);
-            Resources res = getResources();
-            //a.setBounds(100, 100, 400, 400);
-            //b.setBounds(150, 150, 350, 350);
-            a.getDrawable().draw(c);
-            b.getDrawable().draw(c);
-
-        }
-        catch (Exception e){
-        }
-        return combined;
-    }*/
 
     //combine all the layers into a bitmap
     public Bitmap outputImage (ImageView[] imageView){
@@ -192,6 +204,12 @@ public class DisplayImageActivity extends Activity{
             imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
             imageView[a].getDrawable().draw(c);
         }
+        /*
+        if(borderImage.getDrawable()!=null){
+            borderImage.getDrawable().setBounds(0,0,0,0);
+            borderImage.getDrawable().draw(c);
+        }
+        */
         return output;
     }
 
@@ -203,11 +221,6 @@ public class DisplayImageActivity extends Activity{
             mainLayout.removeView(imageView[a]);
         }
         i = 0;
-    }
-
-    //print debug info
-    public void print(String info){
-        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
     //save bitmap to local
@@ -249,14 +262,31 @@ public class DisplayImageActivity extends Activity{
 
     }
 
+    //test method
+    public void addBorder(String name){
+        int a = Integer.parseInt(name)+1;
+        Bitmap mBitmap = getBorderResource(a);
+        borderImage.setImageBitmap(mBitmap);
+    }
 
+    //get the bitmap from sticker id
     public Bitmap getResource(int i){
         String name="a"+i;
+        ApplicationInfo appInfo = getApplicationInfo();
+        int resID = getResources().getIdentifier(name, "drawable", appInfo.packageName);
+        return BitmapFactory.decodeResource(getResources(), resID);
+        //return null;
+    }
+
+    //get the bitmap from border id
+    public Bitmap getBorderResource(int i){
+        String name="b"+i;
         ApplicationInfo appInfo = getApplicationInfo();
         int resID = getResources().getIdentifier(name, "drawable", appInfo.packageName);
         return BitmapFactory.decodeResource(getResources(),resID);
         //return null;
     }
+
     /*
      * Get image rotate degree
      **/
@@ -419,6 +449,12 @@ public class DisplayImageActivity extends Activity{
             return true;
         }
     };
+
+    //print debug info
+    public void print(String info){
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+    }
+
 }
 
 
