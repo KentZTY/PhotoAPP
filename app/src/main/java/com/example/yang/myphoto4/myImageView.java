@@ -10,17 +10,19 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 
 public class myImageView extends ImageView {
     static final float MAX_SCALE = 2.0f;
-
+    public boolean isEditable = false;
+    private Path path = new Path();
     float imageW;
     float imageH;
     int rotatedImageW;
@@ -31,13 +33,6 @@ public class myImageView extends ImageView {
     int viewT;
     Matrix matrix = new Matrix();
     Matrix savedMatrix = new Matrix();
-    static final int NONE = 0;// 初始状态
-    static final int DRAG = 1;// 拖动
-    static final int ZOOM = 2;// 缩放
-    static final int ROTATE = 3;// 旋转
-    static final int ZOOM_OR_ROTATE = 4; // 缩放或旋转
-    int mode = NONE;
-
     PointF pA = new PointF();
     PointF pB = new PointF();
     PointF mid = new PointF();
@@ -46,7 +41,7 @@ public class myImageView extends ImageView {
     double rotation = 0.0;
     float dist = 1f;
     private final Context mcontext;
-    private Bitmap mBitmap, delmB, ctrlmB; // 原始图
+    public Bitmap mBitmap, delmB, ctrlmB; // 原始图
     private Bitmap tmpmBitmap; // 原始图
     private final Paint paint;
     public Point cpoint;// 中心点
@@ -60,13 +55,15 @@ public class myImageView extends ImageView {
     Point np4;
     int dx, dy;
     int id;
+    private Drawable controlDrawable1;
+    private Drawable controlDrawable2;
 
-    public void setID(int i){
+    /*public void setID(int i){
         id=i;
     }
     public int getID(){
         return id;
-    }
+    }*/
 
     public myImageView(Context context, Bitmap mBitmap) {
         super(context);
@@ -101,6 +98,8 @@ public class myImageView extends ImageView {
                 R.drawable.edit_del);
         ctrlmB = BitmapFactory.decodeResource(getResources(),
                 R.drawable.edit_control);
+        controlDrawable1 = getContext().getResources().getDrawable(R.drawable.edit_del);
+        controlDrawable2 = getContext().getResources().getDrawable(R.drawable.edit_control);
         wW = delmB.getWidth() / 2;
         wH = delmB.getHeight() / 2;
         setImageBitmap(mBitmap, new Point(500, 500), 0, 0.5f);
@@ -139,8 +138,9 @@ public class myImageView extends ImageView {
         cpoint = c;
         this.angle = angle;
         this.zoomFactor = zoomFactor;
+        //if(isEditable){
         drawRectR(0, 0, (int) (mBitmap.getWidth() * zoomFactor),
-                (int) (mBitmap.getHeight() * zoomFactor), angle);
+                (int) (mBitmap.getHeight() * zoomFactor), angle);//}
 
         matrix = new Matrix();
         matrix.setScale(zoomFactor, zoomFactor);
@@ -236,18 +236,33 @@ public class myImageView extends ImageView {
         this.paint.setStrokeWidth(2);
         // canvas.drawRect(0, 0, mBitmap.getWidth()/2, mBitmap.getHeight()/2,
         // paint);
+        canvas.drawBitmap(mBitmap, matrix, paint);
 
         // 换包围图的框
-        canvas.drawLine(np1.x, np1.y, np2.x, np2.y, paint);
+        if(isEditable){
+            path.reset();
+            path.moveTo(np1.x, np1.y);
+            path.lineTo(np2.x, np2.y);
+            path.lineTo(np3.x, np3.y);
+            path.lineTo(np4.x, np4.y);
+            path.lineTo(np1.x, np1.y);
+            path.lineTo(np2.x, np2.y);
+            canvas.drawPath(path, paint);
+        /*canvas.drawLine(np1.x, np1.y, np2.x, np2.y, paint);
         canvas.drawLine(np2.x, np2.y, np3.x, np3.y, paint);
         canvas.drawLine(np3.x, np3.y, np4.x, np4.y, paint);
-        canvas.drawLine(np4.x, np4.y, np1.x, np1.y, paint);
+        canvas.drawLine(np4.x, np4.y, np1.x, np1.y, paint);*/
         // 画图
         // canvas.drawBitmap(tmpmBitmap, wW, wH, paint);
-        canvas.drawBitmap(mBitmap, matrix, paint);
+        /*canvas.drawBitmap(mBitmap, matrix, paint);*/
         // 画 2个功能图标
-        canvas.drawBitmap(this.delmB, iconP1.x - wW, iconP1.y - wH, paint);
-        canvas.drawBitmap(this.ctrlmB, iconP2.x - wW, iconP2.y - wH, paint);
+        /*canvas.drawBitmap(this.delmB, iconP1.x - wW, iconP1.y - wH, paint);
+        canvas.drawBitmap(this.ctrlmB, iconP2.x - wW, iconP2.y - wH, paint);*/
+            controlDrawable1.setBounds(iconP1.x - wW, iconP1.y - wH, iconP1.x + wW, iconP1.y + wH);
+            controlDrawable2.setBounds(iconP2.x - wW, iconP2.y - wH, iconP2.x + wW, iconP2.y + wH);
+            controlDrawable1.draw(canvas);
+            controlDrawable2.draw(canvas);
+        }
         // 画最外框
         // canvas.drawRect(0, 0,viewW, viewH, paint);
         //
@@ -383,7 +398,7 @@ public class myImageView extends ImageView {
         return 0;
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
+    /*public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
             // 主点按下
@@ -395,6 +410,7 @@ public class myImageView extends ImageView {
                 }
                  else {
                     mode = DRAG;
+
                 }
 
                 break;
@@ -512,12 +528,12 @@ public class myImageView extends ImageView {
                 break;
         }
         return true;
-    }
+    }*/
 
     /**
      * 两点的距离
      */
-    private float spacing(float x1, float y1, float x2, float y2) {
+    public float spacing(float x1, float y1, float x2, float y2) {
         float x = x1 - x2;
         float y = y1 - y2;
         return FloatMath.sqrt(x * x + y * y);
@@ -529,8 +545,21 @@ public class myImageView extends ImageView {
         return (int) (dpValue * scale + 0.5f);
     }
 
+    public boolean isEditable() {
+        return isEditable;
+    }
 
-    // private void doubleClick(float x, float y) {
+    /**
+     * 设置是否处于可缩放，平移，旋转状态
+     * @param isEditable
+     */
+    public void setEditable(boolean isEditable) {
+        this.isEditable = isEditable;
+        invalidate();
+    }
+
+
+        // private void doubleClick(float x, float y) {
     // float p[] = new float[9];
     // matrix.getValues(p);
     // float curScale = Math.abs(p[0]) + Math.abs(p[1]);

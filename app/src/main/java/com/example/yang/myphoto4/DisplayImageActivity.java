@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
@@ -35,13 +36,18 @@ public class DisplayImageActivity extends Activity{
     private int screenHeight;
     private int stickerNumber;
     private int i;
-    private ImageView currentImage = null;
+    private myImageView currentImage = null;
     private myImageView[] imageView;
     RelativeLayout mainLayout;
     private ImageView myImage;
     private ImageView borderImage;
     private static final int sticker = 1;
     private static final int border = 2;
+    private static final int NONE = 3;// 初始状态
+    private static final int DRAG = 4;// 拖动
+    private static final int ZOOM_OR_ROTATE = 5; // 缩放或旋转
+    private static final int DELETE = 6;
+    int mode = NONE;
 
 
 
@@ -60,7 +66,7 @@ public class DisplayImageActivity extends Activity{
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels - 100;
-        currentImage = myImage;
+        currentImage = null;
         myImage.setOnTouchListener(movingEventListener);
 
         (findViewById(R.id.sticker))
@@ -225,9 +231,8 @@ public class DisplayImageActivity extends Activity{
     }
 
     //delete sticker
-    public void deleteSticker(int a){
-        imageView[a].setImageDrawable(null);
-        mainLayout.removeView(imageView[a]);
+    public void deleteSticker(ImageView imageView){
+        mainLayout.removeView(imageView);
     }
 
     //save bitmap to local
@@ -256,9 +261,9 @@ public class DisplayImageActivity extends Activity{
         int a = Integer.parseInt(name)+1;
         i++;
         imageView[i] = new myImageView(this, getResource(a));
-        imageView[i].setID(i);
+        //imageView[i].setID(i);
         //imageView[i].setImageBitmap(mBitmap);
-        //imageView[i].setOnTouchListener(movingEventListener);
+        imageView[i].setOnTouchListener(movingEventListener);
         //imageView[i].setBackgroundResource(R.drawable.border);
         RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp1.height = 200;
@@ -397,7 +402,7 @@ public class DisplayImageActivity extends Activity{
 
 
     private OnTouchListener movingEventListener = new OnTouchListener() {
-        int lastX, lastY;
+        /*int lastX, lastY;
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -455,7 +460,160 @@ public class DisplayImageActivity extends Activity{
                     break;
             }
             return true;
+        }*/
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
+                // 主点按下
+                case MotionEvent.ACTION_DOWN:
+                    if(v==myImage){
+                        currentImage.setEditable(false);
+                        mode = NONE;
+                    }
+                    if(v!=myImage){
+                        if(currentImage != null){
+                        currentImage.setEditable(false);
+                        ((myImageView)v).setEditable(true);
+                        currentImage = (myImageView)v;}
+                        if(currentImage == null){
+                            ((myImageView)v).setEditable(true);
+                            currentImage = (myImageView)v;
+                        }
+                    ((myImageView)v).pA.set(event.getX() + ((myImageView)v).viewL, event.getY() + ((myImageView)v).viewT);
+                    // pB.set(event.getX(), event.getY());
+                    if (((myImageView)v).isactiondownicon((int) event.getX(), (int) event.getY()) == 2) {
+                        mode = ZOOM_OR_ROTATE;
+                    }
+                    if (((myImageView)v).isactiondownicon((int) event.getX(), (int) event.getY()) == 1) {
+                        mode = DELETE;
+                }
+
+                    if (((myImageView)v).isactiondownicon((int) event.getX(), (int) event.getY()) == 0) {
+                        mode = DRAG;
+                    }
+
+                    break;
+                    }
+                // 副点按下
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    // if (event.getActionIndex() > 1)
+                    // break;
+                    // dist = spacing(event.getX(0), event.getY(0), event.getX(1),
+                    // event.getY(1));
+                    // // 如果连续两点距离大于10，则判定为多点模式
+                    // if (dist > 10f) {
+                    // savedMatrix.set(matrix);
+                    // pA.set(event.getX(0), event.getY(0));
+                    // pB.set(event.getX(1), event.getY(1));
+                    // mid.set((event.getX(0) + event.getX(1)) / 2,
+                    // (event.getY(0) + event.getY(1)) / 2);
+                    // mode = ZOOM_OR_ROTATE;
+                    // }
+                    // break;
+                case MotionEvent.ACTION_UP:
+                    if(mode == DELETE){
+                    deleteSticker((myImageView)v);
+                }
+                    break;
+                case MotionEvent.ACTION_POINTER_UP:
+
+                    mode = NONE;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+
+                    if (mode == ZOOM_OR_ROTATE) {// 进行 放大缩小
+                        float sf = 1f;
+                        // float newx=event.getX();
+                        // float newy=event.getY();
+                        ((myImageView)v).pB.set(event.getX() + ((myImageView)v).viewL, event.getY() + ((myImageView)v).viewT);
+                        float realL = (float) Math.sqrt((float) (((myImageView)v).mBitmap.getWidth()
+                                * ((myImageView)v).mBitmap.getWidth() + ((myImageView)v).mBitmap.getHeight()
+                                * ((myImageView)v).mBitmap.getHeight()) / 4);
+                        float newL = (float) Math.sqrt((((myImageView)v).pB.x - (float) ((myImageView)v).cpoint.x)
+                                * (((myImageView)v).pB.x - (float) ((myImageView)v).cpoint.x) + (((myImageView)v).pB.y - (float) ((myImageView)v).cpoint.y)
+                                * (((myImageView)v).pB.y - (float) ((myImageView)v).cpoint.y));
+                        // System.out.println("r,n:"+realL+"|"+newL);
+                        sf = newL / realL;
+                        // 角度
+                        double a = ((myImageView)v).spacing(((myImageView)v).pA.x, ((myImageView)v).pA.y, (float) ((myImageView)v).cpoint.x,
+                                (float) ((myImageView)v).cpoint.y);
+                        double b = ((myImageView)v).spacing(((myImageView)v).pB.x, ((myImageView)v).pB.y, ((myImageView)v).pA.x, ((myImageView)v).pA.y);
+                        double c = ((myImageView)v).spacing(((myImageView)v).pB.x, ((myImageView)v).pB.y, (float) ((myImageView)v).cpoint.x,
+                                (float) ((myImageView)v).cpoint.y);
+                        double cosB = (a * a + c * c - b * b) / (2 * a * c);
+                        if (cosB > 1) {// 浮点运算的时候 cosB 有可能大于1.
+                            System.out.println(" sf:" + sf + " cosB:" + cosB);
+                            cosB = 1f;
+                        }
+                        double angleB = Math.acos(cosB);
+                        float newAngle = (float) (angleB / Math.PI * 180);
+                        // newAngle=0f;
+
+                        float p1x = ((myImageView)v).pA.x - (float) ((myImageView)v).cpoint.x;
+                        float p2x = ((myImageView)v).pB.x - (float) ((myImageView)v).cpoint.x;
+
+                        float p1y = ((myImageView)v).pA.y - (float) ((myImageView)v).cpoint.y;
+                        float p2y = ((myImageView)v).pB.y - (float) ((myImageView)v).cpoint.y;
+                        // 正反向。
+                        if (p1x == 0) {
+                            if (p2x > 0 && p1y >= 0 && p2y >= 0) {// 由 第4-》第3
+                                newAngle = -newAngle;
+                            } else if (p2x < 0 && p1y < 0 && p2y < 0) {// 由 第2-》第1
+                                newAngle = -newAngle;
+                            }
+                        } else if (p2x == 0) {
+                            if (p1x < 0 && p1y >= 0 && p2y >= 0) {// 由 第4-》第3
+                                newAngle = -newAngle;
+                            } else if (p1x > 0 && p1y < 0 && p2y < 0) {// 由 第2-》第1
+                                newAngle = -newAngle;
+                            }
+                        } else if (p1x != 0 && p2x != 0 && p1y / p1x < p2y / p2x) {
+                            if (p1x < 0 && p2x > 0 && p1y >= 0 && p2y >= 0) {// 由 第4-》第3
+                                newAngle = -newAngle;
+                            } else if (p2x < 0 && p1x > 0 && p1y < 0 && p2y < 0) {// 由
+                                // 第2-》第1
+                                newAngle = -newAngle;
+                            } else {
+
+                            }
+                        } else {
+                            if (p2x < 0 && p1x > 0 && p1y >= 0 && p2y >= 0) {// 由 第3-》第4
+
+                            } else if (p2x > 0 && p1x < 0 && p1y < 0 && p2y < 0) {// 由
+                                // 第1-》第2
+
+                            } else {
+                                newAngle = -newAngle;
+                            }
+                        }
+                        ((myImageView)v).pA.x = ((myImageView)v).pB.x;
+                        ((myImageView)v).pA.y = ((myImageView)v).pB.y;
+                        if (sf == 0) {
+                            sf = 0.1f;
+                        } else if (sf >= 3) {
+                            sf = 3f;
+                        }
+                        ((myImageView)v).setImageBitmap(((myImageView) v).mBitmap, ((myImageView)v).cpoint, ((myImageView)v).angle + newAngle, sf);
+
+                    }
+
+                    if (mode == DRAG) {
+
+                        ((myImageView)v).pB.set(event.getX() + ((myImageView)v).viewL, event.getY() + ((myImageView)v).viewT);
+                        // 修改中心点
+                        ((myImageView)v).cpoint.x += ((myImageView)v).pB.x - ((myImageView)v).pA.x;
+                        ((myImageView)v).cpoint.y += ((myImageView)v).pB.y - ((myImageView)v).pA.y;
+                        ((myImageView)v).pA.x = ((myImageView)v).pB.x;
+                        ((myImageView)v).pA.y = ((myImageView)v).pB.y;
+                        // this.setImageBitmap(this.mBitmap, cpoint, jd, sfxs);
+                        ((myImageView)v).setCPoint(((myImageView)v).cpoint);
+
+                    }
+                    break;
+            }
+            return true;
         }
+
     };
 
     //print debug info
