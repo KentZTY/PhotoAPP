@@ -467,8 +467,12 @@ public class DisplayImageActivity extends Activity{
                 // 主点按下
                 case MotionEvent.ACTION_DOWN:
                     if(v==myImage){
+                        if(currentImage != null){
                         currentImage.setEditable(false);
-                        mode = NONE;
+                        mode = NONE;}
+                        if(currentImage == null){
+                            mode = NONE;
+                        }
                     }
                     if(v!=myImage){
                         if(currentImage != null){
