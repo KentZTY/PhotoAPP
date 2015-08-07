@@ -105,47 +105,49 @@ public class DisplayImageActivity extends Activity{
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //print(""+requestCode);
         //print(""+resultCode);
-        switch (requestCode){
-            case RESULT_CANCELED:
-            break;
-            case sticker:
-                Bundle stickerBundle = data.getExtras();
-                //print(stickerBundle.toString());
-                String stickerPosition;
-                if (stickerBundle == null) {
-                    Bundle extras = getIntent().getExtras();
-                    if(extras == null) {
-                        stickerPosition= null;
+        if(data!=null) {
+            switch (requestCode) {
+                case RESULT_CANCELED:
+                    break;
+                case sticker:
+                    Bundle stickerBundle = data.getExtras();
+                    //print(stickerBundle.toString());
+                    String stickerPosition;
+                    if (stickerBundle == null) {
+                        Bundle extras = getIntent().getExtras();
+                        if (extras == null) {
+                            stickerPosition = null;
+                        } else {
+                            stickerPosition = extras.getString("id");
+                        }
                     } else {
-                        stickerPosition= extras.getString("id");
+                        stickerPosition = (String) stickerBundle.getSerializable("id");
                     }
-                } else {
-                    stickerPosition= (String) stickerBundle.getSerializable("id");
-                }
-                AddSticker(stickerPosition);
-                break;
-            case border:
-                Bundle boarderBundle = data.getExtras();
-                //print(stickerBundle.toString());
-                String boarderPosition;
-                if (boarderBundle == null) {
-                    Bundle extras = getIntent().getExtras();
-                    if(extras == null) {
-                        boarderPosition= null;
+                    AddSticker(stickerPosition);
+                    break;
+                case border:
+                    Bundle boarderBundle = data.getExtras();
+                    //print(stickerBundle.toString());
+                    String boarderPosition;
+                    if (boarderBundle == null) {
+                        Bundle extras = getIntent().getExtras();
+                        if (extras == null) {
+                            boarderPosition = null;
+                        } else {
+                            boarderPosition = extras.getString("id");
+                        }
                     } else {
-                        boarderPosition= extras.getString("id");
+                        boarderPosition = (String) boarderBundle.getSerializable("id");
                     }
-                } else {
-                    boarderPosition= (String) boarderBundle.getSerializable("id");
-                }
-                addBorder(boarderPosition);
-                //print(boarderPosition);
-                break;
+                    addBorder(boarderPosition);
+                    //print(boarderPosition);
+                    break;
             /*
             default:
                 createBack();
                 break;
             */
+            }
         }
     }
      /*
