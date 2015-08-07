@@ -27,18 +27,17 @@
         android:layout_height="wrap_content"
         android:text="clear"
         android:id="@+id/clear"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/save"
-        android:layout_toEndOf="@+id/save" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SAVE "
         android:id="@+id/save"
-        android:layout_marginBottom="54dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -46,9 +45,9 @@
         android:layout_height="wrap_content"
         android:text="sticker"
         android:id="@+id/sticker"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/save"
-        android:layout_alignStart="@+id/save" />
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/border"
+        android:layout_toEndOf="@+id/border" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -56,8 +55,8 @@
         android:layout_height="wrap_content"
         android:text="border"
         android:id="@+id/border"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/sticker"
-        android:layout_toStartOf="@+id/sticker" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
