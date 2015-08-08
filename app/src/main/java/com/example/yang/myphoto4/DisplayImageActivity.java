@@ -162,7 +162,7 @@ public class DisplayImageActivity extends Activity{
         return uri;
     }
 
-    //Creat a intent to choose stickers
+    //Create a intent to choose stickers
     private void chooseSticker() {
         Intent intent = new Intent();
         intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
