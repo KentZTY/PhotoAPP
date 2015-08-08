@@ -51,13 +51,6 @@ public class myImageView extends ImageView {
     private Drawable controlDrawable1;
     private Drawable controlDrawable2;
     Canvas outputDrawable=null;
-    /*public void setID(int i){
-        id=i;
-    }
-    public int getID(){
-        return id;
-    }*/
-
 
     public myImageView(Context context, Bitmap mBitmap) {
         super(context);
@@ -187,14 +180,6 @@ public class myImageView extends ImageView {
 
     public Matrix getMyMatrix(){
         return matrix;
-    }
-
-    public int getLeftL(){
-        return viewL;
-    }
-
-    public int getTopL(){
-        return viewT;
     }
 
     @Override

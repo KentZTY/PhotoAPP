@@ -8,8 +8,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -208,29 +206,12 @@ public class DisplayImageActivity extends Activity{
         myImage.draw(c);
         borderImage.draw(c);
         for(int a= i;a>0;a--){
-            int left = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).leftMargin;
-            int top = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).topMargin;
-            int width = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).width;
-            int height = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).height;
-            //imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
-            //imageView[a].getDrawable().draw(c);
             c.translate(imageView[a].viewL, imageView[a].viewT);
             Bitmap bm=imageView[a].getBitmap();
             Matrix mx=imageView[a].getMyMatrix();
             Paint paint = new Paint();
             c.drawBitmap(bm,mx,paint);
-
-
         }
-
-        /*
-        if(borderImage.getDrawable()!=null){
-            print("success");
-            borderImage.getDrawable().setBounds(0,0,0,0);
-            borderImage.getDrawable().draw(c);
-        }
-        */
-
         return output;
     }
 
@@ -252,36 +233,13 @@ public class DisplayImageActivity extends Activity{
         mainLayout.removeView(imageView);
     }
 
-    //save bitmap to local
-    public void saveBitmap(Bitmap bmp, String fileName){
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(fileName);
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
     //add sticker
     public void AddSticker(String name){
         int a = Integer.parseInt(name)+1;
         i++;
         imageView[i] = new myImageView(this, getResource(a));
-        //imageView[i].setID(i);
         //imageView[i].setImageBitmap(mBitmap);
         imageView[i].setOnTouchListener(movingEventListener);
-        //imageView[i].setBackgroundResource(R.drawable.border);
         RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp1.height = 200;
         lp1.width = 200;
