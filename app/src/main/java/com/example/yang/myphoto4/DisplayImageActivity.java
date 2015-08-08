@@ -225,7 +225,7 @@ public class DisplayImageActivity extends Activity{
         }
         i = 0;
         borderImage.setImageDrawable(null);
-        mainLayout.removeView(borderImage);
+        //mainLayout.removeView(borderImage);
     }
 
     //delete sticker
