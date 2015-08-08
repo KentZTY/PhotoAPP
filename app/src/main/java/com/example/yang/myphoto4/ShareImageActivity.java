@@ -14,16 +14,43 @@ public class ShareImageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_image);
+        activityExit.getInstance().addActivity(this);
         (findViewById(R.id.button03))
-            .setOnClickListener(new View.OnClickListener() {
-                public void onClick(View arg0) {
-                    Uri uri = getIntent().getData();
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("image/*");
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                    startActivity(Intent.createChooser(shareIntent, "Please select"));
-                }
-            });
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        share();
+                    }
+                });
+        (findViewById(R.id.EXIT))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        activityExit.getInstance().exit();
+                    }
+                });
+        (findViewById(R.id.HOME))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        home();
+                        finish();
+                    }
+                });
+    }
+
+
+
+
+    private void home(){
+        Intent intent = new Intent();
+        intent.setClass(ShareImageActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void share(){
+        Uri uri = getIntent().getData();
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(shareIntent, "Please select"));
     }
 
     @Override

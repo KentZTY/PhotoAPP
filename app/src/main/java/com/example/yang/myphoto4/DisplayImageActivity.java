@@ -48,6 +48,7 @@ public class DisplayImageActivity extends Activity{
     private static final int ZOOM_OR_ROTATE = 5;
     private static final int DELETE = 6;
     int mode = NONE;
+    Paint paint;
 
 
 
@@ -56,6 +57,7 @@ public class DisplayImageActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
+        activityExit.getInstance().addActivity(this);
         mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
         myImage =(ImageView)findViewById(R.id.imageView);
         borderImage =(ImageView)findViewById(R.id.borderView);
@@ -67,7 +69,9 @@ public class DisplayImageActivity extends Activity{
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels - 100;
         currentImage = null;
+        paint = new Paint();
         myImage.setOnTouchListener(movingEventListener);
+
 
         (findViewById(R.id.sticker))
                 .setOnClickListener(new OnClickListener() {
@@ -90,12 +94,19 @@ public class DisplayImageActivity extends Activity{
         createBack();
 
         /*
-        Send image to the next activity.
+         Send image to the next activity.
          */
         (findViewById(R.id.save))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         shareImage();
+                        finish();
+                    }
+                });
+        (findViewById(R.id.home))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(View arg0) {
+                        home();
                         finish();
                     }
                 });
@@ -198,6 +209,8 @@ public class DisplayImageActivity extends Activity{
         return cursor.getString(column_index);
     }
 
+
+
     //combine all the layers into a bitmap
     public Bitmap outputImage (myImageView[] imageView){
         Bitmap output=null;
@@ -206,11 +219,12 @@ public class DisplayImageActivity extends Activity{
         myImage.draw(c);
         borderImage.draw(c);
         for(int a= i;a>0;a--){
+            paint.reset();
             c.translate(imageView[a].viewL, imageView[a].viewT);
             Bitmap bm=imageView[a].getBitmap();
             Matrix mx=imageView[a].getMyMatrix();
-            Paint paint = new Paint();
             c.drawBitmap(bm,mx,paint);
+            c.translate(-imageView[a].viewL, -imageView[a].viewT);
         }
         return output;
     }
@@ -519,6 +533,12 @@ public class DisplayImageActivity extends Activity{
     //print debug info
     public void print(String info){
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+    }
+
+    public void home(){
+        Intent intent = new Intent();
+        intent.setClass(DisplayImageActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
 }

@@ -22,6 +22,7 @@ public class MainActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        activityExit.getInstance().addActivity(this);
 
         /*
          * Select image button. Use intent to open gallery and select image.
