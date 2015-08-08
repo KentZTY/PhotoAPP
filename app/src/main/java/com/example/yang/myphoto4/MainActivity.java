@@ -47,19 +47,8 @@ public class MainActivity extends Activity{
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
-                                /*try {
-                                    File dir=new File(Environment.getExternalStorageDirectory() + "/"+ "localTempImgDir");
-                                    if(!dir.exists()) {
-                                        dir.mkdirs();
-                                    }*/
                                     Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                                   /*File f=new File(dir, "localTempImgFileName");
-                                   Uri u=Uri.fromFile(f);
-                                   intent.putExtra(MediaStore.EXTRA_OUTPUT, u);*/
                                     startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
-                                /*} catch (ActivityNotFoundException e) {
-                                    Toast.makeText(MainActivity.this, "No storage directory.",Toast.LENGTH_LONG).show();
-                                }*/
                         }
                         else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
@@ -82,16 +71,6 @@ public class MainActivity extends Activity{
                     selectedImagePath1 = getPath(uri);
                     System.out.println("Image Path : " + selectedImagePath1);
                     break;
-                /*case REQUEST_CAPTURE_CAMERA:
-                    File f=new File(Environment.getExternalStorageDirectory()
-                            +"/"+"localTempImgDir"+"/"+"localTempImgFileName");
-                    try {
-                        uri = Uri.parse(android.provider.MediaStore.Images.Media.insertImage(getContentResolver(),
-                                        f.getAbsolutePath(), null, null));
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    break;*/
                 case REQUEST_CAPTURE_CAMERA:
                     uri = data.getData();
                     break;
