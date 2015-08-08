@@ -214,7 +214,7 @@ public class DisplayImageActivity extends Activity{
             int height = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).height;
             //imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
             //imageView[a].getDrawable().draw(c);
-
+            c.translate(imageView[a].viewL, imageView[a].viewT);
             Bitmap bm=imageView[a].getBitmap();
             Matrix mx=imageView[a].getMyMatrix();
             Paint paint = new Paint();
@@ -233,6 +233,7 @@ public class DisplayImageActivity extends Activity{
 
         return output;
     }
+
 
 
     //clear all stickers
