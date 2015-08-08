@@ -12,7 +12,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends Activity{
     private static final int SELECT_PICTURE = 1;
     private static final int REQUEST_CAPTURE_CAMERA = 2;
     private String selectedImagePath1;
@@ -119,12 +119,5 @@ public class MainActivity extends Activity implements View.OnClickListener{
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if(v.getId() == R.id.button03){
-            startActivity(new Intent(MainActivity.this, OperatorImageActivity.class));
-        }
     }
 }
