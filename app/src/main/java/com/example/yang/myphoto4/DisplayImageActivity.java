@@ -212,11 +212,13 @@ public class DisplayImageActivity extends Activity{
             int top = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).topMargin;
             int width = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).width;
             int height = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).height;
-            imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
+            //imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
             //imageView[a].getDrawable().draw(c);
             Bitmap bm=imageView[a].getBitmap();
+            Matrix mx=imageView[a].getMatrix();
             Paint paint = new Paint();
-            c.drawBitmap(bm,left,top,paint);
+            c.drawBitmap(bm,mx,paint);
+
 
         }
 
@@ -490,8 +492,8 @@ public class DisplayImageActivity extends Activity{
         double a = ((myImageView)v).spacing(((myImageView)v).pA.x, ((myImageView)v).pA.y, (float) ((myImageView)v).cpoint.x,
                 (float) ((myImageView)v).cpoint.y);
         double b = ((myImageView)v).spacing(((myImageView)v).pB.x, ((myImageView)v).pB.y, ((myImageView)v).pA.x, ((myImageView)v).pA.y);
-        double c = ((myImageView)v).spacing(((myImageView)v).pB.x, ((myImageView)v).pB.y, (float) ((myImageView)v).cpoint.x,
-                (float) ((myImageView)v).cpoint.y);
+        double c = ((myImageView)v).spacing(((myImageView) v).pB.x, ((myImageView) v).pB.y, (float) ((myImageView) v).cpoint.x,
+                (float) ((myImageView) v).cpoint.y);
         double cosB = (a * a + c * c - b * b) / (2 * a * c);
         if (cosB > 1) {
             cosB = 1f;

@@ -185,6 +185,10 @@ public class myImageView extends ImageView {
         return mBitmap;
     }
 
+    public Matrix getMatrix(){
+        return matrix;
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
