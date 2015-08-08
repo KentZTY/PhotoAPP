@@ -385,8 +385,6 @@ public class DisplayImageActivity extends Activity{
     }
 
 
-
-
     private OnTouchListener movingEventListener = new OnTouchListener() {
 
         public boolean onTouch(View v, MotionEvent event) {
