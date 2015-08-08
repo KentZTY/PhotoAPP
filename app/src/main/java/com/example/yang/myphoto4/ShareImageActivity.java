@@ -14,19 +14,13 @@ public class ShareImageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_image);
-        activityExit.getInstance().addActivity(this);
-        (findViewById(R.id.button03))
+        (findViewById(R.id.share))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         share();
                     }
                 });
-        (findViewById(R.id.EXIT))
-                .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View arg0) {
-                        activityExit.getInstance().exit();
-                    }
-                });
+
         (findViewById(R.id.HOME))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {

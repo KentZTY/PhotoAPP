@@ -10,19 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SHARE"
-        android:id="@+id/button03"
+        android:id="@+id/share"
         android:layout_below="@+id/HOME"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="111dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="EXIT"
-        android:id="@+id/EXIT"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"

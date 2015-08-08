@@ -54,7 +54,6 @@ public class DisplayImageActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
-        activityExit.getInstance().addActivity(this);
         mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
         myImage =(ImageView)findViewById(R.id.imageView);
         borderImage =(ImageView)findViewById(R.id.borderView);
