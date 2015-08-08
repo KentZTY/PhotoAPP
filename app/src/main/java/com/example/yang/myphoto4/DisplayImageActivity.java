@@ -49,6 +49,7 @@ public class DisplayImageActivity extends Activity{
     private static final int DELETE = 6;
     int mode = NONE;
     Paint paint;
+    public static DisplayImageActivity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class DisplayImageActivity extends Activity{
         borderImage =(ImageView)findViewById(R.id.borderView);
         borderImage.setImageDrawable(null);
         i = 0;
+        instance = this;
         stickerNumber = 10;
         imageView = new myImageView[stickerNumber+1];
         DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -352,7 +354,7 @@ public class DisplayImageActivity extends Activity{
         intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
         Bitmap bm = outputImage(imageView);
         saveBitmap(bm);
-        Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(),bm,null,null));
+        Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm,null,null));
         intent.setData(uri);
         startActivity(intent);
         //setContentView(R.layout.null_layout);
