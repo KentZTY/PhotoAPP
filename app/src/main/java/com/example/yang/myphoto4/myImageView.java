@@ -4,15 +4,19 @@ package com.example.yang.myphoto4;
  * Created by Yang on 06/08/2015.
  */
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.FloatMath;
@@ -57,7 +61,7 @@ public class myImageView extends ImageView {
     int id;
     private Drawable controlDrawable1;
     private Drawable controlDrawable2;
-
+    Canvas outputDrawable=null;
     /*public void setID(int i){
         id=i;
     }
@@ -228,6 +232,13 @@ public class myImageView extends ImageView {
         return degree * Math.PI / 180;
     }
 
+
+
+    public Bitmap getBitmap(){
+        return mBitmap;
+    }
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         // TODO Auto-generated method stub
@@ -237,6 +248,9 @@ public class myImageView extends ImageView {
         // canvas.drawRect(0, 0, mBitmap.getWidth()/2, mBitmap.getHeight()/2,
         // paint);
         canvas.drawBitmap(mBitmap, matrix, paint);
+        outputDrawable=canvas;
+
+
 
         // 换包围图的框
         if(isEditable){

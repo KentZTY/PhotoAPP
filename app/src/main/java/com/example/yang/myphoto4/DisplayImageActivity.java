@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
@@ -198,7 +199,7 @@ public class DisplayImageActivity extends Activity{
     }
 
     //combine all the layers into a bitmap
-    public Bitmap outputImage (ImageView[] imageView){
+    public Bitmap outputImage (myImageView[] imageView){
         Bitmap output=null;
         output = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(output);
@@ -209,14 +210,21 @@ public class DisplayImageActivity extends Activity{
             int top = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).topMargin;
             int width = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).width;
             int height = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).height;
-            imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
-            imageView[a].getDrawable().draw(c);
+            //imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
+            //imageView[a].getDrawable().draw(c);
+            Bitmap bm=imageView[a].getBitmap();
+            Paint paint = new Paint();
+            c.drawBitmap(bm,left,top,paint);
+
         }
 
+        /*
         if(borderImage.getDrawable()!=null){
+            print("success");
             borderImage.getDrawable().setBounds(0,0,0,0);
             borderImage.getDrawable().draw(c);
         }
+        */
 
         return output;
     }
