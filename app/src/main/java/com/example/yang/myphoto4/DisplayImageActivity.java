@@ -97,7 +97,6 @@ public class DisplayImageActivity extends Activity{
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         shareImage();
-                        finish();
                     }
                 });
         (findViewById(R.id.home))
@@ -357,7 +356,7 @@ public class DisplayImageActivity extends Activity{
         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(),bm,null,null));
         intent.setData(uri);
         startActivity(intent);
-        setContentView(R.layout.null_layout);
+        //setContentView(R.layout.null_layout);
     }
 
     public void saveBitmap(Bitmap bm) {
