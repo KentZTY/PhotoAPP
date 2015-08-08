@@ -38,7 +38,8 @@
         android:id="@+id/save"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="@android:drawable/btn_default_small" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
