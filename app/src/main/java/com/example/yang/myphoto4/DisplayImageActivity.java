@@ -50,9 +50,6 @@ public class DisplayImageActivity extends Activity{
     int mode = NONE;
     Paint paint;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -361,7 +358,6 @@ public class DisplayImageActivity extends Activity{
         intent.setData(uri);
         startActivity(intent);
         setContentView(R.layout.null_layout);
-        finish();
     }
 
     public void saveBitmap(Bitmap bm) {

@@ -36,9 +36,6 @@ public class ShareImageActivity extends Activity {
                 });
     }
 
-
-
-
     private void home(){
         Intent intent = new Intent();
         intent.setClass(ShareImageActivity.this, MainActivity.class);
