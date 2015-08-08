@@ -185,10 +185,17 @@ public class myImageView extends ImageView {
         return mBitmap;
     }
 
-    public Matrix getMatrix(){
+    public Matrix getMyMatrix(){
         return matrix;
     }
 
+    public int getLeftL(){
+        return viewL;
+    }
+
+    public int getTopL(){
+        return viewT;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {

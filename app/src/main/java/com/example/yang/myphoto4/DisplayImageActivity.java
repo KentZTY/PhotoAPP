@@ -214,8 +214,9 @@ public class DisplayImageActivity extends Activity{
             int height = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).height;
             //imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
             //imageView[a].getDrawable().draw(c);
+
             Bitmap bm=imageView[a].getBitmap();
-            Matrix mx=imageView[a].getMatrix();
+            Matrix mx=imageView[a].getMyMatrix();
             Paint paint = new Paint();
             c.drawBitmap(bm,mx,paint);
 
