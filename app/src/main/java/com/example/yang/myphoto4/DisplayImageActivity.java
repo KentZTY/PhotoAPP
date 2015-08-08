@@ -212,7 +212,7 @@ public class DisplayImageActivity extends Activity{
             int top = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).topMargin;
             int width = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).width;
             int height = ((RelativeLayout.LayoutParams)imageView[a].getLayoutParams()).height;
-            //imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
+            imageView[a].getDrawable().setBounds(left, top, width + left, height + top);
             //imageView[a].getDrawable().draw(c);
             Bitmap bm=imageView[a].getBitmap();
             Paint paint = new Paint();
