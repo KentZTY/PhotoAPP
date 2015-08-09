@@ -9,6 +9,11 @@
         <item>@drawable/a1</item>
         <item>@drawable/a2</item>
         <item>@drawable/a3</item>
+        <item>@drawable/a4</item>
+        <item>@drawable/a5</item>
+        <item>@drawable/a6</item>
+        <item>@drawable/a7</item>
+        <item>@drawable/a8</item>
     </string-array>
 
 </resources>

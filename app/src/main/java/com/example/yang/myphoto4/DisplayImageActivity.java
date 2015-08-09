@@ -2,8 +2,10 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -24,6 +26,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -95,12 +100,14 @@ public class DisplayImageActivity extends Activity{
                 });
         createBack();
 
+        /*
         (findViewById(R.id.button))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         test();
                     }
                 });
+                */
         /*
          Send image to the next activity.
          */
