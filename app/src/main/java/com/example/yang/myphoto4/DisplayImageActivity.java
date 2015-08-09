@@ -206,7 +206,8 @@ public class DisplayImageActivity extends Activity{
     //combine all the layers into a bitmap
     public Bitmap outputImage (myImageView[] imageView){
         Bitmap output;
-        output = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
+        Bitmap background = BitmapFactory.decodeResource(getResources(),R.drawable.bg);
+        output = Bitmap.createBitmap(background,0,0,screenWidth, screenHeight);
         Canvas c = new Canvas(output);
         myImage.draw(c);
         borderImage.draw(c);
