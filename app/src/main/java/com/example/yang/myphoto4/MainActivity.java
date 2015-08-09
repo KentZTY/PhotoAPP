@@ -17,7 +17,7 @@ public class MainActivity extends Activity{
     private static final int REQUEST_CAPTURE_CAMERA = 2;
     private String selectedImagePath1;
     private Uri uri;
-    public static MainActivity instance = null;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class MainActivity extends Activity{
         if(getIntent().getBooleanExtra("close", false)){
             DisplayImageActivity.instance.finish();
         }
-        instance = this;
+
 
         /*
          * Select image button. Use intent to open gallery and select image.
@@ -83,7 +83,9 @@ public class MainActivity extends Activity{
             }
             intent.setData(uri);
             startActivityForResult(intent,0);
+            finish();
         }
+
     }
         /*
          * Get path function.
