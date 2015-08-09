@@ -13,6 +13,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -30,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class DisplayImageActivity extends Activity{
     private int screenWidth;
@@ -202,7 +204,7 @@ public class DisplayImageActivity extends Activity{
 
     //combine all the layers into a bitmap
     public Bitmap outputImage (myImageView[] imageView){
-        Bitmap output=null;
+        Bitmap output;
         output = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(output);
         myImage.draw(c);
@@ -354,13 +356,10 @@ public class DisplayImageActivity extends Activity{
 
     //save image
     public void saveBitmap(Bitmap bm) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.UK);
         Date now = new Date();
         String fileName = formatter.format(now) + ".png";
-        File f = new File("/sdcard/DCIM/Screenshots", fileName);
-        if (f.exists()) {
-            f.delete();
-        }
+        File f = new File(Environment.getExternalStorageDirectory().getPath(), fileName);
         try {
             FileOutputStream out = new FileOutputStream(f);
             bm.compress(Bitmap.CompressFormat.PNG, 90, out);
@@ -440,7 +439,7 @@ public class DisplayImageActivity extends Activity{
     }
 
     private void zoomAndRotate(View v, MotionEvent event){
-        float sf = 1f;
+        float sf;
         ((myImageView)v).pB.set(event.getX() + ((myImageView)v).viewL, event.getY() + ((myImageView)v).viewT);
         float realL = (float) Math.sqrt((float) (((myImageView)v).mBitmap.getWidth()
                 * ((myImageView)v).mBitmap.getWidth() + ((myImageView)v).mBitmap.getHeight()
@@ -479,22 +478,14 @@ public class DisplayImageActivity extends Activity{
             } else if (p1x > 0 && p1y < 0 && p2y < 0) {
                 newAngle = -newAngle;
             }
-        } else if (p1x != 0 && p2x != 0 && p1y / p1x < p2y / p2x) {
+        } else if ( p1y / p1x < p2y / p2x) {
             if (p1x < 0 && p2x > 0 && p1y >= 0 && p2y >= 0) {
                 newAngle = -newAngle;
             } else if (p2x < 0 && p1x > 0 && p1y < 0 && p2y < 0) {
                 newAngle = -newAngle;
-            } else {
-
             }
         } else {
-            if (p2x < 0 && p1x > 0 && p1y >= 0 && p2y >= 0) {
-
-            } else if (p2x > 0 && p1x < 0 && p1y < 0 && p2y < 0) {
-
-            } else {
                 newAngle = -newAngle;
-            }
         }
         ((myImageView)v).pA.x = ((myImageView)v).pB.x;
         ((myImageView)v).pA.y = ((myImageView)v).pB.y;
@@ -513,7 +504,7 @@ public class DisplayImageActivity extends Activity{
         ((myImageView)v).cpoint.y += ((myImageView)v).pB.y - ((myImageView)v).pA.y;
         ((myImageView)v).pA.x = ((myImageView)v).pB.x;
         ((myImageView)v).pA.y = ((myImageView)v).pB.y;
-        ((myImageView)v).setCPoint(((myImageView)v).cpoint);
+        ((myImageView)v).setCPoint(((myImageView) v).cpoint);
 
     }
 
