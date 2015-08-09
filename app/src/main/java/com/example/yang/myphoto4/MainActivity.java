@@ -83,7 +83,7 @@ public class MainActivity extends Activity{
             }
             intent.setData(uri);
             startActivityForResult(intent,0);
-            finish();
+            //finish();
         }
 
     }

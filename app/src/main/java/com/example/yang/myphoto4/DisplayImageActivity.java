@@ -100,14 +100,6 @@ public class DisplayImageActivity extends Activity{
                         shareImage();
                     }
                 });
-        (findViewById(R.id.home))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
-                        home();
-                        finish();
-                    }
-                });
-
         }
     @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -529,13 +521,6 @@ public class DisplayImageActivity extends Activity{
     public void print(String info){
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
-
-    public void home(){
-        Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, MainActivity.class);
-        startActivity(intent);
-    }
-
 }
 
 
