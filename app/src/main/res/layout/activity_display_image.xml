@@ -4,7 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:id="@+id/stickerView"
-    android:gravity="center">
+    android:gravity="center"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
