@@ -2,30 +2,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg1"
+    android:background="@drawable/bg"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
-    <Button
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/SELECT"
-        android:id="@+id/button01"
-        android:layout_marginTop="125dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/button02"
-        android:layout_alignStart="@+id/button02" />
+        android:id="@+id/cameraButton"
+        android:src="@drawable/camerabt"
+        android:background="@drawable/selector"
+        android:layout_marginTop="64dp"
+        android:layout_below="@+id/photoButton"
+        android:layout_centerHorizontal="true" />
 
-    <Button
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button02"
-        android:text="@string/CAMERA"
-        android:layout_below="@+id/button01"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="121dp" />
+        android:id="@+id/photoButton"
+        android:src="@drawable/photobt"
+        android:background="@drawable/selector"
+        android:layout_marginTop="37dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

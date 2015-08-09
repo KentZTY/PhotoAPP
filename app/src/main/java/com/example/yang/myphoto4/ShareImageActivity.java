@@ -21,7 +21,7 @@ public class ShareImageActivity extends Activity {
                     }
                 });
 
-        (findViewById(R.id.HOME))
+        (findViewById(R.id.homeButton))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         home();

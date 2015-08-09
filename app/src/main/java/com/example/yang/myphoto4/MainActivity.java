@@ -33,7 +33,7 @@ public class MainActivity extends Activity{
         /*
          * Select image button. Use intent to open gallery and select image.
          **/
-        (findViewById(R.id.button01))
+        (findViewById(R.id.photoButton))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -48,7 +48,7 @@ public class MainActivity extends Activity{
          * Use intent to open local applications for camera(image capture).
          * Create image file.
          **/
-        (findViewById(R.id.button02))
+        (findViewById(R.id.cameraButton))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
