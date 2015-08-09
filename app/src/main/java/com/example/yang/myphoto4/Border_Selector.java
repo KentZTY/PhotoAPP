@@ -42,6 +42,8 @@ public class Border_Selector extends Activity {
     }
 
     public class BorderAdapter extends BaseAdapter {
+
+        int size=300;
         private Context mContext;
 
         public BorderAdapter(Context c) {
@@ -67,7 +69,7 @@ public class Border_Selector extends Activity {
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
                 imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(R.dimen.sticker,R.dimen.sticker));
+                imageView.setLayoutParams(new GridView.LayoutParams(size,size));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(8, 8, 8, 8);
             } else {

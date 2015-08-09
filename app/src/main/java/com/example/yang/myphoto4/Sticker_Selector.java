@@ -41,6 +41,7 @@ public class Sticker_Selector extends Activity {
 
     }
     public class ImageAdapter extends BaseAdapter {
+        int size=300;
         private Context mContext;
 
         public ImageAdapter(Context c) {
@@ -66,7 +67,7 @@ public class Sticker_Selector extends Activity {
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
                 imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(R.dimen.sticker,R.dimen.sticker));
+                imageView.setLayoutParams(new GridView.LayoutParams(size,size));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(8, 8, 8, 8);
             } else {
