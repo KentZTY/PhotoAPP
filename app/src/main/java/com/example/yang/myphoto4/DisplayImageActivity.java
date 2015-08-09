@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
@@ -94,6 +95,12 @@ public class DisplayImageActivity extends Activity{
                 });
         createBack();
 
+        (findViewById(R.id.button))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(View arg0) {
+                        test();
+                    }
+                });
         /*
          Send image to the next activity.
          */
@@ -104,6 +111,8 @@ public class DisplayImageActivity extends Activity{
                     }
                 });
         }
+
+
     @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //print(""+requestCode);
@@ -516,7 +525,8 @@ public class DisplayImageActivity extends Activity{
     }
     private void test(){
         TypedArray ar = getResources().obtainTypedArray(R.array.border);
-        print(ar.getString(1));
+        print(ar.length()+"");
+        //borderImage.setImageDrawable((Drawable)ar[0]);
     }
 
 }
