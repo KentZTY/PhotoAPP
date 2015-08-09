@@ -5,6 +5,9 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,7 +29,6 @@ public class MainActivity extends Activity{
         if(getIntent().getBooleanExtra("close", false)){
             DisplayImageActivity.instance.finish();
         }
-
 
         /*
          * Select image button. Use intent to open gallery and select image.
@@ -82,7 +84,7 @@ public class MainActivity extends Activity{
                     break;
             }
             intent.setData(uri);
-            startActivityForResult(intent,0);
+            startActivityForResult(intent, 0);
             //finish();
         }
 
