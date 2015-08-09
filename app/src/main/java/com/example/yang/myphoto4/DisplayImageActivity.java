@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -512,6 +513,11 @@ public class DisplayImageActivity extends Activity{
     public void print(String info){
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
+    private void test(){
+        TypedArray ar = getResources().obtainTypedArray(R.array.border);
+        print(ar.getString(1));
+    }
+
 }
 
 
