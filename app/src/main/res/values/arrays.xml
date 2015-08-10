@@ -19,6 +19,7 @@
         <item>@drawable/a11</item>
         <item>@drawable/a12</item>
         <item>@drawable/a13</item>
+        <item>@drawable/a14</item>
     </string-array>
 
 </resources>
