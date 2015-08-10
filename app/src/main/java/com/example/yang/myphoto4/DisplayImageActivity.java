@@ -58,6 +58,7 @@ public class DisplayImageActivity extends Activity{
     private static final int DELETE = 6;
     int mode = NONE;
     Paint paint;
+    String myPath;
     public static DisplayImageActivity instance = null;
 
     @Override
@@ -69,6 +70,7 @@ public class DisplayImageActivity extends Activity{
         borderImage =(ImageView)findViewById(R.id.borderView);
         borderImage.setImageDrawable(null);
         i = 0;
+        myPath = null;
         instance = this;
         stickerNumber = 10;
         imageView = new myImageView[stickerNumber+1];
@@ -368,19 +370,21 @@ public class DisplayImageActivity extends Activity{
         saveBitmap(bm);
         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm,null,null));
         intent.setData(uri);
+        intent.putExtra("myPath", myPath);
         startActivity(intent);
         //setContentView(R.layout.null_layout);
     }
 
     //save image
     public void saveBitmap(Bitmap bm) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.UK);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HHmm", Locale.UK);
         Date now = new Date();
         String fileName = formatter.format(now) + ".png";
         File f = new File(Environment.getExternalStorageDirectory().getPath(), fileName);
         try {
             FileOutputStream out = new FileOutputStream(f);
             bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            myPath = "/SDcard/" + fileName;
             out.flush();
             out.close();
         } catch (FileNotFoundException e) {
