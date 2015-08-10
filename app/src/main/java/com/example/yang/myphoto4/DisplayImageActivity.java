@@ -29,6 +29,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -40,8 +41,19 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import android.view.animation.Animation;
+import android.view.animation.Interpolator;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.Display;
+import android.R.anim;
 
-public class DisplayImageActivity extends Activity{
+
+import static android.R.anim.*;
+
+public class DisplayImageActivity extends Activity {
     private int screenWidth;
     private int screenHeight;
     private int i;
@@ -60,6 +72,12 @@ public class DisplayImageActivity extends Activity{
     Paint paint;
     String myPath;
     public static DisplayImageActivity instance = null;
+    private Button stickerButton, clearButton, borderButton, openButton;
+    private Animation animationTranslate, animationRotate, animationScale;
+    private static int width, height;
+    private RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, 0);
+    private static Boolean isClick = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +97,10 @@ public class DisplayImageActivity extends Activity{
         currentImage = null;
         paint = new Paint();
         myImage.setOnTouchListener(movingEventListener);
+        initialButton();
 
 
-        (findViewById(R.id.sticker))
+        /*(findViewById(R.id.sticker))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         chooseSticker();
@@ -112,13 +131,179 @@ public class DisplayImageActivity extends Activity{
         /*
          Send image to the next activity.
          */
-        (findViewById(R.id.save))
+        /*(findViewById(R.id.save))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         shareImage();
                     }
-                });
+                });*/
         }
+
+    private void initialButton()
+    {
+        // TODO Auto-generated method stub
+        Display display = getWindowManager().getDefaultDisplay();
+        height = display.getHeight();
+        width = display.getWidth();
+        //Log.v("width  & height is:", String.valueOf(width) + ", " + String.valueOf(height));
+
+        params.height = 150;
+        params.width = 150;
+        //…Ë÷√±ﬂæ‡  (int left, int top, int right, int bottom)
+        params.setMargins(10, height - 98, 0, 0);
+
+        clearButton = (Button) findViewById(R.id.clear);
+        clearButton.setLayoutParams(params);
+
+        stickerButton = (Button) findViewById(R.id.sticker);
+        stickerButton.setLayoutParams(params);
+
+        borderButton = (Button) findViewById(R.id.border);
+        borderButton.setLayoutParams(params);
+
+        openButton = (Button) findViewById(R.id.open);
+        openButton.setLayoutParams(params);
+
+        openButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                if (isClick == false) {
+                    isClick = true;
+                    openButton.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
+                    stickerButton.startAnimation(animTranslate(0.0f, -180.0f, 10, height - 240, stickerButton, 80));
+                    borderButton.startAnimation(animTranslate(30.0f, -150.0f, 60, height - 230, borderButton, 100));
+                    clearButton.startAnimation(animTranslate(70.0f, -120.0f, 110, height - 210, clearButton, 120));
+
+                } else {
+                    isClick = false;
+                    openButton.startAnimation(animRotate(90.0f, 0.5f, 0.45f));
+                    stickerButton.startAnimation(animTranslate(0.0f, 140.0f, 10, height - 98, stickerButton, 180));
+                    borderButton.startAnimation(animTranslate(-50.0f, 130.0f, 10, height - 98, borderButton, 160));
+                    clearButton.startAnimation(animTranslate(-100.0f, 110.0f, 10, height - 98, clearButton, 140));
+                }
+
+            }
+        });
+        stickerButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                stickerButton.startAnimation(setAnimScale(2.5f, 2.5f));
+                borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                openButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                chooseSticker();
+            }
+        });
+        borderButton.setOnClickListener(new OnClickListener()
+        {
+
+            @Override
+            public void onClick(View v)
+            {
+                // TODO Auto-generated method stub
+                borderButton.startAnimation(setAnimScale(2.5f, 2.5f));
+                stickerButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                openButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                chooseBorder();
+            }
+        });
+        clearButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                clearButton.startAnimation(setAnimScale(2.5f, 2.5f));
+                stickerButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                openButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                clearStickers();
+            }
+        });
+    }
+
+    protected Animation setAnimScale(float toX, float toY)
+    {
+        // TODO Auto-generated method stub
+        animationScale = new ScaleAnimation(1f, toX, 1f, toY, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.45f);
+        animationScale.setInterpolator(DisplayImageActivity.this, accelerate_decelerate_interpolator);
+        animationScale.setDuration(500);
+        animationScale.setFillAfter(false);
+        return animationScale;
+
+    }
+
+    protected Animation animRotate(float toDegrees, float pivotXValue, float pivotYValue)
+    {
+        // TODO Auto-generated method stub
+        animationRotate = new RotateAnimation(0, toDegrees, Animation.RELATIVE_TO_SELF, pivotXValue, Animation.RELATIVE_TO_SELF, pivotYValue);
+        animationRotate.setAnimationListener(new AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation)
+            {
+                // TODO Auto-generated method stub
+                animationRotate.setFillAfter(true);
+            }
+        });
+        return animationRotate;
+    }
+
+    protected Animation animTranslate(float toX, float toY, final int lastX, final int lastY,
+                                      final Button button, long durationMillis)
+    {
+        // TODO Auto-generated method stub
+        animationTranslate = new TranslateAnimation(0, toX, 0, toY);
+        animationTranslate.setAnimationListener(new AnimationListener()
+        {
+
+            @Override
+            public void onAnimationStart(Animation animation)
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation)
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation)
+            {
+                // TODO Auto-generated method stub
+                params = new RelativeLayout.LayoutParams(0, 0);
+                params.height = 50;
+                params.width = 50;
+                params.setMargins(lastX, lastY, 0, 0);
+                button.setLayoutParams(params);
+                button.clearAnimation();
+
+            }
+        });
+        animationTranslate.setDuration(durationMillis);
+        return animationTranslate;
+    }
+
 
 
     @Override
@@ -174,7 +359,7 @@ public class DisplayImageActivity extends Activity{
          * Receive image uri. Get image path. Display image.
          **/
 
-    private Uri createBack(){
+    private Uri createBack() {
         final Uri uri = getIntent().getData();
         String filePath = getPath(uri);
         System.out.print(filePath);
@@ -272,9 +457,8 @@ public class DisplayImageActivity extends Activity{
     }
 
 
-
     //test method
-    public void addBorder(String name){
+    public void addBorder(String name) {
         int a = Integer.parseInt(name);
         Bitmap mBitmap = getBorderResource(a);
         borderImage.setImageBitmap(mBitmap);
@@ -518,7 +702,7 @@ public class DisplayImageActivity extends Activity{
     }
 
     private void drag(View v, MotionEvent event){
-        ((myImageView)v).pB.set(event.getX() + ((myImageView)v).viewL, event.getY() + ((myImageView)v).viewT);
+        ((myImageView)v).pB.set(event.getX() + ((myImageView)v).viewL, event.getY() + ((myImageView) v).viewT);
         ((myImageView)v).cpoint.x += ((myImageView)v).pB.x - ((myImageView)v).pA.x;
         ((myImageView)v).cpoint.y += ((myImageView)v).pB.y - ((myImageView)v).pA.y;
         ((myImageView)v).pA.x = ((myImageView)v).pB.x;

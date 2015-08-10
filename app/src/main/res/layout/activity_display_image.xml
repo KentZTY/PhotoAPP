@@ -24,44 +24,61 @@
         android:scaleType="fitXY" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="clear"
         android:id="@+id/clear"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/sticker"
-        android:layout_toEndOf="@+id/sticker" />
+        android:background="@drawable/homeselector"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
+        android:layout_alignParentBottom="true">
+    </Button>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SAVE "
         android:id="@+id/save"
+        android:background="@android:drawable/btn_default_small"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@android:drawable/btn_default_small"
-        android:layout_alignTop="@+id/clear" />
+        android:layout_alignParentEnd="true" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="sticker"
+        android:background="@drawable/homeselector"
         android:id="@+id/sticker"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/border"
-        android:layout_toEndOf="@+id/border" />
+        android:layout_above="@id/clear" >
+    </Button>
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="border"
+        android:background="@drawable/homeselector"
         android:id="@+id/border"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_above="@id/sticker" >
+    </Button>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="open"
+        android:background="@drawable/homeselector"
+        android:id="@+id/open"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
+        android:layout_alignParentBottom="true"
+        android:layout_above="@id/border"
+        android:layout_alignParentStart="true">
+    </Button>
 
 </RelativeLayout>
