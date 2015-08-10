@@ -18,7 +18,8 @@ public class ShareImageActivity extends Activity {
         setContentView(R.layout.activity_share_image);
         TextView savedPath=(TextView)findViewById(R.id.myPathView);
         TextView systemMsg = (TextView)findViewById(R.id.warningView);
-        systemMsg.setText("Image has been successfully saved into folder:");
+        String myWarning = "Image has been successfully saved into folder:";
+        systemMsg.setText(myWarning);
         systemMsg.setTextColor(Color.BLACK);
         String myPath = getIntent().getStringExtra("myPath");
         savedPath.setTextColor(Color.BLACK);
