@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -43,7 +44,6 @@ import java.util.Locale;
 public class DisplayImageActivity extends Activity{
     private int screenWidth;
     private int screenHeight;
-    protected int stickerNumber;
     private int i;
     private myImageView currentImage;
     private myImageView[] imageView;
@@ -72,8 +72,7 @@ public class DisplayImageActivity extends Activity{
         i = 0;
         myPath = null;
         instance = this;
-        stickerNumber = 10;
-        imageView = new myImageView[stickerNumber+1];
+        imageView = new myImageView[100];
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels - 100;
@@ -254,8 +253,9 @@ public class DisplayImageActivity extends Activity{
     }
 
     //delete sticker
-    public void deleteSticker(ImageView imageView){
-        mainLayout.removeView(imageView);
+    public void deleteSticker(myImageView mimageView){
+        mimageView.setImageBitmap(getResource(1),new Point(0,0),0,0);
+        mainLayout.removeView(mimageView);
     }
 
     //add sticker
@@ -380,11 +380,11 @@ public class DisplayImageActivity extends Activity{
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HHmm", Locale.UK);
         Date now = new Date();
         String fileName = formatter.format(now) + ".png";
-        File f = new File(Environment.getExternalStorageDirectory().getPath(), fileName);
+        File f = new File(Environment.getExternalStorageDirectory().getPath()+"/Pictures/", fileName);
         try {
             FileOutputStream out = new FileOutputStream(f);
             bm.compress(Bitmap.CompressFormat.PNG, 90, out);
-            myPath = "/SDcard/" + fileName;
+            myPath = Environment.getExternalStorageDirectory().getPath()+"/Pictures/" + fileName;
             out.flush();
             out.close();
         } catch (FileNotFoundException e) {
