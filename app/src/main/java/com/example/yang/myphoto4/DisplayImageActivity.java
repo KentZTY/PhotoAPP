@@ -254,13 +254,13 @@ public class DisplayImageActivity extends Activity{
 
     //delete sticker
     public void deleteSticker(myImageView mimageView){
-        mimageView.setImageBitmap(getResource(1),new Point(0,0),0,0);
+        mimageView.setImageBitmap(getResource(1), new Point(0, 0), 0, 0);
         mainLayout.removeView(mimageView);
     }
 
     //add sticker
     public void AddSticker(String name){
-        int a = Integer.parseInt(name)+1;
+        int a = Integer.parseInt(name);
         i++;
         imageView[i] = new myImageView(this, getResource(a));
         //imageView[i].setImageBitmap(mBitmap);
@@ -268,8 +268,6 @@ public class DisplayImageActivity extends Activity{
         RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp1.height = 200;
         lp1.width = 200;
-        //lp1.addRule(RelativeLayout.ALIGN_TOP);
-        //lp1.setMargins(200,400,0,0);//(int left, int top, int right, int bottom)
         mainLayout.addView(imageView[i], lp1);
     }
 
@@ -277,26 +275,25 @@ public class DisplayImageActivity extends Activity{
 
     //test method
     public void addBorder(String name){
-        int a = Integer.parseInt(name)+1;
+        int a = Integer.parseInt(name);
         Bitmap mBitmap = getBorderResource(a);
         borderImage.setImageBitmap(mBitmap);
     }
 
     //get the bitmap from sticker id
     public Bitmap getResource(int i){
-        String name="a"+i;
-        ApplicationInfo appInfo = getApplicationInfo();
-        int resID = getResources().getIdentifier(name, "drawable", appInfo.packageName);
-        return BitmapFactory.decodeResource(getResources(), resID);
-        //return null;
+        TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
+        Bitmap bm=BitmapFactory.decodeResource(getResources(), ar.getResourceId(i, 0));
+        ar.recycle();
+        return bm;
     }
 
     //get the bitmap from border id
     public Bitmap getBorderResource(int i){
-        String name="b"+i;
-        ApplicationInfo appInfo = getApplicationInfo();
-        int resID = getResources().getIdentifier(name, "drawable", appInfo.packageName);
-        return BitmapFactory.decodeResource(getResources(),resID);
+        TypedArray ar = getResources().obtainTypedArray(R.array.border);
+        Bitmap bm=BitmapFactory.decodeResource(getResources(), ar.getResourceId(i, 0));
+        ar.recycle();
+        return bm;
         //return null;
     }
 
@@ -533,11 +530,6 @@ public class DisplayImageActivity extends Activity{
     //print debug info
     public void print(String info){
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
-    }
-    private void test(){
-        TypedArray ar = getResources().obtainTypedArray(R.array.border);
-        print(ar.length()+"");
-        //borderImage.setImageDrawable((Drawable)ar[0]);
     }
 
 }

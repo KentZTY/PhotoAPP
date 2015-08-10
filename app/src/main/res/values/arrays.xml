@@ -9,6 +9,15 @@
         <item>@drawable/b6</item>
         <item>@drawable/b7</item>
     </string-array>
+    <string-array name="border_cr">
+        <item>@drawable/b1_cr</item>
+        <item>@drawable/b2_cr</item>
+        <item>@drawable/b3_cr</item>
+        <item>@drawable/b4_cr</item>
+        <item>@drawable/b5_cr</item>
+        <item>@drawable/b6_cr</item>
+        <item>@drawable/b7_cr</item>
+    </string-array>
     <string-array name="sticker">
         <item>@drawable/a1</item>
         <item>@drawable/a2</item>

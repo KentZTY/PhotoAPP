@@ -86,7 +86,7 @@ public class Border_Selector extends Activity {
 
 
         public void getImages() {
-            TypedArray ar = getResources().obtainTypedArray(R.array.border);
+            TypedArray ar = getResources().obtainTypedArray(R.array.border_cr);
             int len = ar.length();
             int[] resIds = new int[len];
             //Integer[] temp = new Integer[len++];
@@ -97,7 +97,7 @@ public class Border_Selector extends Activity {
         }
 
         private int getC(){
-            TypedArray ar = getResources().obtainTypedArray(R.array.border);
+            TypedArray ar = getResources().obtainTypedArray(R.array.border_cr);
             int len = ar.length();
             ar.recycle();
             return len;
