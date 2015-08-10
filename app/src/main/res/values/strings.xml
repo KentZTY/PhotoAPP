@@ -12,9 +12,11 @@
     <string name="SHARE">button01</string>
     <string name="NEXT">button04</string>
     <string name="title_activity_gesture_control">GestureControlActivity</string>
-    <string name="test">test</string>
+    <string name="output">Image has been successfully saved into folder:</string>
 
     <string name="saturation">saturation</string>
     <string name="contrast">contrast</string>
     <string name="lightness">lightness</string>
+
+
 </resources>

@@ -4,6 +4,10 @@
         <item>@drawable/b1</item>
         <item>@drawable/b2</item>
         <item>@drawable/b3</item>
+        <item>@drawable/b4</item>
+        <item>@drawable/b5</item>
+        <item>@drawable/b6</item>
+        <item>@drawable/b7</item>
     </string-array>
     <string-array name="sticker">
         <item>@drawable/a1</item>
