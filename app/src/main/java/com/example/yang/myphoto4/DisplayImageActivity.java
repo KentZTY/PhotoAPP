@@ -195,7 +195,7 @@ public class DisplayImageActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                stickerButton.startAnimation(setAnimScale(2, 2));
+                stickerButton.startAnimation(setAnimScale(1.50f, 1.50f));
                 borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
@@ -209,7 +209,7 @@ public class DisplayImageActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                saveButton.startAnimation(setAnimScale(2, 2));
+                saveButton.startAnimation(setAnimScale(1.50f, 1.50f));
                 stickerButton.startAnimation(setAnimScale(0, 0));
                 borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
@@ -227,7 +227,7 @@ public class DisplayImageActivity extends Activity {
             public void onClick(View v)
             {
                 // TODO Auto-generated method stub
-                borderButton.startAnimation(setAnimScale(2, 2));
+                borderButton.startAnimation(setAnimScale(1.50f, 1.50f));
                 stickerButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
@@ -241,7 +241,7 @@ public class DisplayImageActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                clearButton.startAnimation(setAnimScale(2, 2));
+                clearButton.startAnimation(setAnimScale(1.50f, 1.50f));
                 stickerButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
@@ -262,7 +262,7 @@ public class DisplayImageActivity extends Activity {
     protected Animation setAnimScale(float toX, float toY)
     {
         // TODO Auto-generated method stub
-        animationScale = new ScaleAnimation(1f, toX, 1f, toY, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.45f);
+        animationScale = new ScaleAnimation(1f, toX, 1f, toY, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animationScale.setInterpolator(DisplayImageActivity.this, anim.accelerate_decelerate_interpolator);
         animationScale.setDuration(500);
         animationScale.setFillAfter(false);
