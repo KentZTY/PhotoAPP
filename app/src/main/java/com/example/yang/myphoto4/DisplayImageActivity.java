@@ -100,45 +100,6 @@ public class DisplayImageActivity extends Activity {
         myImage.setOnTouchListener(movingEventListener);
         initialButton();
         createBack();
-
-
-        /*(findViewById(R.id.sticker))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
-                        chooseSticker();
-                    }
-                });
-        (findViewById(R.id.clear))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
-                        clearStickers();
-                    }
-                });
-        (findViewById(R.id.border))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
-                        chooseBorder();
-                    }
-                });
-
-
-        /*
-        (findViewById(R.id.button))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
-                        test();
-                    }
-                });
-                */
-        /*
-         Send image to the next activity.
-         */
-        /*(findViewById(R.id.save))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
-                        shareImage();
-                    }
-                });*/
         }
 
     private void initialButton()
@@ -153,7 +114,7 @@ public class DisplayImageActivity extends Activity {
         params.width = 200;
         params2.height = 200;
         params2.width = 200;
-        //…Ë÷√±ﬂæ‡  (int left, int top, int right, int bottom)
+        // (int left, int top, int right, int bottom)
         params.setMargins(50, height -300, 0, 0);
         params2.setMargins(width - 250, height - 300, 0, 0);
 
