@@ -185,11 +185,7 @@ public class DisplayImageActivity extends Activity {
                     clearButton.startAnimation(animTranslate(400, 0, 440, height - 300, clearButton, 120));
 
                 } else {
-                    isClick = false;
-                    openButton.startAnimation(animRotate(0, 0.5f, 0.45f));
-                    stickerButton.startAnimation(animTranslate(0, 300, 50, height - 300, stickerButton, 180));
-                    borderButton.startAnimation(animTranslate(-200, 200, 50, height - 300, borderButton, 160));
-                    clearButton.startAnimation(animTranslate(-300, 0, 50, height - 300, clearButton, 140));
+                   moveBack();
                 }
 
             }
@@ -205,6 +201,7 @@ public class DisplayImageActivity extends Activity {
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 saveButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 chooseSticker();
+                moveBack();
             }
         });
         saveButton.setOnClickListener(new OnClickListener() {
@@ -217,6 +214,9 @@ public class DisplayImageActivity extends Activity {
                 borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                if(isClick == true){
+                    moveBack();
+                }
                 shareImage();
             }
         });
@@ -233,6 +233,7 @@ public class DisplayImageActivity extends Activity {
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 saveButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 chooseBorder();
+                moveBack();
             }
         });
         clearButton.setOnClickListener(new OnClickListener() {
@@ -248,6 +249,14 @@ public class DisplayImageActivity extends Activity {
                 clearStickers();
             }
         });
+    }
+
+    private void moveBack(){
+        isClick = false;
+        openButton.startAnimation(animRotate(0, 0.5f, 0.45f));
+        stickerButton.startAnimation(animTranslate(0, 300, 50, height - 300, stickerButton, 180));
+        borderButton.startAnimation(animTranslate(-200, 200, 50, height - 300, borderButton, 160));
+        clearButton.startAnimation(animTranslate(-300, 0, 50, height - 300, clearButton, 140));
     }
 
     protected Animation setAnimScale(float toX, float toY)
