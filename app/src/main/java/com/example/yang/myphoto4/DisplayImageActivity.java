@@ -72,10 +72,11 @@ public class DisplayImageActivity extends Activity {
     Paint paint;
     String myPath;
     public static DisplayImageActivity instance = null;
-    private Button stickerButton, clearButton, borderButton, openButton;
+    private Button stickerButton, clearButton, borderButton, openButton, saveButton;
     private Animation animationTranslate, animationRotate, animationScale;
     private static int width, height;
     private RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, 0);
+    private RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(0, 0);
     private static Boolean isClick = false;
 
 
@@ -98,6 +99,7 @@ public class DisplayImageActivity extends Activity {
         paint = new Paint();
         myImage.setOnTouchListener(movingEventListener);
         initialButton();
+        createBack();
 
 
         /*(findViewById(R.id.sticker))
@@ -118,7 +120,7 @@ public class DisplayImageActivity extends Activity {
                         chooseBorder();
                     }
                 });
-        createBack();
+
 
         /*
         (findViewById(R.id.button))
@@ -147,10 +149,16 @@ public class DisplayImageActivity extends Activity {
         width = display.getWidth();
         //Log.v("width  & height is:", String.valueOf(width) + ", " + String.valueOf(height));
 
-        params.height = 150;
-        params.width = 150;
+        params.height = 200;
+        params.width = 200;
+        params2.height = 200;
+        params2.width = 200;
         //…Ë÷√±ﬂæ‡  (int left, int top, int right, int bottom)
-        params.setMargins(10, height - 98, 0, 0);
+        params.setMargins(50, height -300, 0, 0);
+        params2.setMargins(width - 250, height - 300, 0, 0);
+
+        saveButton = (Button) findViewById(R.id.save);
+        saveButton.setLayoutParams(params2);
 
         clearButton = (Button) findViewById(R.id.clear);
         clearButton.setLayoutParams(params);
@@ -171,17 +179,17 @@ public class DisplayImageActivity extends Activity {
                 // TODO Auto-generated method stub
                 if (isClick == false) {
                     isClick = true;
-                    openButton.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
-                    stickerButton.startAnimation(animTranslate(0.0f, -180.0f, 10, height - 240, stickerButton, 80));
-                    borderButton.startAnimation(animTranslate(30.0f, -150.0f, 60, height - 230, borderButton, 100));
-                    clearButton.startAnimation(animTranslate(70.0f, -120.0f, 110, height - 210, clearButton, 120));
+                    openButton.startAnimation(animRotate(90f, 0.5f, 0.45f));
+                    stickerButton.startAnimation(animTranslate(60, -400, 60, height - 700, stickerButton, 80));
+                    borderButton.startAnimation(animTranslate(330, -260, 330, height - 560, borderButton, 100));
+                    clearButton.startAnimation(animTranslate(400, 0, 440, height - 300, clearButton, 120));
 
                 } else {
                     isClick = false;
-                    openButton.startAnimation(animRotate(90.0f, 0.5f, 0.45f));
-                    stickerButton.startAnimation(animTranslate(0.0f, 140.0f, 10, height - 98, stickerButton, 180));
-                    borderButton.startAnimation(animTranslate(-50.0f, 130.0f, 10, height - 98, borderButton, 160));
-                    clearButton.startAnimation(animTranslate(-100.0f, 110.0f, 10, height - 98, clearButton, 140));
+                    openButton.startAnimation(animRotate(0, 0.5f, 0.45f));
+                    stickerButton.startAnimation(animTranslate(0, 300, 50, height - 300, stickerButton, 180));
+                    borderButton.startAnimation(animTranslate(-200, 200, 50, height - 300, borderButton, 160));
+                    clearButton.startAnimation(animTranslate(-300, 0, 50, height - 300, clearButton, 140));
                 }
 
             }
@@ -191,11 +199,25 @@ public class DisplayImageActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                stickerButton.startAnimation(setAnimScale(2.5f, 2.5f));
+                stickerButton.startAnimation(setAnimScale(2, 2));
                 borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                saveButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 chooseSticker();
+            }
+        });
+        saveButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                saveButton.startAnimation(setAnimScale(2, 2));
+                stickerButton.startAnimation(setAnimScale(0, 0));
+                borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                openButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                shareImage();
             }
         });
         borderButton.setOnClickListener(new OnClickListener()
@@ -205,10 +227,11 @@ public class DisplayImageActivity extends Activity {
             public void onClick(View v)
             {
                 // TODO Auto-generated method stub
-                borderButton.startAnimation(setAnimScale(2.5f, 2.5f));
+                borderButton.startAnimation(setAnimScale(2, 2));
                 stickerButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                saveButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 chooseBorder();
             }
         });
@@ -217,10 +240,11 @@ public class DisplayImageActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                clearButton.startAnimation(setAnimScale(2.5f, 2.5f));
+                clearButton.startAnimation(setAnimScale(2, 2));
                 stickerButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                saveButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearStickers();
             }
         });
@@ -230,7 +254,7 @@ public class DisplayImageActivity extends Activity {
     {
         // TODO Auto-generated method stub
         animationScale = new ScaleAnimation(1f, toX, 1f, toY, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.45f);
-        animationScale.setInterpolator(DisplayImageActivity.this, accelerate_decelerate_interpolator);
+        animationScale.setInterpolator(DisplayImageActivity.this, anim.accelerate_decelerate_interpolator);
         animationScale.setDuration(500);
         animationScale.setFillAfter(false);
         return animationScale;
@@ -292,8 +316,8 @@ public class DisplayImageActivity extends Activity {
             {
                 // TODO Auto-generated method stub
                 params = new RelativeLayout.LayoutParams(0, 0);
-                params.height = 50;
-                params.width = 50;
+                params.height = 200;
+                params.width = 200;
                 params.setMargins(lastX, lastY, 0, 0);
                 button.setLayoutParams(params);
                 button.clearAnimation();

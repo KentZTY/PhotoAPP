@@ -26,29 +26,27 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="clear"
         android:id="@+id/clear"
-        android:background="@drawable/homeselector"
+        android:background="@drawable/clearselector"
         android:layout_marginBottom="10dip"
         android:layout_marginLeft="10dip"
         android:layout_alignParentBottom="true">
     </Button>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width= "wrap_content"
         android:layout_height="wrap_content"
-        android:text="SAVE "
         android:id="@+id/save"
-        android:background="@android:drawable/btn_default_small"
-        android:layout_alignParentBottom="true"
+        android:background="@drawable/saveselector"
+        android:layout_alignTop="@+id/clear"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true">
+    </Button>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="sticker"
-        android:background="@drawable/homeselector"
+        android:background="@drawable/stickerselector"
         android:id="@+id/sticker"
         android:layout_marginBottom="10dip"
         android:layout_marginLeft="10dip"
@@ -59,8 +57,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="border"
-        android:background="@drawable/homeselector"
+        android:background="@drawable/borderselector"
         android:id="@+id/border"
         android:layout_marginBottom="10dip"
         android:layout_marginLeft="10dip"
@@ -71,8 +68,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="open"
-        android:background="@drawable/homeselector"
+        android:background="@drawable/openselector"
         android:id="@+id/open"
         android:layout_marginBottom="10dip"
         android:layout_marginLeft="10dip"
