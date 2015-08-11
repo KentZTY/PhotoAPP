@@ -263,7 +263,7 @@ public class DisplayImageActivity extends Activity {
     {
         // TODO Auto-generated method stub
         animationScale = new ScaleAnimation(1f, toX, 1f, toY, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animationScale.setInterpolator(DisplayImageActivity.this, anim.accelerate_decelerate_interpolator);
+        animationScale.setInterpolator(DisplayImageActivity.this, anim.bounce_interpolator);
         animationScale.setDuration(500);
         animationScale.setFillAfter(false);
         return animationScale;
