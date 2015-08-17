@@ -51,6 +51,8 @@ import android.view.Display;
 import android.R.anim;
 
 
+import org.opencv.core.Mat;
+
 import static android.R.anim.*;
 
 public class DisplayImageActivity extends Activity {
@@ -407,7 +409,7 @@ public class DisplayImageActivity extends Activity {
         Canvas c = new Canvas(output);
         myImage.draw(c);
         borderImage.draw(c);
-        for(int a= i;a>0;a--){
+        for(int a= 1;a<=i;a++){
             paint.reset();
             c.translate(imageView[a].viewL, imageView[a].viewT);
             Bitmap bm=imageView[a].getBitmap();
