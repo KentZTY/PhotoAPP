@@ -32,6 +32,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import java.io.File;
@@ -41,6 +42,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.RotateAnimation;
@@ -80,6 +84,8 @@ public class DisplayImageActivity extends Activity {
     private RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, 0);
     private RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(0, 0);
     private static Boolean isClick = false;
+    ProgressBar progressbar = null;
+    Timer timer = new Timer();
 
 
     @Override
@@ -171,16 +177,17 @@ public class DisplayImageActivity extends Activity {
 
             @Override
             public void onClick(View v) {
+                showProcessBar();
                 // TODO Auto-generated method stub
-                saveButton.startAnimation(setAnimScale(1.50f, 1.50f));
+                /*saveButton.startAnimation(setAnimScale(1.50f, 1.50f));
                 stickerButton.startAnimation(setAnimScale(0, 0));
                 borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
-                openButton.startAnimation(setAnimScale(0.0f, 0.0f));
+                openButton.startAnimation(setAnimScale(0.0f, 0.0f));*/
                 if(isClick == true){
                     moveBack();
                 }
-                shareImage();
+                timer.schedule(task,5000);
             }
         });
         borderButton.setOnClickListener(new OnClickListener()
@@ -363,6 +370,18 @@ public class DisplayImageActivity extends Activity {
         return uri;
     }
 
+    private void showProcessBar(){
+        RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
+        progressbar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        progressbar.setVisibility(View.VISIBLE);
+        //progressBar.setLayoutParams(params);
+        mainLayout.addView(progressbar, params);
+
+    }
+
     //Create a intent to choose stickers
     private void chooseSticker() {
         Intent intent = new Intent();
@@ -540,6 +559,22 @@ public class DisplayImageActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+                Intent intent = new Intent();
+                intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
+                Bitmap bm = outputImage(imageView);
+                saveBitmap(bm);
+                Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm,null,null));
+                intent.setData(uri);
+                intent.putExtra("myPath", myPath);
+                startActivity(intent);
+                //setContentView(R.layout.null_layout);
+
+        }
+    };
     public void shareImage(){
         Intent intent = new Intent();
         intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
