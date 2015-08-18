@@ -19,6 +19,8 @@ import android.net.Uri;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -85,7 +87,6 @@ public class DisplayImageActivity extends Activity {
     private RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(0, 0);
     private static Boolean isClick = false;
     ProgressBar progressbar = null;
-    Timer timer = new Timer();
 
 
     @Override
@@ -177,17 +178,17 @@ public class DisplayImageActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                showProcessBar();
+                myHandler.sendEmptyMessage(1);
                 // TODO Auto-generated method stub
-                /*saveButton.startAnimation(setAnimScale(1.50f, 1.50f));
+                saveButton.startAnimation(setAnimScale(1.50f, 1.50f));
                 stickerButton.startAnimation(setAnimScale(0, 0));
                 borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
-                openButton.startAnimation(setAnimScale(0.0f, 0.0f));*/
+                openButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 if(isClick == true){
                     moveBack();
                 }
-                timer.schedule(task,5000);
+                shareImageThread.start();
             }
         });
         borderButton.setOnClickListener(new OnClickListener()
@@ -220,6 +221,24 @@ public class DisplayImageActivity extends Activity {
             }
         });
     }
+
+    Handler myHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 1:
+                    showProcessBar();
+                    break;
+                case 2:
+                    progressbar.setVisibility(View.GONE);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    };
 
     private void moveBack(){
         isClick = false;
@@ -560,19 +579,11 @@ public class DisplayImageActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    TimerTask task = new TimerTask() {
+    Thread shareImageThread = new Thread() {
         @Override
         public void run() {
-                Intent intent = new Intent();
-                intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
-                Bitmap bm = outputImage(imageView);
-                saveBitmap(bm);
-                Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm,null,null));
-                intent.setData(uri);
-                intent.putExtra("myPath", myPath);
-                startActivity(intent);
-                //setContentView(R.layout.null_layout);
-
+            shareImage();
+            myHandler.sendEmptyMessage(2);
         }
     };
     public void shareImage(){
