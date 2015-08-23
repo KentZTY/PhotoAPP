@@ -1,6 +1,7 @@
 package com.example.yang.myphoto4;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +14,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.graphics.Matrix;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -41,6 +44,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -142,6 +148,19 @@ public class DisplayImageActivity extends Activity {
         openButton = (Button) findViewById(R.id.open);
         openButton.setLayoutParams(params);
 
+        Button testButton =  (Button) findViewById(R.id.test);
+        testButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                //myImage.setImageDrawable(LoadImageFromWebOperations("https://upload.wikimedia.org/wikipedia/commons/a/aa/Crystal_128_forward.png"));
+                //myImage.setImageBitmap(getBitmap("https://upload.wikimedia.org/wikipedia/commons/a/aa/Crystal_128_forward.png"));
+                new LoadImage().execute("https://thecustomizewindows.com/wp-content/uploads/2011/11/Nicest-Android-Live-Wallpapers.png");
+
+            }
+        });
+
         openButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -218,6 +237,8 @@ public class DisplayImageActivity extends Activity {
                 clearStickers();
             }
         });
+
+
     }
 
     Handler myHandler = new Handler(){
@@ -441,7 +462,7 @@ public class DisplayImageActivity extends Activity {
     //combine all the layers into a bitmap
     public Bitmap outputImage (myImageView[] imageView){
         Bitmap output;
-        Bitmap background = BitmapFactory.decodeResource(getResources(),R.drawable.bg);
+        Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
         output = Bitmap.createBitmap(background,0,0,screenWidth, screenHeight);
         Canvas c = new Canvas(output);
         myImage.draw(c);
@@ -481,6 +502,18 @@ public class DisplayImageActivity extends Activity {
         int a = Integer.parseInt(name);
         i++;
         imageView[i] = new myImageView(this, getResource(a));
+        //imageView[i].setImageBitmap(mBitmap);
+        imageView[i].setOnTouchListener(movingEventListener);
+        RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp1.height = 200;
+        lp1.width = 200;
+        mainLayout.addView(imageView[i], lp1);
+    }
+
+    //add sticker
+    public void AddStickeFromDrawabler(Drawable drawable){
+        i++;
+        imageView[i] = new myImageView(this, ((BitmapDrawable) drawable).getBitmap());
         //imageView[i].setImageBitmap(mBitmap);
         imageView[i].setOnTouchListener(movingEventListener);
         RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -757,6 +790,69 @@ public class DisplayImageActivity extends Activity {
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
+
+    public static Drawable LoadImageFromWebOperations(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, null);
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private class LoadImage extends AsyncTask<String, String, Bitmap> {
+        Bitmap bitmap;
+        ProgressDialog pDialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(DisplayImageActivity.this);
+            pDialog.setMessage("Loading Image ....");
+            pDialog.show();
+
+        }
+        protected Bitmap doInBackground(String... args) {
+            try {
+                bitmap = BitmapFactory.decodeStream((InputStream)new URL(args[0]).getContent());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+
+            if(image != null){
+                //AddStickeFromDrawabler(image);
+                myImage.setImageBitmap(image);
+                pDialog.dismiss();
+
+            }else{
+
+                pDialog.dismiss();
+                Toast.makeText(DisplayImageActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
 }
 
 

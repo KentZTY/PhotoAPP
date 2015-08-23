@@ -2,8 +2,11 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Created by Ree on 2015/8/23.
@@ -18,8 +21,8 @@ public class FileSync extends Activity {
 
     public String getDiskCacheDir(Context context){
         String cachePath = null;
-        //Environment.getExtemalStorageState() 获取SDcard的状态
-        //Environment.MEDIA_MOUNTED 手机装有SDCard,并且可以进行读写
+        //Environment.getExtemalStorageState()
+        //Environment.MEDIA_MOUNTED
         //getAbsolutePath()
 
         if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
@@ -31,15 +34,25 @@ public class FileSync extends Activity {
         return cachePath;
     }
 
+    public static Drawable LoadImageFromWebOperations(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /*
     File saveFile=new File("/sdcard/zhzhg.txt");
-    或:File sdCardDir=new File("/sdcard");//获取SD卡目录
+    or:File sdCardDir=new File("/sdcard");//get SDpath
     File saveFile=new File(sdCardDir,"zhzhg.txt");
     FileOutputStream outStream = new FileOutputStream(saveFile);
-    outStream.write("文件的读写".getBytes());
+    outStream.write("".getBytes());
     outStream.close();
 
-    URL url=new URL(图片网址);
+    URL url=new URL();
     URLConection conn=url.openConnection();
     conn.connect();
     InputStream is=conn.getInputStream();
