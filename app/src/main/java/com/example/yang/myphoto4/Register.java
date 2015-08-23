@@ -37,7 +37,7 @@ public class Register extends Activity implements OnClickListener{
     // private static final String LOGIN_URL = "http://xxx.xxx.x.x:1234/webservice/register.php";
 
     //testing on Emulator:
-    private static final String LOGIN_URL = "http://10.0.2.2:1234/webservice/register.php";
+    private static final String LOGIN_URL = "http://raptor.kent.ac.uk/~wz57/Ree/Register.php";
 
     //testing from a real server:
     //private static final String LOGIN_URL = "http://www.yourdomain.com/webservice/register.php";
@@ -85,7 +85,7 @@ public class Register extends Activity implements OnClickListener{
             pDialog.setCancelable(true);
             pDialog.show();
             */
-            print("Attempting login...");
+            print("Attempting registering...");
         }
 
         @Override

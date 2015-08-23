@@ -15,7 +15,7 @@ public class FileSync extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.null_layout);
+        setContentView(R.layout.file_sync);
 
     }
 
@@ -59,4 +59,6 @@ public class FileSync extends Activity {
     Bitmap bmp=BitmapFactory.decodeSteam(is);
     imageview.setImageBitmap(bm);
     */
+
 }
+
