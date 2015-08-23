@@ -124,7 +124,7 @@ public class DisplayImageActivity extends Activity {
         params2.height = 200;
         params2.width = 200;
         // (int left, int top, int right, int bottom)
-        params.setMargins(50, height -300, 0, 0);
+        params.setMargins(50, height - 300, 0, 0);
         params2.setMargins(width - 250, height - 300, 0, 0);
 
         saveButton = (Button) findViewById(R.id.save);
@@ -185,18 +185,16 @@ public class DisplayImageActivity extends Activity {
                 borderButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 clearButton.startAnimation(setAnimScale(0.0f, 0.0f));
                 openButton.startAnimation(setAnimScale(0.0f, 0.0f));
-                if(isClick == true){
+                if (isClick == true) {
                     moveBack();
                 }
-                shareImageThread.start();
+                new Thread(myRun).start();
             }
         });
-        borderButton.setOnClickListener(new OnClickListener()
-        {
+        borderButton.setOnClickListener(new OnClickListener() {
 
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // TODO Auto-generated method stub
                 borderButton.startAnimation(setAnimScale(1.50f, 1.50f));
                 stickerButton.startAnimation(setAnimScale(0.0f, 0.0f));
@@ -229,15 +227,16 @@ public class DisplayImageActivity extends Activity {
             switch (msg.what){
                 case 1:
                     showProcessBar();
+                    saveButton.setClickable(false);
                     break;
                 case 2:
                     progressbar.setVisibility(View.GONE);
+                    saveButton.setClickable(true);
                     break;
                 default:
                     break;
             }
         }
-
     };
 
     private void moveBack(){
@@ -579,11 +578,11 @@ public class DisplayImageActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    Thread shareImageThread = new Thread() {
+    Runnable myRun = new Runnable() {
         @Override
         public void run() {
-            shareImage();
-            myHandler.sendEmptyMessage(2);
+                shareImage();
+                myHandler.sendEmptyMessage(2);
         }
     };
     public void shareImage(){
