@@ -29,4 +29,15 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sync"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/photoButton"
+        android:layout_alignStart="@+id/photoButton"
+        android:layout_marginLeft="113dp"
+        android:layout_marginStart="113dp"
+        android:src="@android:drawable/bottom_bar" />
+
 </RelativeLayout>

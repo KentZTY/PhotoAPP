@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string-array name="sticker">
+        <item>@drawable/a1</item>
+        <item>@drawable/a2</item>
+        <item>@drawable/a3</item>
+        <item>@drawable/a4</item>
+        <item>@drawable/a5</item>
+        <item>@drawable/a6</item>
+        <item>@drawable/a7</item>
+        <item>@drawable/a8</item>
+        <item>@drawable/a9</item>
+        <item>@drawable/a10</item>
+        <item>@drawable/a11</item>
+        <item>@drawable/a12</item>
+        <item>@drawable/a13</item>
+        <item>@drawable/a14</item>
+    </string-array>
+
     <string-array name="border">
         <item>@drawable/b1</item>
         <item>@drawable/b2</item>
@@ -18,21 +36,4 @@
         <item>@drawable/b6_cr</item>
         <item>@drawable/b7_cr</item>
     </string-array>
-    <string-array name="sticker">
-        <item>@drawable/a1</item>
-        <item>@drawable/a2</item>
-        <item>@drawable/a3</item>
-        <item>@drawable/a4</item>
-        <item>@drawable/a5</item>
-        <item>@drawable/a6</item>
-        <item>@drawable/a7</item>
-        <item>@drawable/a8</item>
-        <item>@drawable/a9</item>
-        <item>@drawable/a10</item>
-        <item>@drawable/a11</item>
-        <item>@drawable/a12</item>
-        <item>@drawable/a13</item>
-        <item>@drawable/a14</item>
-    </string-array>
-
 </resources>
