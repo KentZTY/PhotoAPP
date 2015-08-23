@@ -53,6 +53,30 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
         </activity>
+        <activity
+            android:name=".Login"
+            android:label="@string/title_activity_share_image"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.yang.myphoto4.DisplayImageActivity" />
+        </activity>
+        <activity
+            android:name=".Register"
+            android:label="@string/title_activity_share_image"
+            android:parentActivityName=".Login" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.yang.myphoto4.DisplayImageActivity" />
+        </activity>
+        <activity
+            android:name=".FileSync"
+            android:label="@string/title_activity_share_image"
+            android:parentActivityName=".Login" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.yang.myphoto4.DisplayImageActivity" />
+        </activity>
     </application>
 
 </manifest>
