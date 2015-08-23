@@ -78,11 +78,14 @@ public class Register extends Activity implements OnClickListener{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            /*
             pDialog = new ProgressDialog(Register.this);
             pDialog.setMessage("Creating User...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
+            */
+            print("Attempting login...");
         }
 
         @Override
@@ -137,6 +140,9 @@ public class Register extends Activity implements OnClickListener{
 
         }
 
+    }
+    private void print(String info) {
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
 }
