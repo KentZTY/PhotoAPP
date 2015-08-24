@@ -61,10 +61,6 @@ import android.view.animation.TranslateAnimation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.Display;
 import android.R.anim;
-
-
-import org.opencv.core.Mat;
-
 import static android.R.anim.*;
 
 public class DisplayImageActivity extends Activity {
