@@ -12,6 +12,7 @@ import java.net.URL;
  * Created by Ree on 2015/8/23.
  */
 public class FileSync extends Activity {
+    private static final String Sync_URL = "http://raptor.kent.ac.uk/~wz57/Ree/Sync.php";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
