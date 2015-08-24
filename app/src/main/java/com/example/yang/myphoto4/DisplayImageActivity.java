@@ -157,6 +157,18 @@ public class DisplayImageActivity extends Activity {
             }
         });
 
+        Button helpButton =  (Button) findViewById(R.id.help);
+        helpButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Intent help = new Intent();
+                help.setClass(DisplayImageActivity.this, Help.class);
+                startActivity(help);
+            }
+        });
+
         openButton.setOnClickListener(new OnClickListener() {
 
             @Override
