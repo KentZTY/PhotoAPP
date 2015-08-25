@@ -242,6 +242,7 @@ public class Iris extends Activity {
                             }else{
                             myRight--;
                             isRightTrue = false;}
+
                         }
                     }
                 }
