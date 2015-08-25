@@ -307,6 +307,7 @@ public class Iris extends Activity {
                                     notRightEye = false;
                                 }else{
                                     mTop--;
+
                                 }
                             }
                             else{
