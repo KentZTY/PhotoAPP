@@ -18,6 +18,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity{
     private static final int SELECT_PICTURE = 1;
     private static final int REQUEST_CAPTURE_CAMERA = 2;
+    private static final int REQUEST_CAMERA_IRIS = 3;
     private String selectedImagePath1;
     private Uri uri;
 
@@ -71,6 +72,20 @@ public class MainActivity extends Activity{
                         }
                     }
                 });
+
+        (findViewById(R.id.irisButton))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        String state = Environment.getExternalStorageState();
+                        if (state.equals(Environment.MEDIA_MOUNTED)) {
+                            Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent, REQUEST_CAMERA_IRIS);
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
         /*
          * Get image data(uri) and image path.
@@ -80,24 +95,28 @@ public class MainActivity extends Activity{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this, DisplayImageActivity.class);
-            switch (requestCode){
-                case SELECT_PICTURE:
-                    uri = data.getData();
-                    selectedImagePath1 = getPath(uri);
-                    System.out.println("Image Path : " + selectedImagePath1);
-                    break;
-                case REQUEST_CAPTURE_CAMERA:
-                    uri = data.getData();
-                    break;
-                default:
-                    break;
+            if(requestCode != REQUEST_CAMERA_IRIS){
+                intent.setClass(MainActivity.this, DisplayImageActivity.class);
+                switch (requestCode){
+                    case SELECT_PICTURE:
+                        uri = data.getData();
+                        selectedImagePath1 = getPath(uri);
+                        System.out.println("Image Path : " + selectedImagePath1);
+                        break;
+                    case REQUEST_CAPTURE_CAMERA:
+                        uri = data.getData();
+                        break;
+                    default:
+                        break;
+                }
+            }if(requestCode == REQUEST_CAMERA_IRIS){
+                intent.setClass(MainActivity.this, Iris.class);
+                uri = data.getData();
             }
             intent.setData(uri);
             startActivityForResult(intent, 0);
             //finish();
         }
-
     }
         /*
          * Get path function.

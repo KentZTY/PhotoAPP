@@ -5,4 +5,7 @@
     <string name="title_activity_share_image">ShareImageActivity</string>
     <string name="title_activity_gesture_control">GestureControlActivity</string>
     <string name="output">Image has been successfully saved into folder:</string>
+    <string name="title_activity_iris">Iris</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

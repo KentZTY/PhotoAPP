@@ -1,5 +1,6 @@
 package com.example.yang.myphoto4;
 
+import com.example.yang.myphoto4.util.myUtil;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -306,8 +307,7 @@ public class DisplayImageActivity extends Activity {
             }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
                 // TODO Auto-generated method stub
                 animationRotate.setFillAfter(true);
             }
@@ -413,7 +413,7 @@ public class DisplayImageActivity extends Activity {
         final Uri uri = getIntent().getData();
         String filePath = getPath(uri);
         System.out.print(filePath);
-        myImage.setImageBitmap(getBitmap(filePath));
+        myImage.setImageBitmap(myUtil.getBitmap(filePath));
         return uri;
     }
 
@@ -444,15 +444,6 @@ public class DisplayImageActivity extends Activity {
         //intent.putExtra("type", "border");
         startActivityForResult(intent, border);
         //print("success");
-    }
-
-    //get the bitmap from filepath
-    public Bitmap getBitmap(String filePath){
-        int degree = readPictureDegree(filePath);
-        BitmapFactory.Options opts=new BitmapFactory.Options();
-        opts.inSampleSize=2;
-        Bitmap bitmapOld = BitmapFactory.decodeFile(filePath, opts);
-        return rotatingImageView(degree, bitmapOld);
     }
 
     //get the filepath from uri
@@ -555,44 +546,6 @@ public class DisplayImageActivity extends Activity {
         //return null;
     }
 
-    /*
-     * Get image rotate degree
-     **/
-    public static int readPictureDegree(String path) {
-        int degree  = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(path);
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    degree = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    degree = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    degree = 270;
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return degree;
-    }
-
-    /*
-     * Rotate image
-     **/
-    public static Bitmap rotatingImageView(int angle , Bitmap bitmap) {
-
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        System.out.println("angle2=" + angle);
-        int bWidth = bitmap.getWidth();
-        int bHeight = bitmap.getHeight();
-        return Bitmap.createBitmap(bitmap, 0, 0,
-                bWidth, bHeight, matrix, true);
-    }
 
 
     @Override
