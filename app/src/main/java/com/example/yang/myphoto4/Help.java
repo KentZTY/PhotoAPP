@@ -28,6 +28,9 @@ public class Help extends Activity {
                     case 1:
                         helpImage.setImageDrawable(getResources().getDrawable(R.drawable.help0));
                         break;
+                    case 2:
+                        helpImage.setImageDrawable(getResources().getDrawable(R.drawable.help1));
+                        break;
                     default:
                         i=0;
                         end();

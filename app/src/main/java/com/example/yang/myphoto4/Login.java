@@ -78,6 +78,8 @@ public class Login extends Activity implements OnClickListener{
                 break;
             case R.id.register:
                 Intent i = new Intent(this, Register.class);
+                i.putExtra("username",user.getText().toString());
+                i.putExtra("password",pass.getText().toString());
                 startActivity(i);
                 break;
 
