@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.yang.myphoto4.util.JSONParser;
+
 public class Login extends Activity implements OnClickListener{
 
     private EditText user, pass;

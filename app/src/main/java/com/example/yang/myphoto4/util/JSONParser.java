@@ -1,4 +1,4 @@
-package com.example.yang.myphoto4;
+package com.example.yang.myphoto4.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
