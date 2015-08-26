@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,14 +38,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 public class Iris extends Activity {
+    static final String tag = "eye";
     FaceDetector faceDetector = null;
     FaceDetector.Face[] face;
     Button redEyeBtn = null;
     final int N_MAX = 2;
     ProgressBar progressBar = null;
     private ImageView myIrisImage = null;
-    int myBlack = 40;
-    int myWhite = 150;
+    int myBlack = 140;
     Bitmap myLeftIris = null;
     Bitmap myRightIris = null;
     int leftEyeWidth, rightEyeWidth, leftEyeHeight, rightEyeHeight, myLeft, myTop, mLeft, mTop;
@@ -168,9 +169,15 @@ public class Iris extends Activity {
 
             Bitmap mBitmap = toGrayScale(srcFace);
             Color myColor = new Color();
-            int myRight, myBottom, myLeftEyeX, myLeftEyeY;
-
-            myLeftEyeY = 0;
+            int myRight, myBottom, myLeftEyeX, myLeftEyeY,finalLeftEyeX, myTotalX, myTotalY, finalLeftEyeY;
+            myTotalX = 0;
+            myTotalY = 0;
+            float myCount = 0.00f;
+            float myFactor;
+            finalLeftEyeX = 0;
+            finalLeftEyeY = 0;
+            myLeftEyeX = eyeLeft.x -20;
+            myLeftEyeY = eyeLeft.y +20;
             myLeft = eyeLeft.x;
             myRight = eyeLeft.x;
             myBottom = eyeLeft.y;
@@ -179,25 +186,61 @@ public class Iris extends Activity {
             Boolean isRightTrue = true;
             Boolean isBottomTrue = true;
             Boolean isTopTrue = true;
-
             Boolean notLeftEye = true;
+            Boolean secAlgo = false;
+            Boolean isFinal = false;
 
-            if(myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y))>myWhite || myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y+2))>myWhite || myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y-2))>myWhite
-                    || myColor.red(mBitmap.getPixel(eyeLeft.x-2, eyeLeft.y))>myWhite || myColor.red(mBitmap.getPixel(eyeLeft.x+2, eyeLeft.y))>myWhite) {
+            for(i=0;i<=4000;i++){
+                if(!isFinal){
+                    if(myLeftEyeX<eyeLeft.x +40) {
+                        if (myLeftEyeY > eyeLeft.y - 40) {
+                            if (myColor.red(mBitmap.getPixel(myLeftEyeX, myLeftEyeY)) < myBlack) {
+                                myFactor = (255 - myColor.red(mBitmap.getPixel(myLeftEyeX, myLeftEyeY)))/255;
+                                myTotalX += myLeftEyeX*myFactor;
+                                myTotalY += myLeftEyeY*myFactor;
+                                myCount+= myFactor;
+                                myLeftEyeY--;
+                            } else {
+                                myLeftEyeY--;
+                            }
+                        } else {
+                            myLeftEyeY = eyeLeft.y + 20;
+                            myLeftEyeX++;
+                        }
+                    }else{
+                        if(myCount>0){
+                        finalLeftEyeX = myTotalX/(int)myCount;
+                        finalLeftEyeY = myTotalY/(int)myCount;
+                        myLeft = finalLeftEyeX;
+                        myRight = finalLeftEyeX;
+                        myBottom = finalLeftEyeY;
+                        myTop = finalLeftEyeY;
+                        isFinal = true;
+                            notLeftEye = false;
+                        }else{
+                            secAlgo = true;
+                        }
+                    }
+                }
+            }
+
+            if(secAlgo){
+            if(myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y))>myBlack || myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y+2))>myBlack || myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y-2))>myBlack
+                    || myColor.red(mBitmap.getPixel(eyeLeft.x-2, eyeLeft.y))>myBlack || myColor.red(mBitmap.getPixel(eyeLeft.x+2, eyeLeft.y))>myBlack) {
                 myLeft = myLeft+8;
                 myRight = myLeft;
-                myLeftEyeX = myLeft;
                 for (i = 0; i < 300; i++) {
                     if (notLeftEye) {
-                        if (myColor.red(mBitmap.getPixel(myLeft, myTop)) > myWhite || myColor.red(mBitmap.getPixel(myLeft+1, myTop)) > myWhite || myColor.red(mBitmap.getPixel(myLeft-1, myTop)) > myWhite
-                                || myColor.red(mBitmap.getPixel(myLeft, myTop+1)) > myWhite || myColor.red(mBitmap.getPixel(myLeft, myTop-1)) > myWhite) {
+                        if (myColor.red(mBitmap.getPixel(myLeft, myTop)) > myBlack|| myColor.red(mBitmap.getPixel(myLeft+1, myTop)) >myBlack || myColor.red(mBitmap.getPixel(myLeft-1, myTop)) > myBlack
+                                || myColor.red(mBitmap.getPixel(myLeft, myTop+1)) > myBlack || myColor.red(mBitmap.getPixel(myLeft, myTop-1)) > myBlack) {
                             myTop--;
                         } else {
                             if ( myColor.red(mBitmap.getPixel(myLeft+2, myTop)) < myBlack && myColor.red(mBitmap.getPixel(myLeft-2, myTop)) < myBlack
                                     && myColor.red(mBitmap.getPixel(myLeft, myTop+2)) < myBlack && myColor.red(mBitmap.getPixel(myLeft, myTop-2)) < myBlack){
                                 if ( myColor.red(mBitmap.getPixel(myLeft, myTop+5)) < myBlack && myColor.red(mBitmap.getPixel(myLeft, myTop-5)) < myBlack) {
+                                    myTop = myTop -8;
                                     myBottom = myTop;
-                                    myLeftEyeY = myTop;
+                                    finalLeftEyeY = myTop;
                                     notLeftEye = false;
                                 }
                                 else{
@@ -211,18 +254,19 @@ public class Iris extends Activity {
                     }
                 }
             }else{
-                myLeftEyeX = myLeft;
-                myLeftEyeY = myTop;
+                finalLeftEyeX = myLeft;
+                finalLeftEyeY = myTop-8;
                 notLeftEye = false;
             }
+            }
 
-            if(!notLeftEye) {
-                for (i = 0; i < srcFace.getWidth(); i++) {
+            if(isFinal && !notLeftEye) {
+                for (i = 0; i < 20; i++) {
                     if (isLeftTrue) {
-                        if (myColor.red(mBitmap.getPixel(myLeft, myLeftEyeY)) < myBlack) {
+                        if (myColor.red(mBitmap.getPixel(myLeft, finalLeftEyeY)) < myBlack) {
                             myLeft--;
                         } else {
-                            if(myColor.red(mBitmap.getPixel(myLeft-3, myLeftEyeY)) < myBlack){
+                            if(myColor.red(mBitmap.getPixel(myLeft-7, finalLeftEyeY)) < myBlack){
                                 myLeft--;
                             }else{
                             myLeft++;
@@ -232,12 +276,12 @@ public class Iris extends Activity {
                     }
                 }
 
-                for (i = 0; i < srcFace.getWidth(); i++) {
+                for (i = 0; i < 20; i++) {
                     if (isRightTrue) {
-                        if (myColor.red(mBitmap.getPixel(myRight, myLeftEyeY)) < myBlack) {
+                        if (myColor.red(mBitmap.getPixel(myRight, finalLeftEyeY)) < myBlack) {
                             myRight++;
                         } else {
-                            if(myColor.red(mBitmap.getPixel(myRight+3, myLeftEyeY)) < myBlack){
+                            if(myColor.red(mBitmap.getPixel(myRight+7, finalLeftEyeY)) < myBlack){
                                 myRight++;
                             }else{
                             myRight--;
@@ -247,12 +291,12 @@ public class Iris extends Activity {
                     }
                 }
 
-                for (i = 0; i < srcFace.getHeight(); i++) {
+                for (i = 0; i < 20; i++) {
                     if (isBottomTrue) {
-                        if (myColor.red(mBitmap.getPixel(myLeftEyeX, myBottom)) < myBlack) {
+                        if (myColor.red(mBitmap.getPixel(finalLeftEyeX, myBottom)) < myBlack) {
                             myBottom++;
                         } else {
-                            if(myColor.red(mBitmap.getPixel(myLeftEyeX, myBottom+3)) < myBlack){
+                            if(myColor.red(mBitmap.getPixel(finalLeftEyeX, myBottom+7)) < myBlack){
                                 myBottom++;
                             }else{
                                 myBottom--;
@@ -261,12 +305,12 @@ public class Iris extends Activity {
                     }
                 }
 
-                for (i = 0; i < srcFace.getHeight(); i++) {
+                for (i = 0; i < 20; i++) {
                     if (isTopTrue) {
-                        if (myColor.red(mBitmap.getPixel(myLeftEyeX, myTop)) < myBlack) {
+                        if (myColor.red(mBitmap.getPixel(finalLeftEyeX, myTop)) < myBlack) {
                             myTop--;
                         } else {
-                            if(myColor.red(mBitmap.getPixel(myLeftEyeX, myTop-3)) < myBlack){
+                            if(myColor.red(mBitmap.getPixel(finalLeftEyeX, myTop-7)) < myBlack){
                                 myTop--;
                             }else{
                             myTop++;
@@ -275,62 +319,109 @@ public class Iris extends Activity {
                     }
                 }
             }
+
+
             float myMidX = (myLeft + myRight) / 2;
             float myMidY = (myBottom + myTop) / 2;
 
-            int mRight, mBottom, mRightEyeX, mRightEyeY;
-            mRightEyeY = 0;
+            int mRight, mBottom, mRightEyeX, mRightEyeY,finalRightEyeX, mTotalX, mTotalY, finalRightEyeY;
+            mTotalX = 0;
+            mTotalY = 0;
+            float mCount = 0.00f;
+            float mFactor;
+            finalRightEyeX = 0;
+            finalRightEyeY = 0;
+            mRightEyeX = eyeRight.x -20;
+            mRightEyeY = eyeRight.y +20;
             mLeft = eyeRight.x;
             mRight = eyeRight.x;
-            mTop = eyeRight.y;
             mBottom = eyeRight.y;
+            mTop = eyeRight.y;
             Boolean leftTrue = true;
             Boolean rightTrue = true;
             Boolean topTrue = true;
             Boolean bottomTrue = true;
             Boolean notRightEye = true;
+            Boolean isFinish = false;
+            Boolean secondAlgo = false;
 
-            if(myColor.red(mBitmap.getPixel(eyeRight.x, eyeRight.y))>myWhite || myColor.red(mBitmap.getPixel(eyeRight.x, eyeRight.y+2))>myWhite || myColor.red(mBitmap.getPixel(eyeRight.x, eyeRight.y-2))>myWhite
-                    || myColor.red(mBitmap.getPixel(eyeRight.x-2, eyeRight.y))>myWhite || myColor.red(mBitmap.getPixel(eyeRight.x+2, eyeRight.y))>myWhite) {
-                mLeft = mLeft - 8;
-                mRightEyeX = mLeft;
-                for (i = 0; i < 300; i++) {
-                    if (notRightEye) {
-                        if (myColor.red(mBitmap.getPixel(mLeft, mTop)) > myWhite || myColor.red(mBitmap.getPixel(mLeft+1, mTop)) > myWhite || myColor.red(mBitmap.getPixel(mLeft-1, mTop)) > myWhite
-                                || myColor.red(mBitmap.getPixel(mLeft, mTop+1)) > myWhite || myColor.red(mBitmap.getPixel(mLeft, mTop-1)) > myWhite) {
-                            mTop--;
+            for(i=0;i<=4000;i++){
+                if(!isFinish){
+                    if(mRightEyeX<eyeRight.x +40) {
+                        if (mRightEyeY > eyeRight.y - 40) {
+                            if (myColor.red(mBitmap.getPixel(mRightEyeX, mRightEyeY)) < myBlack) {
+                            mFactor = (255 - myColor.red(mBitmap.getPixel(mRightEyeX, mRightEyeY)))/255;
+                            mTotalX += mRightEyeX*mFactor;
+                            mTotalY += mRightEyeY*mFactor;
+                            mCount+= mFactor;
+                            mRightEyeY--;
+                             } else {
+                            mRightEyeY--;
+                             }
                         } else {
-                            if (myColor.red(mBitmap.getPixel(mLeft+2, mTop)) < myBlack && myColor.red(mBitmap.getPixel(mLeft-2, mTop)) < myBlack
-                                    && myColor.red(mBitmap.getPixel(mLeft, mTop+2)) < myBlack && myColor.red(mBitmap.getPixel(mLeft, mTop-2)) < myBlack){
-                                if (myColor.red(mBitmap.getPixel(mLeft, mTop+5)) < myBlack && myColor.red(mBitmap.getPixel(mLeft, mTop-5)) < myBlack){
-                                    mRightEyeY = mTop;
-                                    mBottom = mTop;
-                                    notRightEye = false;
-                                }else{
-                                    mTop--;
-
-
-                                }
-                            }
-                            else{
-                                mTop--;
-                            }
+                            mRightEyeY = eyeRight.y + 20;
+                            mRightEyeX++;
+                        }
+                    }else{
+                        if(mCount>0){
+                            finalRightEyeX = mTotalX/(int)mCount;
+                            finalRightEyeY = mTotalY/(int)mCount;
+                            mLeft = finalRightEyeX;
+                            mRight = finalRightEyeX;
+                            mBottom = finalRightEyeY;
+                            mTop = finalRightEyeY;
+                            isFinish = true;
+                            notRightEye = false;
+                        } else{
+                            secondAlgo = true;
                         }
                     }
                 }
-            }else{
-                mRightEyeX = mLeft;
-                mRightEyeY = mTop;
-                notRightEye = false;
             }
 
-            if(!notRightEye) {
-                for (i = 0; i < srcFace.getWidth(); i++) {
+            if(secondAlgo){
+                if(myColor.red(mBitmap.getPixel(eyeRight.x, eyeRight.y))>myBlack || myColor.red(mBitmap.getPixel(eyeRight.x, eyeRight.y+2))>myBlack || myColor.red(mBitmap.getPixel(eyeRight.x, eyeRight.y-2))>myBlack
+                        || myColor.red(mBitmap.getPixel(eyeRight.x-2, eyeRight.y))>myBlack || myColor.red(mBitmap.getPixel(eyeRight.x+2, eyeRight.y))>myBlack) {
+                    mLeft = mLeft - 8;
+                    mRight = mLeft;
+                    for (i = 0; i < 300; i++) {
+                        if (notRightEye) {
+                            if (myColor.red(mBitmap.getPixel(mLeft, mTop)) > myBlack || myColor.red(mBitmap.getPixel(mLeft+1, mTop)) >myBlack || myColor.red(mBitmap.getPixel(mLeft-1, mTop)) > myBlack
+                                    || myColor.red(mBitmap.getPixel(mLeft, mTop+1)) > myBlack || myColor.red(mBitmap.getPixel(mLeft, mTop-1)) > myBlack) {
+                                mTop--;
+                            } else {
+                                if (myColor.red(mBitmap.getPixel(mLeft+2, mTop)) < myBlack && myColor.red(mBitmap.getPixel(mLeft-2, mTop)) < myBlack
+                                        && myColor.red(mBitmap.getPixel(mLeft, mTop+2)) < myBlack && myColor.red(mBitmap.getPixel(mLeft, mTop-2)) < myBlack){
+                                    if (myColor.red(mBitmap.getPixel(mLeft, mTop+5)) < myBlack && myColor.red(mBitmap.getPixel(mLeft, mTop-5)) < myBlack){
+                                        mTop = mTop - 8;
+                                        finalRightEyeY = mTop;
+                                        mBottom = mTop;
+                                        notRightEye = false;
+                                    }else{
+                                        mTop--;
+                                    }
+                                }
+                                else{
+                                    mTop--;
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    finalRightEyeX = mLeft;
+                    finalLeftEyeY = mTop-8;
+                    notRightEye = false;
+                }
+            }
+
+
+            if(isFinish && !notRightEye) {
+                for (i = 0; i < 20; i++) {
                     if (leftTrue) {
-                        if (myColor.red(mBitmap.getPixel(mLeft, mRightEyeY)) < myBlack) {
+                        if (myColor.red(mBitmap.getPixel(mLeft, finalRightEyeY)) < myBlack) {
                             mLeft--;
                         } else {
-                            if(myColor.red(mBitmap.getPixel(mLeft-3, mRightEyeY)) < myBlack){
+                            if(myColor.red(mBitmap.getPixel(mLeft-7, finalRightEyeY)) < myBlack){
                                 mLeft--;
                             }else{
                             mLeft++;
@@ -339,12 +430,12 @@ public class Iris extends Activity {
                     }
                 }
 
-                for (i = 0; i < srcFace.getWidth(); i++) {
+                for (i = 0; i < 20; i++) {
                     if (rightTrue) {
-                        if (myColor.red(mBitmap.getPixel(mRight, mRightEyeY)) < myBlack) {
+                        if (myColor.red(mBitmap.getPixel(mRight, finalRightEyeY)) < myBlack) {
                             mRight++;
                         } else {
-                            if(myColor.red(mBitmap.getPixel(mRight+3, mRightEyeY)) < myBlack){
+                            if(myColor.red(mBitmap.getPixel(mRight+7, finalRightEyeY)) < myBlack){
                                 mRight++;
                             }else{
                             mRight--;
@@ -353,12 +444,12 @@ public class Iris extends Activity {
                     }
                 }
 
-                for (i = 0; i < srcFace.getHeight(); i++) {
+                for (i = 0; i < 20; i++) {
                     if (bottomTrue) {
-                        if (myColor.red(mBitmap.getPixel(mRightEyeX, mBottom)) < myBlack) {
+                        if (myColor.red(mBitmap.getPixel(finalRightEyeX, mBottom)) < myBlack) {
                             mBottom++;
                         } else {
-                            if(myColor.red(mBitmap.getPixel(mRightEyeX, mBottom+3)) < myBlack){
+                            if(myColor.red(mBitmap.getPixel(finalRightEyeX, mBottom+7)) < myBlack){
                                 mBottom++;
                             }else{
                             mBottom--;
@@ -367,12 +458,12 @@ public class Iris extends Activity {
                     }
                 }
 
-                for (i = 0; i < srcFace.getHeight(); i++) {
+                for (i = 0; i < 20; i++) {
                     if (topTrue) {
-                        if (myColor.red(mBitmap.getPixel(mRightEyeX, mTop)) < myBlack) {
+                        if (myColor.red(mBitmap.getPixel(finalRightEyeX, mTop)) < myBlack) {
                             mTop--;
                         } else {
-                            if(myColor.red(mBitmap.getPixel(mRightEyeX, mTop-3)) < myBlack){
+                            if(myColor.red(mBitmap.getPixel(finalRightEyeX, mTop-7)) < myBlack){
                                 mTop--;
                             }else{
                             mTop++;
@@ -387,6 +478,16 @@ public class Iris extends Activity {
             rightEyeWidth = mRight - mLeft;
             rightEyeHeight = mBottom - mTop;
 
+            Log.i(tag, "Left eye L: "+myLeft+" Left eye R: "+myRight);
+            Log.i(tag, "Left eye T: "+myTop+" Left eye B: "+myBottom);
+            Log.i(tag, "Right eye L: "+mLeft+" Right eye R: "+mRight);
+            Log.i(tag, "Right eye T: "+mTop+" Right eye B: "+mBottom);
+            Log.i(tag, "Left eye X: "+eyeLeft.x+" Left eye Y: "+eyeLeft.y);
+            Log.i(tag, "Right eye X: "+eyeRight.x+" Right eye Y: "+eyeRight.y);
+            Log.i(tag, "myTotalX: "+myTotalX+" myTotalY: "+myTotalY+" myCount: "+myCount);
+            Log.i(tag, "finalX: "+finalLeftEyeX+" finalY: "+finalLeftEyeY);
+            Log.i(tag, "Color int: " + myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y)));
+
             float mMidX = (mLeft + mRight)/2;
             float mMidY = (mBottom + mTop)/2;
 
@@ -394,7 +495,7 @@ public class Iris extends Activity {
                 Canvas canvas = new Canvas(srcFace);
                 Paint p = new Paint();
                 p.setAntiAlias(true);
-                p.setStrokeWidth(8);
+                p.setStrokeWidth(3);
                 p.setStyle(Paint.Style.STROKE);
                 p.setColor(Color.GREEN);
 
