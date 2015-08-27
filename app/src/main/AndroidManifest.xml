@@ -39,7 +39,7 @@
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
         </activity>
         <activity
-            android:name=".Sticker_Selector"
+            android:name=".util.Sticker_Selector"
             android:label="@string/title_activity_share_image"
             android:parentActivityName=".DisplayImageActivity" >
             <meta-data
@@ -47,7 +47,7 @@
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
         </activity>
         <activity
-            android:name=".Border_Selector"
+            android:name=".util.Border_Selector"
             android:label="@string/title_activity_share_image"
             android:parentActivityName=".DisplayImageActivity" >
             <meta-data

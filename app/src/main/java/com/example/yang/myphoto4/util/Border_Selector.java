@@ -1,4 +1,4 @@
-package com.example.yang.myphoto4;
+package com.example.yang.myphoto4.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,24 +13,25 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.example.yang.myphoto4.DisplayImageActivity;
+import com.example.yang.myphoto4.R;
+
 /**
  * Created by Ree on 2015/7/31.
  */
-public class Sticker_Selector extends Activity {
+public class Border_Selector extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sticker_selector);
         GridView gridView=(GridView)findViewById(R.id.gridView);
-        gridView.setAdapter(new ImageAdapter(this));
+        gridView.setAdapter(new BorderAdapter(this));
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Intent intent = new Intent(Sticker_Selector.this, DisplayImageActivity.class);
-
+                Intent intent = new Intent(Border_Selector.this, DisplayImageActivity.class);
                 intent.putExtra("id", position + "");
                 setResult(RESULT_OK, intent);
-
                 setContentView(R.layout.null_layout);
                 //finishActivity(1);
                 finish();
@@ -40,11 +41,13 @@ public class Sticker_Selector extends Activity {
         });
 
     }
-    public class ImageAdapter extends BaseAdapter {
+
+    public class BorderAdapter extends BaseAdapter {
+
         int size=300;
         private Context mContext;
 
-        public ImageAdapter(Context c) {
+        public BorderAdapter(Context c) {
             mContext = c;
         }
 
@@ -84,7 +87,7 @@ public class Sticker_Selector extends Activity {
 
 
         public void getImages() {
-            TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
+            TypedArray ar = getResources().obtainTypedArray(R.array.border_cr);
             int len = ar.length();
             int[] resIds = new int[len];
             //Integer[] temp = new Integer[len++];
@@ -95,9 +98,11 @@ public class Sticker_Selector extends Activity {
         }
 
         private int getC(){
-            TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
+            TypedArray ar = getResources().obtainTypedArray(R.array.border_cr);
             int len = ar.length();
+            ar.recycle();
             return len;
         }
     }
 }
+

@@ -1,9 +1,8 @@
-package com.example.yang.myphoto4;
+package com.example.yang.myphoto4.util;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.View;
@@ -13,24 +12,28 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import com.example.yang.myphoto4.DisplayImageActivity;
+import com.example.yang.myphoto4.R;
 
 /**
  * Created by Ree on 2015/7/31.
  */
-public class Border_Selector extends Activity {
+public class Sticker_Selector extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sticker_selector);
         GridView gridView=(GridView)findViewById(R.id.gridView);
-        gridView.setAdapter(new BorderAdapter(this));
+        gridView.setAdapter(new ImageAdapter(this));
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Intent intent = new Intent(Border_Selector.this, DisplayImageActivity.class);
+                Intent intent = new Intent(Sticker_Selector.this, DisplayImageActivity.class);
+
                 intent.putExtra("id", position + "");
                 setResult(RESULT_OK, intent);
+
                 setContentView(R.layout.null_layout);
                 //finishActivity(1);
                 finish();
@@ -40,13 +43,11 @@ public class Border_Selector extends Activity {
         });
 
     }
-
-    public class BorderAdapter extends BaseAdapter {
-
+    public class ImageAdapter extends BaseAdapter {
         int size=300;
         private Context mContext;
 
-        public BorderAdapter(Context c) {
+        public ImageAdapter(Context c) {
             mContext = c;
         }
 
@@ -86,7 +87,7 @@ public class Border_Selector extends Activity {
 
 
         public void getImages() {
-            TypedArray ar = getResources().obtainTypedArray(R.array.border_cr);
+            TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
             int len = ar.length();
             int[] resIds = new int[len];
             //Integer[] temp = new Integer[len++];
@@ -97,11 +98,9 @@ public class Border_Selector extends Activity {
         }
 
         private int getC(){
-            TypedArray ar = getResources().obtainTypedArray(R.array.border_cr);
+            TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
             int len = ar.length();
-            ar.recycle();
             return len;
         }
     }
 }
-
