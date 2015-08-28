@@ -54,7 +54,6 @@ public class FileSync extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filesync);
-        testText = (TextView) findViewById(R.id.testText);
         syncButton = (ImageButton) findViewById(R.id.sync);
         syncButton.setOnClickListener(this);
         username = getIntent().getStringExtra("username");
