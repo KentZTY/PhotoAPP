@@ -3,6 +3,7 @@ package com.example.yang.myphoto4;
 /**
  * Created by Yang on 06/08/2015.
  */
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,8 +20,14 @@ import android.util.FloatMath;
 import android.widget.ImageView;
 
 public class myImageView extends ImageView {
+    private final Context mcontext;
+    private final Paint paint;
     public boolean isEditable = false;
-    private Path path = new Path();
+    public Bitmap mBitmap, delmB, ctrlmB;
+    public Point cpoint;
+    public float angle;
+    public float zoomFactor;
+    public int wW = 0, wH = 0;
     int rotatedImageW;
     int rotatedImageH;
     int viewW;
@@ -30,22 +37,16 @@ public class myImageView extends ImageView {
     Matrix matrix = new Matrix();
     PointF pA = new PointF();
     PointF pB = new PointF();
-    private final Context mcontext;
-    public Bitmap mBitmap, delmB, ctrlmB;
-    private final Paint paint;
-    public Point cpoint;
-    public float angle;
-    public float zoomFactor;
-    public int wW = 0, wH = 0;
     Point iconP1, iconP2;
     Point np1;
     Point np2;
     Point np3;
     Point np4;
     int dx, dy;
+    Canvas outputDrawable = null;
+    private Path path = new Path();
     private Drawable controlDrawable1;
     private Drawable controlDrawable2;
-    Canvas outputDrawable=null;
 
     public myImageView(Context context, Bitmap mBitmap) {
         super(context);
@@ -72,6 +73,46 @@ public class myImageView extends ImageView {
         paint.setAntiAlias(true);
         paint.setStyle(Style.STROKE);
         init(mBitmap);
+    }
+
+    public static Point roationPoint(Point target, Point source, float degree) {
+        source.x = source.x - target.x;
+        source.y = source.y - target.y;
+        double alpha = 0;
+        double beta = 0;
+        Point result = new Point();
+        double dis = Math.sqrt(source.x * source.x + source.y * source.y);
+        if (source.x == 0 && source.y == 0) {
+            return target;
+        } else if (source.x >= 0 && source.y >= 0) {
+            alpha = Math.asin(source.y / dis);
+        } else if (source.x < 0 && source.y >= 0) {
+            alpha = Math.asin(Math.abs(source.x) / dis);
+            alpha = alpha + Math.PI / 2;
+        } else if (source.x < 0 && source.y < 0) {
+            alpha = Math.asin(Math.abs(source.y) / dis);
+            alpha = alpha + Math.PI;
+        } else if (source.x >= 0 && source.y < 0) {
+            alpha = Math.asin(source.x / dis);
+            alpha = alpha + Math.PI * 3 / 2;
+        }
+
+        alpha = radianToDegree(alpha);
+        beta = alpha + degree;
+        beta = degreeToRadian(beta);
+        result.x = (int) Math.round(dis * Math.cos(beta));
+        result.y = (int) Math.round(dis * Math.sin(beta));
+        result.x += target.x;
+        result.y += target.y;
+        return result;
+    }
+
+    public static double radianToDegree(double radian) {
+        return radian * 180 / Math.PI;
+    }
+
+    public static double degreeToRadian(double degree) {
+        return degree * Math.PI / 180;
     }
 
     public void init(Bitmap myBitmap) {
@@ -125,55 +166,11 @@ public class myImageView extends ImageView {
                 cpoint.y - rotatedImageH / 2);
     }
 
-
-    public static Point roationPoint(Point target, Point source, float degree) {
-        source.x = source.x - target.x;
-        source.y = source.y - target.y;
-        double alpha = 0;
-        double beta = 0;
-        Point result = new Point();
-        double dis = Math.sqrt(source.x * source.x + source.y * source.y);
-        if (source.x == 0 && source.y == 0) {
-            return target;
-        } else if (source.x >= 0 && source.y >= 0) {
-            alpha = Math.asin(source.y / dis);
-        } else if (source.x < 0 && source.y >= 0) {
-            alpha = Math.asin(Math.abs(source.x) / dis);
-            alpha = alpha + Math.PI / 2;
-        } else if (source.x < 0 && source.y < 0) {
-            alpha = Math.asin(Math.abs(source.y) / dis);
-            alpha = alpha + Math.PI;
-        } else if (source.x >= 0 && source.y < 0) {
-            alpha = Math.asin(source.x / dis);
-            alpha = alpha + Math.PI * 3 / 2;
-        }
-
-        alpha = radianToDegree(alpha);
-        beta = alpha + degree;
-        beta = degreeToRadian(beta);
-        result.x = (int) Math.round(dis * Math.cos(beta));
-        result.y = (int) Math.round(dis * Math.sin(beta));
-        result.x += target.x;
-        result.y += target.y;
-        return result;
-    }
-
-
-    public static double radianToDegree(double radian) {
-        return radian * 180 / Math.PI;
-    }
-
-    public static double degreeToRadian(double degree) {
-        return degree * Math.PI / 180;
-    }
-
-
-
-    public Bitmap getBitmap(){
+    public Bitmap getBitmap() {
         return mBitmap;
     }
 
-    public Matrix getMyMatrix(){
+    public Matrix getMyMatrix() {
         return matrix;
     }
 
@@ -184,11 +181,10 @@ public class myImageView extends ImageView {
         this.paint.setARGB(255, 138, 43, 226);
         this.paint.setStrokeWidth(2);
         canvas.drawBitmap(mBitmap, matrix, paint);
-        outputDrawable=canvas;
+        outputDrawable = canvas;
 
 
-
-        if(isEditable){
+        if (isEditable) {
             path.reset();
             path.moveTo(np1.x, np1.y);
             path.lineTo(np2.x, np2.y);

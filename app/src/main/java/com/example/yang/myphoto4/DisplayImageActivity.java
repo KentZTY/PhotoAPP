@@ -1,8 +1,6 @@
 package com.example.yang.myphoto4;
 
-import com.example.yang.myphoto4.util.Border_Selector;
-import com.example.yang.myphoto4.util.Sticker_Selector;
-import com.example.yang.myphoto4.util.myUtil;
+import android.R.anim;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -12,12 +10,12 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -32,11 +31,19 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.example.yang.myphoto4.util.myUtil;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -48,49 +55,104 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.Display;
-import android.R.anim;
-
 public class DisplayImageActivity extends Activity {
-    private int screenWidth;
-    private int screenHeight;
-    private int i;
-    private myImageView currentImage;
-    private myImageView[] imageView;
-    RelativeLayout mainLayout;
-    private ImageView myImage;
-    private ImageView borderImage;
     private static final int sticker = 1;
     private static final int border = 2;
     private static final int NONE = 3;
     private static final int DRAG = 4;
     private static final int ZOOM_OR_ROTATE = 5;
     private static final int DELETE = 6;
+    public static DisplayImageActivity instance = null;
+    private static int width, height;
+    private static Boolean isClick = false;
+    RelativeLayout mainLayout;
     int mode = NONE;
     Paint paint;
     String myPath;
-    public static DisplayImageActivity instance = null;
+    ProgressBar progressbar = null;
+    Handler myHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    showProcessBar();
+                    saveButton.setClickable(false);
+                    break;
+                case 2:
+                    progressbar.setVisibility(View.GONE);
+                    saveButton.setClickable(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+    private int screenWidth;
+    private int screenHeight;
+    private int i;
+    private myImageView currentImage;
+    private myImageView[] imageView;
+    private ImageView myImage;
+    private ImageView borderImage;
+    Runnable myRun = new Runnable() {
+        @Override
+        public void run() {
+            shareImage();
+            myHandler.sendEmptyMessage(2);
+        }
+    };
     private Button stickerButton, clearButton, borderButton, openButton, saveButton;
     private Animation animationTranslate, animationRotate, animationScale;
-    private static int width, height;
     private RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, 0);
     private RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(0, 0);
-    private static Boolean isClick = false;
-    ProgressBar progressbar = null;
+    private OnTouchListener movingEventListener = new OnTouchListener() {
 
+        public boolean onTouch(View v, MotionEvent event) {
+
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_DOWN:
+                    modeChooser(v, event);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (mode == DELETE) {
+                        deleteSticker((myImageView) v);
+                    }
+                    break;
+                case MotionEvent.ACTION_POINTER_UP:
+
+                    mode = NONE;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (mode == ZOOM_OR_ROTATE) {
+                        zoomAndRotate(v, event);
+                    }
+                    if (mode == DRAG) {
+                        drag(v, event);
+                    }
+                    break;
+            }
+            return true;
+        }
+    };
+
+    public static Drawable LoadImageFromWebOperations(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, null);
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
-        mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
-        myImage =(ImageView)findViewById(R.id.imageView);
-        borderImage =(ImageView)findViewById(R.id.borderView);
+        mainLayout = (RelativeLayout) findViewById(R.id.stickerView);
+        myImage = (ImageView) findViewById(R.id.imageView);
+        borderImage = (ImageView) findViewById(R.id.borderView);
         borderImage.setImageDrawable(null);
         i = 0;
         myPath = null;
@@ -104,10 +166,9 @@ public class DisplayImageActivity extends Activity {
         myImage.setOnTouchListener(movingEventListener);
         initialButton();
         createBack();
-        }
+    }
 
-    private void initialButton()
-    {
+    private void initialButton() {
         // TODO Auto-generated method stub
         Display display = getWindowManager().getDefaultDisplay();
         height = display.getHeight();
@@ -137,7 +198,7 @@ public class DisplayImageActivity extends Activity {
         openButton = (Button) findViewById(R.id.open);
         openButton.setLayoutParams(params);
 
-        Button testButton =  (Button) findViewById(R.id.test);
+        Button testButton = (Button) findViewById(R.id.test);
         testButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -150,7 +211,7 @@ public class DisplayImageActivity extends Activity {
             }
         });
 
-        Button helpButton =  (Button) findViewById(R.id.help);
+        Button helpButton = (Button) findViewById(R.id.help);
         helpButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -175,7 +236,7 @@ public class DisplayImageActivity extends Activity {
                     clearButton.startAnimation(animTranslate(400, 0, 440, height - 300, clearButton, 120));
 
                 } else {
-                   moveBack();
+                    moveBack();
                 }
 
             }
@@ -242,26 +303,7 @@ public class DisplayImageActivity extends Activity {
 
     }
 
-    Handler myHandler = new Handler(){
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case 1:
-                    showProcessBar();
-                    saveButton.setClickable(false);
-                    break;
-                case 2:
-                    progressbar.setVisibility(View.GONE);
-                    saveButton.setClickable(true);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
-    private void moveBack(){
+    private void moveBack() {
         isClick = false;
         openButton.startAnimation(animRotate(0, 0.5f, 0.45f));
         stickerButton.startAnimation(animTranslate(0, 300, 50, height - 300, stickerButton, 180));
@@ -269,8 +311,7 @@ public class DisplayImageActivity extends Activity {
         clearButton.startAnimation(animTranslate(-300, 0, 50, height - 300, clearButton, 140));
     }
 
-    protected Animation setAnimScale(float toX, float toY)
-    {
+    protected Animation setAnimScale(float toX, float toY) {
         // TODO Auto-generated method stub
         animationScale = new ScaleAnimation(1f, toX, 1f, toY, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animationScale.setInterpolator(DisplayImageActivity.this, anim.bounce_interpolator);
@@ -279,9 +320,11 @@ public class DisplayImageActivity extends Activity {
         return animationScale;
 
     }
+     /*
+         * Receive image uri. Get image path. Display image.
+         **/
 
-    protected Animation animRotate(float toDegrees, float pivotXValue, float pivotYValue)
-    {
+    protected Animation animRotate(float toDegrees, float pivotXValue, float pivotYValue) {
         // TODO Auto-generated method stub
         animationRotate = new RotateAnimation(0, toDegrees, Animation.RELATIVE_TO_SELF, pivotXValue, Animation.RELATIVE_TO_SELF, pivotYValue);
         animationRotate.setAnimationListener(new AnimationListener() {
@@ -308,30 +351,25 @@ public class DisplayImageActivity extends Activity {
     }
 
     protected Animation animTranslate(float toX, float toY, final int lastX, final int lastY,
-                                      final Button button, long durationMillis)
-    {
+                                      final Button button, long durationMillis) {
         // TODO Auto-generated method stub
         animationTranslate = new TranslateAnimation(0, toX, 0, toY);
-        animationTranslate.setAnimationListener(new AnimationListener()
-        {
+        animationTranslate.setAnimationListener(new AnimationListener() {
 
             @Override
-            public void onAnimationStart(Animation animation)
-            {
+            public void onAnimationStart(Animation animation) {
                 // TODO Auto-generated method stub
 
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation)
-            {
+            public void onAnimationRepeat(Animation animation) {
                 // TODO Auto-generated method stub
 
             }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
                 // TODO Auto-generated method stub
                 params = new RelativeLayout.LayoutParams(0, 0);
                 params.height = 200;
@@ -346,13 +384,11 @@ public class DisplayImageActivity extends Activity {
         return animationTranslate;
     }
 
-
-
     @Override
-        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //print(""+requestCode);
         //print(""+resultCode);
-        if(data!=null) {
+        if (data != null) {
             switch (requestCode) {
                 case RESULT_CANCELED:
                     break;
@@ -397,9 +433,6 @@ public class DisplayImageActivity extends Activity {
             }
         }
     }
-     /*
-         * Receive image uri. Get image path. Display image.
-         **/
 
     private Uri createBack() {
         final Uri uri = getIntent().getData();
@@ -409,8 +442,8 @@ public class DisplayImageActivity extends Activity {
         return uri;
     }
 
-    private void showProcessBar(){
-        RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.stickerView);
+    private void showProcessBar() {
+        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.stickerView);
         progressbar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
@@ -440,7 +473,7 @@ public class DisplayImageActivity extends Activity {
 
     //get the filepath from uri
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         ContentResolver cr = this.getContentResolver();
         Cursor cursor = cr.query(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -448,32 +481,28 @@ public class DisplayImageActivity extends Activity {
         return cursor.getString(column_index);
     }
 
-
-
     //combine all the layers into a bitmap
-    public Bitmap outputImage (myImageView[] imageView){
+    public Bitmap outputImage(myImageView[] imageView) {
         Bitmap output;
         Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
-        output = Bitmap.createBitmap(background,0,0,screenWidth, screenHeight);
+        output = Bitmap.createBitmap(background, 0, 0, screenWidth, screenHeight);
         Canvas c = new Canvas(output);
         myImage.draw(c);
         borderImage.draw(c);
-        for(int a= 1;a<=i;a++){
+        for (int a = 1; a <= i; a++) {
             paint.reset();
             c.translate(imageView[a].viewL, imageView[a].viewT);
-            Bitmap bm=imageView[a].getBitmap();
-            Matrix mx=imageView[a].getMyMatrix();
-            c.drawBitmap(bm,mx,paint);
+            Bitmap bm = imageView[a].getBitmap();
+            Matrix mx = imageView[a].getMyMatrix();
+            c.drawBitmap(bm, mx, paint);
             c.translate(-imageView[a].viewL, -imageView[a].viewT);
         }
         return output;
     }
 
-
-
     //clear all stickers
-    public void clearStickers(){
-        for(int a= i;a>0;a--){
+    public void clearStickers() {
+        for (int a = i; a > 0; a--) {
             imageView[a].setImageDrawable(null);
             mainLayout.removeView(imageView[a]);
         }
@@ -483,13 +512,13 @@ public class DisplayImageActivity extends Activity {
     }
 
     //delete sticker
-    public void deleteSticker(myImageView mimageView){
+    public void deleteSticker(myImageView mimageView) {
         mimageView.setImageBitmap(getResource(1), new Point(0, 0), 0, 0);
         mainLayout.removeView(mimageView);
     }
 
     //add sticker
-    public void AddSticker(String name){
+    public void AddSticker(String name) {
         int a = Integer.parseInt(name);
         i++;
         imageView[i] = new myImageView(this, getResource(a));
@@ -502,7 +531,7 @@ public class DisplayImageActivity extends Activity {
     }
 
     //add sticker
-    public void AddStickeFromDrawabler(Drawable drawable){
+    public void AddStickeFromDrawabler(Drawable drawable) {
         i++;
         imageView[i] = new myImageView(this, ((BitmapDrawable) drawable).getBitmap());
         //imageView[i].setImageBitmap(mBitmap);
@@ -513,7 +542,6 @@ public class DisplayImageActivity extends Activity {
         mainLayout.addView(imageView[i], lp1);
     }
 
-
     //test method
     public void addBorder(String name) {
         int a = Integer.parseInt(name);
@@ -522,23 +550,21 @@ public class DisplayImageActivity extends Activity {
     }
 
     //get the bitmap from sticker id
-    public Bitmap getResource(int i){
+    public Bitmap getResource(int i) {
         TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
-        Bitmap bm=BitmapFactory.decodeResource(getResources(), ar.getResourceId(i, 0));
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), ar.getResourceId(i, 0));
         ar.recycle();
         return bm;
     }
 
     //get the bitmap from border id
-    public Bitmap getBorderResource(int i){
+    public Bitmap getBorderResource(int i) {
         TypedArray ar = getResources().obtainTypedArray(R.array.border);
-        Bitmap bm=BitmapFactory.decodeResource(getResources(), ar.getResourceId(i, 0));
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), ar.getResourceId(i, 0));
         ar.recycle();
         return bm;
         //return null;
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -546,8 +572,6 @@ public class DisplayImageActivity extends Activity {
         getMenuInflater().inflate(R.menu.menu_display_image, menu);
         return true;
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -564,19 +588,12 @@ public class DisplayImageActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    Runnable myRun = new Runnable() {
-        @Override
-        public void run() {
-                shareImage();
-                myHandler.sendEmptyMessage(2);
-        }
-    };
-    public void shareImage(){
+    public void shareImage() {
         Intent intent = new Intent();
         intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
         Bitmap bm = outputImage(imageView);
         saveBitmap(bm);
-        Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm,null,null));
+        Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm, null, null));
         intent.setData(uri);
         intent.putExtra("myPath", myPath);
         startActivity(intent);
@@ -588,11 +605,11 @@ public class DisplayImageActivity extends Activity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HHmm", Locale.UK);
         Date now = new Date();
         String fileName = formatter.format(now) + ".png";
-        File f = new File(Environment.getExternalStorageDirectory().getPath()+"/Pictures/", fileName);
+        File f = new File(Environment.getExternalStorageDirectory().getPath() + "/Pictures/", fileName);
         try {
             FileOutputStream out = new FileOutputStream(f);
             bm.compress(Bitmap.CompressFormat.PNG, 90, out);
-            myPath = Environment.getExternalStorageDirectory().getPath()+"/Pictures/" + fileName;
+            myPath = Environment.getExternalStorageDirectory().getPath() + "/Pictures/" + fileName;
             out.flush();
             out.close();
         } catch (FileNotFoundException e) {
@@ -605,84 +622,55 @@ public class DisplayImageActivity extends Activity {
 
     }
 
-
-    private OnTouchListener movingEventListener = new OnTouchListener() {
-
-        public boolean onTouch(View v, MotionEvent event) {
-
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_DOWN:
-                    modeChooser(v, event);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    if(mode == DELETE){
-                    deleteSticker((myImageView)v);
-                }
-                    break;
-                case MotionEvent.ACTION_POINTER_UP:
-
-                    mode = NONE;
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if (mode == ZOOM_OR_ROTATE) {
-                        zoomAndRotate(v, event);
-                    }
-                    if (mode == DRAG) {
-                        drag(v, event);
-                    }
-                    break;
-            }
-            return true;
-        }
-    };
-
-    private void modeChooser(View v, MotionEvent event){
-        if(v==myImage){
-            if(currentImage != null){
+    private void modeChooser(View v, MotionEvent event) {
+        if (v == myImage) {
+            if (currentImage != null) {
                 currentImage.setEditable(false);
-                mode = NONE;}
-            if(currentImage == null){
+                mode = NONE;
+            }
+            if (currentImage == null) {
                 mode = NONE;
             }
         }
-        if(v!=myImage){
-            if(currentImage != null){
+        if (v != myImage) {
+            if (currentImage != null) {
                 currentImage.setEditable(false);
-                ((myImageView)v).setEditable(true);
-                currentImage = (myImageView)v;}
-            if(currentImage == null){
-                ((myImageView)v).setEditable(true);
-                currentImage = (myImageView)v;
+                ((myImageView) v).setEditable(true);
+                currentImage = (myImageView) v;
             }
-            ((myImageView)v).pA.set(event.getX() + ((myImageView)v).viewL, event.getY() + ((myImageView)v).viewT);
-            if (((myImageView)v).isactiondownicon((int) event.getX(), (int) event.getY()) == 2) {
+            if (currentImage == null) {
+                ((myImageView) v).setEditable(true);
+                currentImage = (myImageView) v;
+            }
+            ((myImageView) v).pA.set(event.getX() + ((myImageView) v).viewL, event.getY() + ((myImageView) v).viewT);
+            if (((myImageView) v).isactiondownicon((int) event.getX(), (int) event.getY()) == 2) {
                 mode = ZOOM_OR_ROTATE;
             }
-            if (((myImageView)v).isactiondownicon((int) event.getX(), (int) event.getY()) == 1) {
+            if (((myImageView) v).isactiondownicon((int) event.getX(), (int) event.getY()) == 1) {
                 mode = DELETE;
             }
 
-            if (((myImageView)v).isactiondownicon((int) event.getX(), (int) event.getY()) == 0) {
+            if (((myImageView) v).isactiondownicon((int) event.getX(), (int) event.getY()) == 0) {
                 mode = DRAG;
             }
         }
     }
 
-    private void zoomAndRotate(View v, MotionEvent event){
+    private void zoomAndRotate(View v, MotionEvent event) {
         float sf;
-        ((myImageView)v).pB.set(event.getX() + ((myImageView)v).viewL, event.getY() + ((myImageView)v).viewT);
-        float realL = (float) Math.sqrt((float) (((myImageView)v).mBitmap.getWidth()
-                * ((myImageView)v).mBitmap.getWidth() + ((myImageView)v).mBitmap.getHeight()
-                * ((myImageView)v).mBitmap.getHeight()) / 4);
-        float newL = (float) Math.sqrt((((myImageView)v).pB.x - (float) ((myImageView)v).cpoint.x)
-                * (((myImageView)v).pB.x - (float) ((myImageView)v).cpoint.x) + (((myImageView)v).pB.y - (float) ((myImageView)v).cpoint.y)
-                * (((myImageView)v).pB.y - (float) ((myImageView)v).cpoint.y));
+        ((myImageView) v).pB.set(event.getX() + ((myImageView) v).viewL, event.getY() + ((myImageView) v).viewT);
+        float realL = (float) Math.sqrt((float) (((myImageView) v).mBitmap.getWidth()
+                * ((myImageView) v).mBitmap.getWidth() + ((myImageView) v).mBitmap.getHeight()
+                * ((myImageView) v).mBitmap.getHeight()) / 4);
+        float newL = (float) Math.sqrt((((myImageView) v).pB.x - (float) ((myImageView) v).cpoint.x)
+                * (((myImageView) v).pB.x - (float) ((myImageView) v).cpoint.x) + (((myImageView) v).pB.y - (float) ((myImageView) v).cpoint.y)
+                * (((myImageView) v).pB.y - (float) ((myImageView) v).cpoint.y));
 
         sf = newL / realL;
-        double a = ((myImageView)v).spacing(((myImageView)v).pA.x, ((myImageView)v).pA.y, (float) ((myImageView)v).cpoint.x,
-                (float) ((myImageView)v).cpoint.y);
-        double b = ((myImageView)v).spacing(((myImageView)v).pB.x, ((myImageView)v).pB.y, ((myImageView)v).pA.x, ((myImageView)v).pA.y);
-        double c = ((myImageView)v).spacing(((myImageView) v).pB.x, ((myImageView) v).pB.y, (float) ((myImageView) v).cpoint.x,
+        double a = ((myImageView) v).spacing(((myImageView) v).pA.x, ((myImageView) v).pA.y, (float) ((myImageView) v).cpoint.x,
+                (float) ((myImageView) v).cpoint.y);
+        double b = ((myImageView) v).spacing(((myImageView) v).pB.x, ((myImageView) v).pB.y, ((myImageView) v).pA.x, ((myImageView) v).pA.y);
+        double c = ((myImageView) v).spacing(((myImageView) v).pB.x, ((myImageView) v).pB.y, (float) ((myImageView) v).cpoint.x,
                 (float) ((myImageView) v).cpoint.y);
         double cosB = (a * a + c * c - b * b) / (2 * a * c);
         if (cosB > 1) {
@@ -691,10 +679,10 @@ public class DisplayImageActivity extends Activity {
         double angleB = Math.acos(cosB);
         float newAngle = (float) (angleB / Math.PI * 180);
 
-        float p1x = ((myImageView)v).pA.x - (float) ((myImageView)v).cpoint.x;
-        float p2x = ((myImageView)v).pB.x - (float) ((myImageView)v).cpoint.x;
-        float p1y = ((myImageView)v).pA.y - (float) ((myImageView)v).cpoint.y;
-        float p2y = ((myImageView)v).pB.y - (float) ((myImageView)v).cpoint.y;
+        float p1x = ((myImageView) v).pA.x - (float) ((myImageView) v).cpoint.x;
+        float p2x = ((myImageView) v).pB.x - (float) ((myImageView) v).cpoint.x;
+        float p1y = ((myImageView) v).pA.y - (float) ((myImageView) v).cpoint.y;
+        float p2y = ((myImageView) v).pB.y - (float) ((myImageView) v).cpoint.y;
 
         if (p1x == 0) {
             if (p2x > 0 && p1y >= 0 && p2y >= 0) {
@@ -708,50 +696,39 @@ public class DisplayImageActivity extends Activity {
             } else if (p1x > 0 && p1y < 0 && p2y < 0) {
                 newAngle = -newAngle;
             }
-        } else if ( p1y / p1x < p2y / p2x) {
+        } else if (p1y / p1x < p2y / p2x) {
             if (p1x < 0 && p2x > 0 && p1y >= 0 && p2y >= 0) {
                 newAngle = -newAngle;
             } else if (p2x < 0 && p1x > 0 && p1y < 0 && p2y < 0) {
                 newAngle = -newAngle;
             }
         } else {
-                newAngle = -newAngle;
+            newAngle = -newAngle;
         }
-        ((myImageView)v).pA.x = ((myImageView)v).pB.x;
-        ((myImageView)v).pA.y = ((myImageView)v).pB.y;
+        ((myImageView) v).pA.x = ((myImageView) v).pB.x;
+        ((myImageView) v).pA.y = ((myImageView) v).pB.y;
         if (sf == 0) {
             sf = 0.1f;
         } else if (sf >= 3) {
             sf = 3f;
         }
-        ((myImageView)v).setImageBitmap(((myImageView)v).mBitmap, ((myImageView)v).cpoint, ((myImageView)v).angle + newAngle, sf);
+        ((myImageView) v).setImageBitmap(((myImageView) v).mBitmap, ((myImageView) v).cpoint, ((myImageView) v).angle + newAngle, sf);
 
     }
 
-    private void drag(View v, MotionEvent event){
-        ((myImageView)v).pB.set(event.getX() + ((myImageView)v).viewL, event.getY() + ((myImageView) v).viewT);
-        ((myImageView)v).cpoint.x += ((myImageView)v).pB.x - ((myImageView)v).pA.x;
-        ((myImageView)v).cpoint.y += ((myImageView)v).pB.y - ((myImageView)v).pA.y;
-        ((myImageView)v).pA.x = ((myImageView)v).pB.x;
-        ((myImageView)v).pA.y = ((myImageView)v).pB.y;
-        ((myImageView)v).setCPoint(((myImageView) v).cpoint);
+    private void drag(View v, MotionEvent event) {
+        ((myImageView) v).pB.set(event.getX() + ((myImageView) v).viewL, event.getY() + ((myImageView) v).viewT);
+        ((myImageView) v).cpoint.x += ((myImageView) v).pB.x - ((myImageView) v).pA.x;
+        ((myImageView) v).cpoint.y += ((myImageView) v).pB.y - ((myImageView) v).pA.y;
+        ((myImageView) v).pA.x = ((myImageView) v).pB.x;
+        ((myImageView) v).pA.y = ((myImageView) v).pB.y;
+        ((myImageView) v).setCPoint(((myImageView) v).cpoint);
 
     }
 
     //print debug info
-    public void print(String info){
+    public void print(String info) {
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
-    }
-
-
-    public static Drawable LoadImageFromWebOperations(String url) {
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, null);
-            return d;
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     public Bitmap getBitmapFromURL(String src) {
@@ -773,6 +750,7 @@ public class DisplayImageActivity extends Activity {
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         Bitmap bitmap;
         ProgressDialog pDialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -781,9 +759,10 @@ public class DisplayImageActivity extends Activity {
             pDialog.show();
 
         }
+
         protected Bitmap doInBackground(String... args) {
             try {
-                bitmap = BitmapFactory.decodeStream((InputStream)new URL(args[0]).getContent());
+                bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -793,12 +772,12 @@ public class DisplayImageActivity extends Activity {
 
         protected void onPostExecute(Bitmap image) {
 
-            if(image != null){
+            if (image != null) {
                 //AddStickeFromDrawabler(image);
                 myImage.setImageBitmap(image);
                 pDialog.dismiss();
 
-            }else{
+            } else {
 
                 pDialog.dismiss();
                 Toast.makeText(DisplayImageActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();

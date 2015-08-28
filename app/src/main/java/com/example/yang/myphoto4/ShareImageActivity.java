@@ -16,8 +16,8 @@ public class ShareImageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_image);
-        TextView savedPath=(TextView)findViewById(R.id.myPathView);
-        TextView systemMsg = (TextView)findViewById(R.id.warningView);
+        TextView savedPath = (TextView) findViewById(R.id.myPathView);
+        TextView systemMsg = (TextView) findViewById(R.id.warningView);
         systemMsg.setText(R.string.output);
         systemMsg.setTextColor(Color.BLACK);
         String myPath = getIntent().getStringExtra("myPath");
@@ -39,14 +39,14 @@ public class ShareImageActivity extends Activity {
                 });
     }
 
-    private void home(){
+    private void home() {
         Intent intent = new Intent();
         intent.setClass(ShareImageActivity.this, MainActivity.class);
-        intent.putExtra("close",true);
+        intent.putExtra("close", true);
         startActivity(intent);
     }
 
-    private void share(){
+    private void share() {
         Uri uri = getIntent().getData();
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("image/*");
