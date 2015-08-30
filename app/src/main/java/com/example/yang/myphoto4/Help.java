@@ -1,11 +1,9 @@
 package com.example.yang.myphoto4;
 
 import android.app.Activity;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 /**
