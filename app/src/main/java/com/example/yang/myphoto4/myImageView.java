@@ -186,8 +186,6 @@ public class myImageView extends ImageView {
         canvas.drawBitmap(mBitmap, matrix, paint);
         outputDrawable=canvas;
 
-
-
         if(isEditable){
             path.reset();
             path.moveTo(np1.x, np1.y);
