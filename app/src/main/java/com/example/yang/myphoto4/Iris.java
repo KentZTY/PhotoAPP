@@ -1,11 +1,7 @@
 package com.example.yang.myphoto4;
 
-import com.example.yang.myphoto4.util.myUtil;
-
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -30,13 +26,14 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
+import com.example.yang.myphoto4.util.myUtil;
 
 public class Iris extends Activity {
     static final String tag = "eye";
