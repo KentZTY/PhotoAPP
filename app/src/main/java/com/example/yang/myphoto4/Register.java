@@ -2,11 +2,14 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -55,10 +58,64 @@ public class Register extends Activity implements OnClickListener {
         user = (EditText) findViewById(R.id.username);
         pass = (EditText) findViewById(R.id.password);
 
+        user.setOnKeyListener(onChangeLine);
+        pass.setOnKeyListener(onSubmit);
+
         mRegister = (Button) findViewById(R.id.register);
         mRegister.setOnClickListener(this);
 
     }
+
+    View.OnKeyListener onChangeLine=new View.OnKeyListener() {
+
+        @Override
+
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+
+            if(keyCode == KeyEvent.KEYCODE_ENTER){
+
+                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if(imm.isActive()){
+
+                    imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );
+                    //shold be change line
+
+
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+    };
+
+    View.OnKeyListener onSubmit=new View.OnKeyListener() {
+
+        @Override
+
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+
+            if(keyCode == KeyEvent.KEYCODE_ENTER){
+
+                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if(imm.isActive()){
+
+                    imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );
+                    //should be submit
+                }
+                return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     public void onClick(View v) {

@@ -2,12 +2,15 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -58,6 +61,11 @@ public class Login extends Activity implements OnClickListener {
         user = (EditText) findViewById(R.id.username);
         pass = (EditText) findViewById(R.id.password);
 
+
+        user.setOnKeyListener(onChangeLine);
+        pass.setOnKeyListener(onSubmit);
+
+
         //setup buttons
         mSubmit = (Button) findViewById(R.id.login);
         mRegister = (Button) findViewById(R.id.register);
@@ -67,6 +75,57 @@ public class Login extends Activity implements OnClickListener {
         mRegister.setOnClickListener(this);
 
     }
+
+    View.OnKeyListener onChangeLine=new View.OnKeyListener() {
+
+        @Override
+
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+
+            if(keyCode == KeyEvent.KEYCODE_ENTER){
+
+                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if(imm.isActive()){
+
+                    imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );
+                    //shold be change line
+
+
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+    };
+
+    View.OnKeyListener onSubmit=new View.OnKeyListener() {
+
+        @Override
+
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+
+            if(keyCode == KeyEvent.KEYCODE_ENTER){
+
+                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if(imm.isActive()){
+
+                    imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );
+                    //should be submit
+                }
+                return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -101,14 +160,14 @@ public class Login extends Activity implements OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            /*
+
             pDialog = new ProgressDialog(Login.this);
             pDialog.setMessage("Attempting login...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
-            */
-            print("Attempting login...");
+
+            //print("Attempting login...");
         }
 
         @Override
@@ -135,8 +194,11 @@ public class Login extends Activity implements OnClickListener {
 
                 // json success tag
                 success = json.getInt(TAG_SUCCESS);
+
+
                 if (success == 1) {
                     Log.d("Login Successful!", json.toString());
+                    pDialog.dismiss();
                     Intent i = new Intent(Login.this, FileSync.class);
                     //i.putExtra("PHPSESSID",PHPSESSID);
                     i.putExtra("username", username);
@@ -146,6 +208,7 @@ public class Login extends Activity implements OnClickListener {
                     return json.getString(TAG_MESSAGE);
                 } else {
                     Log.d("Login Failure!", json.getString(TAG_MESSAGE));
+                    pDialog.dismiss();
                     return json.getString(TAG_MESSAGE);
 
                 }
@@ -156,6 +219,8 @@ public class Login extends Activity implements OnClickListener {
             return null;
 
         }
+
+
 
         /**
          * After completing background task Dismiss the progress dialog

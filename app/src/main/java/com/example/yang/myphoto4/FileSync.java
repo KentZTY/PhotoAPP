@@ -1,6 +1,7 @@
 package com.example.yang.myphoto4;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,9 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,13 +22,16 @@ import com.example.yang.myphoto4.util.JSONParser;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Ree on 2015/8/23.
@@ -37,8 +44,10 @@ public class FileSync extends Activity implements View.OnClickListener {
     private static ProgressDialog pDialog;
     JSONParser jsonParser = new JSONParser();
     ImageButton syncButton;
-    TextView testText;
     String username, password;
+    ListView listView;
+
+
 
     public static Drawable LoadImageFromWebOperations(String url) {
         try {
@@ -58,6 +67,10 @@ public class FileSync extends Activity implements View.OnClickListener {
         syncButton.setOnClickListener(this);
         username = getIntent().getStringExtra("username");
         password = getIntent().getStringExtra("password");
+        listView = (ListView) findViewById(R.id.contentList);
+        myListAdapter adapter = new myListAdapter();
+        //listView.setAdapter(adapter);
+
 
     }
 
@@ -107,7 +120,7 @@ public class FileSync extends Activity implements View.OnClickListener {
             pDialog.setCancelable(true);
             pDialog.show();
 
-            //print("Attempting login...");
+            print("Attempting sync...");
         }
 
         @Override
@@ -134,17 +147,25 @@ public class FileSync extends Activity implements View.OnClickListener {
                 success = json.getInt(TAG_SUCCESS);
 
                 Log.d("Get feedback", json.getString(TAG_STICKER));
+                pDialog.dismiss();
                 //print(success+"");
                 if (success == 1) {
                     Log.d("Login Successful!", json.toString());
+                    JSONArray stickersJ=json.getJSONArray(TAG_STICKER);
+                    String[] stickers=new String[stickersJ.length()];
+                    for(int i=0;i<stickersJ.length();i++){
+                        stickers[i]=(String) stickersJ.get(i);
+                        Log.d("Login Successful!", stickers[i]);
+                    }
+
                     //print(TAG_STICKER);
                     //testText.setText(TAG_STICKER);
 
                     return json.getString(TAG_STICKER);
                 } else {
+                    pDialog.dismiss();
                     Log.d("Login Failure!", json.getString(TAG_STICKER));
                     Intent i = new Intent(FileSync.this, Login.class);
-
                     startActivity(i);
                     return json.getString(TAG_STICKER);
 
@@ -174,6 +195,42 @@ public class FileSync extends Activity implements View.OnClickListener {
         }
     }
 
+    class myListAdapter extends ListActivity {
+        // private List<String> data = new ArrayList<String>();
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            SimpleAdapter adapter = new SimpleAdapter(this,getData(),R.layout.vlist,
+                    new String[]{"title","info","img"},
+                    new int[]{R.id.title,R.id.info,R.id.img});
+            setListAdapter(adapter);
+        }
+
+        private List<Map<String, Object>> getData() {
+            List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("title", "G1");
+            map.put("info", "google 1");
+            map.put("img", R.drawable.a1);
+            list.add(map);
+/*
+            map = new HashMap<String, Object>();
+            map.put("title", "G2");
+            map.put("info", "google 2");
+            map.put("img", R.drawable.i2);
+            list.add(map);
+
+            map = new HashMap<String, Object>();
+            map.put("title", "G3");
+            map.put("info", "google 3");
+            map.put("img", R.drawable.i3);
+            list.add(map);
+*/
+            return list;
+        }
+    }
 
 }
 

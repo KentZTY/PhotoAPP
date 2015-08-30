@@ -25,7 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textView1"
-        android:ems="10" />
+        android:ems="10"
+        android:singleLine="true"
+        android:inputType="text" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -42,7 +44,8 @@
         android:layout_below="@+id/TextView01"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:singleLine="true" />
 
     <Button
         android:id="@+id/register"
