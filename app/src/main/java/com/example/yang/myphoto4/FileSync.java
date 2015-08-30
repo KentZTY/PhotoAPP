@@ -37,7 +37,7 @@ import java.util.Map;
  * Created by Ree on 2015/8/23.
  */
 public class FileSync extends Activity implements View.OnClickListener {
-    private static final String Sync_URL = "http://raptor.kent.ac.uk/~wz57/Ree/Sync.php";
+    private static final String Sync_URL = "http://raptor.kent.ac.uk/~wz57/Ree/Sync_mobile.php";
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_STICKER = "sticker";
     public static String PHPSESSID = null;
