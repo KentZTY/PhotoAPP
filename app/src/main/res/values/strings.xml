@@ -6,6 +6,10 @@
     <string name="title_activity_gesture_control">GestureControlActivity</string>
     <string name="output">Image has been successfully saved into folder:</string>
     <string name="title_activity_iris">Iris</string>
-
     <string name="hello_world">Hello world!</string>
+    <string name="running_face_detection">wait a moment</string>
+    <string name="multiface_crop_help">click a face</string>
+    <string name="saturation">satu</string>
+    <string name="lightness">ligh</string>
+    <string name="contrast">contr</string>
 </resources>
