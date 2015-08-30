@@ -2,6 +2,7 @@ package com.example.yang.myphoto4;
 
 import android.R.anim;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -12,10 +13,15 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -26,6 +32,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.RotateAnimation;
@@ -34,10 +41,10 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
-
 import com.example.yang.myphoto4.image.util.EditImage;
 import com.example.yang.myphoto4.image.util.ReverseAnimation;
 import com.example.yang.myphoto4.image.view.CropImageView;
@@ -46,26 +53,21 @@ import com.example.yang.myphoto4.image.view.ToneMenuView;
 import com.example.yang.myphoto4.image.view.ToneView;
 import com.example.yang.myphoto4.view.MenuView;
 import com.example.yang.myphoto4.view.OnMenuClickListener;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarChangeListener{
-    private int screenWidth;
-    private int screenHeight;
-    private int i;
-    private myImageView currentImage;
-    private myImageView[] imageView;
     RelativeLayout mainLayout;
     // private ImageView myImage;
     private CropImageView mImageView;
     private EditImage mEditImage;
-    private ImageView borderImage;
     private static final int sticker = 1;
     private static final int border = 2;
     private static final int NONE = 3;
@@ -75,6 +77,41 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     int mode = NONE;
     Paint paint;
     String myPath;
+
+    ProgressBar progressbar = null;
+     Handler myHandler = new Handler() {
+
+         @Override
+     public void handleMessage(Message msg) {
+             switch (msg.what) {
+         case 1:
+                         showProcessBar();
+                         saveButton.setClickable(false);
+                         break;
+                 case 2:
+                         progressbar.setVisibility(View.GONE);
+                         saveButton.setClickable(true);
+                         break;
+                 default:
+                         break;
+                        }
+                }
+          };
+    private int screenWidth;
+    private int screenHeight;
+    private int i;
+    private myImageView currentImage;
+    private myImageView[] imageView;
+    private ImageView myImage;
+    private ImageView borderImage;
+    Runnable myRun = new Runnable() {
+          @Override
+           public void run() {
+                   shareImage();
+                   myHandler.sendEmptyMessage(2);
+               }
+       };
+
     public static DisplayImageActivity instance = null;
     private Button stickerButton, clearButton, borderButton, openButton, saveButton,editButton;
     private Animation animationTranslate, animationRotate, animationScale;
@@ -99,8 +136,6 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     private Bitmap mTmpBmp;
     private Bitmap mBitmap;
     private ReverseAnimation mReverseAnim;
-
-
     private ToneMenuView mToneMenu;
     private ToneView mToneView;
     private long lastclicktime=0;
@@ -127,6 +162,18 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         paint = new Paint();
         initialButton();
         createBack();
+    }
+
+    private void showProcessBar() {
+        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.stickerView);
+        progressbar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        progressbar.setVisibility(View.VISIBLE);
+        //progressBar.setLayoutParams(params);
+        mainLayout.addView(progressbar, params);
+
     }
 
     private void initialButton()
@@ -159,6 +206,9 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
 
         openButton = (Button) findViewById(R.id.open);
         openButton.setLayoutParams(params);
+
+        editButton=(Button)findViewById(R.id.edit_photo);
+        editButton.setLayoutParams(params);
 
         editButton=(Button)findViewById(R.id.edit_photo);
         editButton.setLayoutParams(params);
@@ -817,6 +867,71 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         menuView.show();
     }
 
+    /**
+     * 进行操作前的准备
+     */
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                if (menuView != null && menuView.isShow() || null != mToneMenu
+                        && mToneMenu.isShow()) {
+                    menuView.hide();
+                    mToneMenu.hide();
+                    mToneMenu = null;
+                } else {
+                    DisplayImageActivity.this.finish();
+                }
+                break;
+            case KeyEvent.KEYCODE_MENU:
+                break;
+
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        int flag=-1;
+        switch ((Integer)seekBar.getTag()){
+            case 1:
+                flag=1;
+                mToneView.setSaturation(progress);
+                break;
+            case 2:
+                flag=0;
+                mToneView.setHue(progress);
+                break;
+            case 3:
+                flag=2;
+                mToneView.setLum(progress);
+                break;
+        }
+        Bitmap bm=mToneView.handleImage(mTmpBmp,flag);
+        mImageView.setImageBitmapResetBase(bm, true);
+        mImageView.center(true,true);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
+
+    //add sticker
+    public void AddStickeFromDrawabler(Drawable drawable) {
+        i++;
+        imageView[i] = new myImageView(this, ((BitmapDrawable) drawable).getBitmap());
+        //imageView[i].setImageBitmap(mBitmap);
+        imageView[i].setOnTouchListener(movingEventListener);
+        RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp1.height = 200;
+        lp1.width = 200;
+        mainLayout.addView(imageView[i], lp1);
+    }
+
     //初始化二级菜单
     private void initSecondaryMenu(int flag) {
         mSecondaryListMenu=new MenuView(this);
@@ -986,55 +1101,43 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         mToneMenu.setSaturationBarListener(this);
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                if (menuView != null && menuView.isShow() || null != mToneMenu
-                        && mToneMenu.isShow()) {
-                    menuView.hide();
-                    mToneMenu.hide();
-                    mToneMenu = null;
-                } else {
-                    DisplayImageActivity.this.finish();
-                }
-                break;
-            case KeyEvent.KEYCODE_MENU:
-                break;
+    private class LoadImage extends AsyncTask<String, String, Bitmap> {
+        Bitmap bitmap;
+        ProgressDialog pDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(DisplayImageActivity.this);
+            pDialog.setMessage("Loading Image ....");
+            pDialog.show();
 
         }
-        return super.onKeyDown(keyCode, event);
-    }
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        int flag=-1;
-        switch ((Integer)seekBar.getTag()){
-            case 1:
-                flag=1;
-                mToneView.setSaturation(progress);
-                break;
-            case 2:
-                flag=0;
-                mToneView.setHue(progress);
-                break;
-            case 3:
-                flag=2;
-                mToneView.setLum(progress);
-                break;
+        protected Bitmap doInBackground(String... args) {
+            try {
+                bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bitmap;
         }
-        Bitmap bm=mToneView.handleImage(mTmpBmp,flag);
-        mImageView.setImageBitmapResetBase(bm, true);
-        mImageView.center(true,true);
-    }
 
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-    }
+        protected void onPostExecute(Bitmap image) {
 
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-    }
+            if (image != null) {
+                //AddStickeFromDrawabler(image);
+                myImage.setImageBitmap(image);
+                pDialog.dismiss();
 
+            } else {
+
+                pDialog.dismiss();
+                Toast.makeText(DisplayImageActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
 
 }
