@@ -80,7 +80,8 @@ public class FileSync extends Activity implements View.OnClickListener {
             switch (msg.what) {
                 case 0:
                     //showPics();
-                    test.setImageURI(Uri.fromFile(new File(getDiskCacheDir(getBaseContext()) + "/6.png")));
+                    //test.setImageURI(Uri.fromFile(new File(getDiskCacheDir(getBaseContext()) + "/6.png")));
+                    test.setImageURI(Uri.parse(new File(getDiskCacheDir(getBaseContext()) + "/6.png").toString()));
                     break;
                 default:
                     break;

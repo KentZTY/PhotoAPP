@@ -20,7 +20,7 @@ import android.util.Log;
 public class ImageDownloader {
     private static String TAG = "DownloadService" ;
     public static final int IO_BUFFER_SIZE = 8 * 1024;
-    private static final String CACHE_FILENAME_PREFIX = "cache_";
+    private static final String CACHE_FILENAME_PREFIX = "";
     private static ExecutorService SINGLE_TASK_EXECUTOR = null;
     private static ExecutorService LIMITED_TASK_EXECUTOR = null;
     private static final ExecutorService FULL_TASK_EXECUTOR = null;
