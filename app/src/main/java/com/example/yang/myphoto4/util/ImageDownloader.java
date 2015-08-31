@@ -76,7 +76,7 @@ public class ImageDownloader {
 
                     @Override
                     public void run() {
-                        downloadBitmap(URL+url+".png");
+                        downloadBitmap(url+".png");
                     }
                 });
             } catch (RejectedExecutionException e) {
@@ -98,7 +98,7 @@ public class ImageDownloader {
      * @return
      */
     private File downloadBitmap(String urlString) {
-        String fileName = urlString+".png";
+        String fileName = urlString;
 
         final File cacheFile = new File(createFilePath(new File(
                 downloadPath), fileName));
@@ -107,7 +107,7 @@ public class ImageDownloader {
         BufferedOutputStream out = null;
 
         try {
-            final URL url = new URL(urlString);
+            final URL url = new URL(URL+urlString);
             urlConnection = (HttpURLConnection) url.openConnection();
             final InputStream in = new BufferedInputStream(
                     urlConnection.getInputStream(), IO_BUFFER_SIZE);

@@ -6,14 +6,20 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.example.yang.myphoto4.util.ImageDownloader;
 import com.example.yang.myphoto4.util.JSONParser;
@@ -24,11 +30,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Ree on 2015/8/23.
@@ -45,6 +53,9 @@ public class FileSync extends Activity implements View.OnClickListener {
     String username, password;
     GridView gridView;
     String[] stickers;
+    Boolean end = false;
+
+    ImageView test;
 
 
     @Override
@@ -56,11 +67,26 @@ public class FileSync extends Activity implements View.OnClickListener {
         username = getIntent().getStringExtra("username");
         password = getIntent().getStringExtra("password");
         gridView = (GridView) findViewById(R.id.contentList);
-        myListAdapter adapter = new myListAdapter();
         //listView.setAdapter(adapter);
+        test=(ImageView)findViewById(R.id.test);
+
 
 
     }
+
+    Handler myHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    //showPics();
+                    test.setImageURI(Uri.fromFile(new File(getDiskCacheDir(getBaseContext()) + "/6.png")));
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -73,6 +99,29 @@ public class FileSync extends Activity implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+
+
+    public void showPics(){
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for(String name:stickers){
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("title", name);
+            map.put("info", "");
+            map.put("img", R.drawable.a1);
+            //Uri i=Uri.fromFile(new File(getDiskCacheDir(getBaseContext()) + "/sticker/" + name + ".png"));
+            print(end.toString());
+            list.add(map);
+        }
+        SimpleAdapter adapter = new SimpleAdapter(FileSync.this,list,R.layout.vlist,
+                new String[] { "PIC", "TITLE" }, new int[] { R.id.griditem_pic,
+                R.id.griditem_title, });
+        gridView.setAdapter(adapter);
+    }
+
+    public void print(String info){
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
     public String getDiskCacheDir(Context context) {
@@ -132,40 +181,38 @@ public class FileSync extends Activity implements View.OnClickListener {
                 // json success tag
                 success = json.getInt(TAG_SUCCESS);
 
-                Log.d("Get feedback", json.getString(TAG_STICKER));
+                //Log.d("Get feedback", json.getString(TAG_STICKER));
 
                 //print(success+"");
                 if (success == 1) {
-                    Log.d("Login Successful!", json.toString());
                     JSONArray stickersJ=json.getJSONArray(TAG_STICKER);
-
                     stickers=new String[stickersJ.length()];
                     for(int i=0;i<stickersJ.length();i++){
                         stickers[i]=""+ stickersJ.get(i);
-                        //Log.d("Login Successful!", stickers[i]);
                     }
                     List<String> URLs= Arrays.asList(stickers);
+                    try{
+                        new ImageDownloader( getDiskCacheDir(getBaseContext()), URLs, new ImageDownloader.DownloadStateListener() {
 
+                            @Override
+                            public void onFinish() {
+                                failure=false;
+                            }
 
-                    try{ new ImageDownloader( getDiskCacheDir(getBaseContext()), URLs, new ImageDownloader.DownloadStateListener() {
-
-                        @Override
-                        public void onFinish() {
-
-                        }
-
-                        @Override
-                        public void onFailed() {
-                        }
-                    }).startDownload();
-                    }catch(Exception e){
-
+                            @Override
+                            public void onFailed() {
+                                failure=true;
+                            }
+                        }).startDownload();
+                    }catch(Exception e){Log.d("download","failed");
                     }
+
+                    //save for use
                     SharedPreferences sharedPreferences = getSharedPreferences("sticker", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("stickers", json.getString(TAG_STICKER));
                     editor.commit();
-                    Log.d("Save sticker list", json.toString());
+                    //Log.d("Save sticker list", json.toString());
 
                     pDialog.dismiss();
                     return json.getString(TAG_STICKER);
@@ -190,54 +237,13 @@ public class FileSync extends Activity implements View.OnClickListener {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once product deleted
             pDialog.dismiss();
-            if (file_url != null) {
-                //Toast.makeText(this, file_url, Toast.LENGTH_LONG).show();
+            end = true;
+            if(failure==false){
+                myHandler.sendEmptyMessage(0);
             }
 
         }
 
-    }
-
-    class myListAdapter extends ListActivity {
-        // private List<String> data = new ArrayList<String>();
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
-            SimpleAdapter adapter = new SimpleAdapter(this,getData(stickers),R.layout.vlist,
-                    new String[]{"title","info","img"},
-                    new int[]{R.id.title,R.id.info,R.id.img});
-            setListAdapter(adapter);
-        }
-
-        private List<Map<String, Object>> getData(String[] stickerNames) {
-            List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-
-            for(String name:stickerNames){
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("title", name);
-                map.put("info", "");
-                map.put("img", R.drawable.a1);
-                list.add(map);
-            }
-
-
-
-/*
-            map = new HashMap<String, Object>();
-            map.put("title", "G2");
-            map.put("info", "google 2");
-            map.put("img", R.drawable.i2);
-            list.add(map);
-
-            map = new HashMap<String, Object>();
-            map.put("title", "G3");
-            map.put("info", "google 3");
-            map.put("img", R.drawable.i3);
-            list.add(map);
-*/
-            return list;
-        }
     }
 
 }
