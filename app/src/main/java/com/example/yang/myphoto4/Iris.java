@@ -507,6 +507,7 @@ public class Iris extends Activity {
                 canvas.drawCircle(myMidX, myMidY, 20, p);
                 canvas.drawCircle(mMidX, mMidY, 20, p);
                 canvas.drawBitmap(redIris(20,20),400,400,p);*/
+
             }
         }
         return srcFace;
