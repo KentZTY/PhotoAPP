@@ -13,6 +13,7 @@
         android:id="@+id/imageView"
         android:clickable="true"
         android:longClickable="false"
+        android:scaleType="fitXY"
         android:layout_centerInParent="true"/>
 
     <ImageView

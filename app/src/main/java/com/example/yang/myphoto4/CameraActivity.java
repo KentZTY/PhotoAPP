@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
@@ -87,7 +89,7 @@ public class CameraActivity extends Activity {
                     }
                 }
                 task=new MyTimerTask();
-                timer.schedule(task, 100, 2000);
+                timer.schedule(task, 100, 1000);
             }
         });
     }
@@ -125,6 +127,12 @@ public class CameraActivity extends Activity {
                     + fileName;
             f=new File(cameraPath);
             FileOutputStream out = new FileOutputStream(f);
+            Canvas canvas = new Canvas();
+            ColorMatrix colorMatrix = new ColorMatrix();
+            colorMatrix.reset();
+            colorMatrix.setSaturation(1);
+            paint.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
+            canvas.drawBitmap(bm, 0, 0, paint);
             bm.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.flush();
             out.close();
