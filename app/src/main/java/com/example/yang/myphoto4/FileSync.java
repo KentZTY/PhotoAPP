@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,13 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import com.example.yang.myphoto4.util.ImageDownloader;
 import com.example.yang.myphoto4.util.JSONParser;
-import com.example.yang.myphoto4.util.FileSystem;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -28,9 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -54,17 +47,6 @@ public class FileSync extends Activity implements View.OnClickListener {
     String[] stickers;
 
 
-
-    public static Drawable LoadImageFromWebOperations(String url) {
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, "src name");
-            return d;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +64,6 @@ public class FileSync extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.sync:
                 //Toast.makeText(getApplicationContext(), "start sync", Toast.LENGTH_SHORT).show();
@@ -158,13 +139,10 @@ public class FileSync extends Activity implements View.OnClickListener {
                 if (success == 1) {
                     Log.d("Login Successful!", json.toString());
                     JSONArray stickersJ=json.getJSONArray(TAG_STICKER);
-                    SharedPreferences sharedPreferences = getSharedPreferences("sticker", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("stickers", json.getString(TAG_STICKER));
-                    editor.commit();
+
                     stickers=new String[stickersJ.length()];
                     for(int i=0;i<stickersJ.length();i++){
-                        stickers[i]=username+"_"+ stickersJ.get(i);
+                        stickers[i]=""+ stickersJ.get(i);
                         //Log.d("Login Successful!", stickers[i]);
                     }
                     List<String> URLs= Arrays.asList(stickers);
@@ -174,6 +152,7 @@ public class FileSync extends Activity implements View.OnClickListener {
 
                         @Override
                         public void onFinish() {
+
                         }
 
                         @Override
@@ -183,6 +162,11 @@ public class FileSync extends Activity implements View.OnClickListener {
                     }catch(Exception e){
 
                     }
+                    SharedPreferences sharedPreferences = getSharedPreferences("sticker", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("stickers", json.getString(TAG_STICKER));
+                    editor.commit();
+                    Log.d("Save sticker list", json.toString());
 
                     pDialog.dismiss();
                     return json.getString(TAG_STICKER);
