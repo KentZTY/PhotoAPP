@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -152,6 +153,12 @@ public class FileSync extends Activity implements View.OnClickListener {
                 if (success == 1) {
                     Log.d("Login Successful!", json.toString());
                     JSONArray stickersJ=json.getJSONArray(TAG_STICKER);
+                    SharedPreferences sharedPreferences = getSharedPreferences("sticker", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("stickers",stickersJ.toString());
+                    editor.commit();
+                    SharedPreferences sharedPreferencesOut = getSharedPreferences("sticker", Context.MODE_PRIVATE);
+                    Log.d("getPreferences", sharedPreferencesOut.getString("sticker",""));
                     String[] stickers=new String[stickersJ.length()];
                     for(int i=0;i<stickersJ.length();i++){
                         stickers[i]=(String) stickersJ.get(i);
@@ -168,7 +175,6 @@ public class FileSync extends Activity implements View.OnClickListener {
                     Intent i = new Intent(FileSync.this, Login.class);
                     startActivity(i);
                     return json.getString(TAG_STICKER);
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
