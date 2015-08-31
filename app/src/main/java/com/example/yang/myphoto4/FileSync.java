@@ -106,7 +106,6 @@ public class FileSync extends Activity implements View.OnClickListener {
             pDialog.setCancelable(true);
             pDialog.show();
 
-            //print("Attempting sync...");
         }
 
         @Override
