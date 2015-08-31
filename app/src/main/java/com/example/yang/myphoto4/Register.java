@@ -109,7 +109,7 @@ public class Register extends Activity implements OnClickListener{
 
                 //Posting user data to script
                 JSONObject json = jsonParser.makeHttpRequest(
-                        LOGIN_URL, "POST", params);
+                        LOGIN_URL, "POST", params,"null");
 
                 // full json response
                 Log.d("Login attempt", json.toString());

@@ -30,7 +30,8 @@
         android:layout_above="@+id/login"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:inputType="textPassword" >
+        android:inputType="textPassword"
+        android:singleLine="true">
 
         <requestFocus />
     </EditText>
@@ -58,7 +59,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/TextView01"
         android:layout_centerHorizontal="true"
-        android:ems="10" />
+        android:ems="10"
+        android:singleLine="true"
+        android:inputType="text" />
 
     <TextView
         android:id="@+id/textView1"

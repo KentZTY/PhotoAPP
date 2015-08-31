@@ -15,10 +15,9 @@
         android:id="@+id/cameraButton"
         android:src="@drawable/camerabt"
         android:background="@drawable/selector"
-        android:layout_below="@+id/photoButton"
+        android:layout_alignTop="@+id/irisButton"
         android:layout_alignLeft="@+id/photoButton"
-        android:layout_alignStart="@+id/photoButton"
-        android:layout_marginTop="43dp" />
+        android:layout_alignStart="@+id/photoButton" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -35,7 +34,8 @@
         android:id="@+id/sync"
         android:src="@drawable/login"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/cameraButton" />
+        android:layout_below="@+id/cameraButton"
+        android:background="@drawable/login" />
 
     <Button
         android:layout_width="wrap_content"

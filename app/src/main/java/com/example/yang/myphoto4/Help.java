@@ -15,7 +15,7 @@ public class Help extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.help);
+        setContentView(R.layout.activity_help);
         helpImage=(ImageView)findViewById(R.id.helpImage);
         helpImage.setImageDrawable(getResources().getDrawable(R.drawable.help0));
         helpImage.setOnTouchListener(new View.OnTouchListener() {

@@ -4,7 +4,11 @@ import android.R.anim;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -24,6 +28,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -522,6 +527,10 @@ public class DisplayImageActivity extends Activity {
 
     //get the bitmap from sticker id
     public Bitmap getResource(int i){
+        SharedPreferences sharedPreferencesOut = getSharedPreferences("sticker", Context.MODE_PRIVATE);
+        String temp=sharedPreferencesOut.getString("stickers", "");
+        Log.d("Get prefference", temp);
+
         TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
         Bitmap bm=BitmapFactory.decodeResource(getResources(), ar.getResourceId(i, 0));
         ar.recycle();

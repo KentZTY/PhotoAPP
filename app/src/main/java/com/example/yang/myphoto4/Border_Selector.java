@@ -20,7 +20,7 @@ public class Border_Selector extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sticker_selector);
+        setContentView(R.layout.activity_selector);
         GridView gridView=(GridView)findViewById(R.id.gridView);
         gridView.setAdapter(new BorderAdapter(this));
         gridView.setOnItemClickListener(new OnItemClickListener() {
