@@ -80,7 +80,6 @@ public class FileSync extends Activity implements View.OnClickListener {
         //Environment.getExtemalStorageState()
         //Environment.MEDIA_MOUNTED
         //getAbsolutePath()
-
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
             cachePath = context.getExternalCacheDir().getPath();
