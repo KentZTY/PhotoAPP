@@ -51,6 +51,15 @@ public class MainActivity extends Activity{
                     }
                 });
 
+        (findViewById(R.id.helpmain))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        Intent help = new Intent();
+                        help.setClass(MainActivity.this, Help.class);
+                        startActivity(help);
+                    }
+                });
+
         /*
          * Camera function button. Check out SD card.
          * Use intent to open local applications for camera(image capture).

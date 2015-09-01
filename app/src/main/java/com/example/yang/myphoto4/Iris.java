@@ -35,7 +35,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.example.yang.myphoto4.util.myUtil;
-import com.example.yang.myphoto4.FileSync;
 
 public class Iris extends Activity {
     static final String tag = "eye";
@@ -50,7 +49,7 @@ public class Iris extends Activity {
     Context context = this;
     ProgressBar progressBar = null;
     private ImageView myIrisImage = null;
-    int myBlack = 140;
+    int myBlack = 80;
     Bitmap myLeftEye = null;
     Bitmap myRightEye = null;
     int leftEyeWidth, rightEyeWidth, leftEyeHeight, rightEyeHeight, myLeft, myTop, mLeft, mTop;
@@ -113,10 +112,10 @@ public class Iris extends Activity {
         mainHandler.sendEmptyMessage(1);
         checkFaceThread.start();
 
-        (findViewById(R.id.redEye))
+        (findViewById(R.id.BLUEEYE))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
-                        drawEye(redIris((int) (leftEyeHeight * 1.2), leftEyeHeight), redIris((int) (rightEyeHeight * 1.2), rightEyeHeight));
+                        drawEye(redIris((int) (leftEyeHeight * 1.3), leftEyeHeight), redIris((int) (rightEyeHeight * 1.3), rightEyeHeight));
                     }
                 });
         (findViewById(R.id.modify))
@@ -135,7 +134,7 @@ public class Iris extends Activity {
         return true;
     }
     public void initUI(){
-        redEyeBtn = (Button)findViewById(R.id.redEye);
+        redEyeBtn = (Button)findViewById(R.id.BLUEEYE);
         myIrisImage =(ImageView)findViewById(R.id.mIrisImage);
         //LayoutParams params = myIrisImage.getLayoutParams();
         createBack();
@@ -531,15 +530,15 @@ public class Iris extends Activity {
         p.setStrokeWidth(3);
         p.setStyle(Paint.Style.STROKE);
         p.setColor(Color.GREEN);
-        canvas.drawBitmap(leftIrisBitmap, (int)(myMidX- ((leftEyeHeight*1.2)/2)), myMidY-(leftEyeHeight/2), p);
-        canvas.drawBitmap(rightIrisBitmap, (int)(mMidX- ((rightEyeHeight*1.2)/2)), mMidY-(rightEyeHeight/2),p);
+        canvas.drawBitmap(leftIrisBitmap, (int)(myMidX- ((leftEyeHeight*1.3)/2)), myMidY-(leftEyeHeight/2), p);
+        canvas.drawBitmap(rightIrisBitmap, (int)(mMidX- ((rightEyeHeight*1.3)/2)), mMidY-(rightEyeHeight/2),p);
         //canvas.drawCircle(myMidX, myMidY, 20, p);
         //canvas.drawCircle(mMidX, mMidY, 20, p);
 
     }
 
     private Bitmap redIris(int eyeWidth, int eyeHeight){
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.eye_colored);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.eye_blue);
         int width = bm.getWidth();
         int height = bm.getHeight();
         float scaleWidth = ((float) eyeWidth)/ width;
@@ -590,15 +589,6 @@ public class Iris extends Activity {
         System.out.print(filePath);
         srcImg = myUtil.getBitmap(filePath);
         return uri;
-    }
-
-    private void myGreen(){
-        imageViews[0] = new ImageView(this);
-        imageViews[0].setImageBitmap(redIris(leftEyeWidth,leftEyeHeight));
-        RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp1.height = myTop;
-        lp1.width = myLeft;
-        mainLayout.addView(imageViews[0], lp1);
     }
 
     public void shareImage(){

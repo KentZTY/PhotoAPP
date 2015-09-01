@@ -51,4 +51,15 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="82dp" />
 
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="Help"
+        android:background="@drawable/selector"
+        android:src="@drawable/questionmark"
+        android:id="@+id/helpmain"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

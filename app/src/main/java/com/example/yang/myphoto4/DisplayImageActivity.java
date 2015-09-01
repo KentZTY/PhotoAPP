@@ -35,6 +35,7 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -133,20 +134,7 @@ public class DisplayImageActivity extends Activity {
         openButton = (Button) findViewById(R.id.open);
         openButton.setLayoutParams(params);
 
-        Button testButton =  (Button) findViewById(R.id.test);
-        testButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                //myImage.setImageDrawable(LoadImageFromWebOperations("https://upload.wikimedia.org/wikipedia/commons/a/aa/Crystal_128_forward.png"));
-                //myImage.setImageBitmap(getBitmap("https://upload.wikimedia.org/wikipedia/commons/a/aa/Crystal_128_forward.png"));
-                new LoadImage().execute("https://thecustomizewindows.com/wp-content/uploads/2011/11/Nicest-Android-Live-Wallpapers.png");
-
-            }
-        });
-
-        Button helpButton =  (Button) findViewById(R.id.help);
+        ImageButton helpButton =  (ImageButton) findViewById(R.id.help);
         helpButton.setOnClickListener(new OnClickListener() {
 
             @Override

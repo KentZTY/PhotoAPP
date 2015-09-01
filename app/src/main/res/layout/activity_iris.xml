@@ -17,9 +17,9 @@
     <Button
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:text="redEye"
+        android:text="BLUEEYE"
         android:background="@drawable/selector"
-        android:id="@+id/redEye"
+        android:id="@+id/BLUEEYE"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -30,7 +30,7 @@
         android:text="Modifiy"
         android:background="@drawable/selector"
         android:id="@+id/modify"
-        android:layout_alignTop="@+id/redEye"
+        android:layout_alignTop="@+id/BLUEEYE"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 </RelativeLayout>

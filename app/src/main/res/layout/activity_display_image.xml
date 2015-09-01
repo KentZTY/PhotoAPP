@@ -77,19 +77,12 @@
         android:layout_alignParentStart="true">
     </Button>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test"
-        android:id="@+id/test"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:text="Help"
+        android:background="@drawable/selector"
+        android:src="@drawable/questionmark"
         android:id="@+id/help"
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/save"
