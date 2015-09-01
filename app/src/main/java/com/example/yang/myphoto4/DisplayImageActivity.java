@@ -517,8 +517,11 @@ public class DisplayImageActivity extends Activity {
 
     //get the bitmap from sticker id
     public Bitmap getResource(Uri imageUri){
-        Bitmap bitmap = myUtil.getBitmap(getPath(imageUri));
-        return bitmap;
+        Log.d("name", imageUri.toString());
+        BitmapFactory.Options option = new BitmapFactory.Options();
+        //option.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeFile(imageUri.toString());
+        return Bitmap.createScaledBitmap(bitmap,1000,1000,true);
 
     }
 

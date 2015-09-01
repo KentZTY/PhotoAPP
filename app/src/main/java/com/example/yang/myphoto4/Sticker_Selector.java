@@ -47,7 +47,6 @@ public class Sticker_Selector extends Activity {
                 //finishActivity(1);
                 finish();
 
-
             }
         });
 
