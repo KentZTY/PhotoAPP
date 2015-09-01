@@ -87,9 +87,7 @@ public class ImageDownloader {
                 e.printStackTrace();
                 listener.onFailed();
             }
-
         }
-
     }
 
     /**

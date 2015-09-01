@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,8 +14,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -53,7 +57,6 @@ public class FileSync extends Activity implements View.OnClickListener {
     String username, password;
     GridView gridView;
     String[] stickers;
-    Boolean end = false;
 
     ImageView test;
 
@@ -68,7 +71,7 @@ public class FileSync extends Activity implements View.OnClickListener {
         password = getIntent().getStringExtra("password");
         gridView = (GridView) findViewById(R.id.contentList);
         //listView.setAdapter(adapter);
-        test=(ImageView)findViewById(R.id.test);
+
 
 
 
@@ -81,7 +84,12 @@ public class FileSync extends Activity implements View.OnClickListener {
                 case 0:
                     //showPics();
                     //test.setImageURI(Uri.fromFile(new File(getDiskCacheDir(getBaseContext()) + "/6.png")));
-                    test.setImageURI(Uri.parse(new File(getDiskCacheDir(getBaseContext()) + "/6.png").toString()));
+                    //test.setImageURI(Uri.parse(new File(getDiskCacheDir(getBaseContext()) + "/5.png").toString()));
+                    print("Sync Success!");
+                    Intent intent = new Intent();
+                    intent.setClass(FileSync.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                     break;
                 default:
                     break;
@@ -102,22 +110,42 @@ public class FileSync extends Activity implements View.OnClickListener {
         }
     }
 
+    class MyViewBinder implements SimpleAdapter.ViewBinder
+    {
+        @Override
+        public boolean setViewValue(View view, Object data,String textRepresentation)
+        {
+            if((view instanceof ImageView) & (data instanceof Uri))
+            {
+                ImageView iv = (ImageView) view;
+                Uri uri=(Uri)data;
+                iv.setImageURI(uri);
+                return true;
+            }
+            return false;
+        }
+
+    }
+
 
 
     public void showPics(){
+        print("showPics");
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         for(String name:stickers){
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("title", name);
             map.put("info", "");
-            map.put("img", R.drawable.a1);
-            //Uri i=Uri.fromFile(new File(getDiskCacheDir(getBaseContext()) + "/sticker/" + name + ".png"));
-            print(end.toString());
+            Uri uri=Uri.parse(new File(getDiskCacheDir(getBaseContext()) + "/5.png").toString());
+            //Bitmap bitmap= MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            map.put("img", uri);
+
             list.add(map);
         }
         SimpleAdapter adapter = new SimpleAdapter(FileSync.this,list,R.layout.vlist,
                 new String[] { "PIC", "TITLE" }, new int[] { R.id.griditem_pic,
                 R.id.griditem_title, });
+        adapter.setViewBinder(new MyViewBinder());
         gridView.setAdapter(adapter);
     }
 
@@ -238,7 +266,6 @@ public class FileSync extends Activity implements View.OnClickListener {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once product deleted
             pDialog.dismiss();
-            end = true;
             if(failure==false){
                 myHandler.sendEmptyMessage(0);
             }
@@ -246,6 +273,7 @@ public class FileSync extends Activity implements View.OnClickListener {
         }
 
     }
+
 
 }
 
