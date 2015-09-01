@@ -125,7 +125,7 @@ public class FileSync extends Activity implements View.OnClickListener {
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
-    public String getDiskCacheDir(Context context) {
+    static public String getDiskCacheDir(Context context) {
         String cachePath = null;
         //Environment.getExtemalStorageState()
         //Environment.MEDIA_MOUNTED

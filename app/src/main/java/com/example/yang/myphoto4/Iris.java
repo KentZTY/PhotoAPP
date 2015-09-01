@@ -2,6 +2,8 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -34,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.example.yang.myphoto4.util.myUtil;
+import com.example.yang.myphoto4.FileSync;
 
 public class Iris extends Activity {
     static final String tag = "eye";
@@ -44,7 +47,8 @@ public class Iris extends Activity {
     private int w_screen;
     private int h_screen;
     float myMidX, myMidY, mMidX, mMidY;
-
+    String myCache = null;
+    Context context = this;
     ProgressBar progressBar = null;
     private ImageView myIrisImage = null;
     int myBlack = 140;
@@ -101,6 +105,7 @@ public class Iris extends Activity {
         setContentView(R.layout.activity_iris);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         mainLayout = (RelativeLayout)findViewById(R.id.irisView);
+        myCache = FileSync.getDiskCacheDir(this);
         imageViews = new ImageView[2];
         w_screen = dm.widthPixels;
         h_screen = dm.heightPixels;
@@ -113,6 +118,13 @@ public class Iris extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         drawEye(redIris((int) (leftEyeHeight * 1.2), leftEyeHeight), redIris((int) (rightEyeHeight * 1.2), rightEyeHeight));
+                    }
+                });
+        (findViewById(R.id.modify))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        shareImage();
+                        //myUtil.cleanInternalCache(context);
                     }
                 });
     }
@@ -524,7 +536,6 @@ public class Iris extends Activity {
         canvas.drawBitmap(rightIrisBitmap, (int)(mMidX- ((rightEyeHeight*1.2)/2)), mMidY-(rightEyeHeight/2),p);
         //canvas.drawCircle(myMidX, myMidY, 20, p);
         //canvas.drawCircle(mMidX, mMidY, 20, p);
-
     }
 
     private Bitmap redIris(int eyeWidth, int eyeHeight){
@@ -534,7 +545,7 @@ public class Iris extends Activity {
         float scaleWidth = ((float) eyeWidth)/ width;
         float scaleHeight = ((float) eyeHeight) / height;
         Matrix mx = new Matrix();
-        mx.postScale(scaleWidth,scaleHeight);
+        mx.postScale(scaleWidth, scaleHeight);
         return Bitmap.createBitmap(bm,0,0,width,height,mx,true);
     }
 
@@ -588,5 +599,16 @@ public class Iris extends Activity {
         lp1.height = myTop;
         lp1.width = myLeft;
         mainLayout.addView(imageViews[0], lp1);
+    }
+
+    public void shareImage(){
+        Intent intent = new Intent();
+        intent.setClass(Iris.this, DisplayImageActivity.class);
+        myUtil.saveBitmap(srcFace, myCache);
+        Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), srcFace,null,null));
+        intent.setData(uri);
+        //intent.putExtra("myPath", myPath);
+        startActivity(intent);
+        //setContentView(R.layout.null_layout);
     }
 }
