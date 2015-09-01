@@ -361,20 +361,33 @@ public class DisplayImageActivity extends Activity {
                 case RESULT_CANCELED:
                     break;
                 case sticker:
+                    Uri stickerPosition;
+                    Log.d("intent",data.getStringExtra("id"));
+                    if(data.getStringExtra("id")!=null){
+                        stickerPosition = Uri.parse(data.getStringExtra("id"));
+                        Log.d("position",stickerPosition+"");
+                        AddSticker(stickerPosition);
+                    }
+                    /*
                     Bundle stickerBundle = data.getExtras();
                     //print(stickerBundle.toString());
-                    String stickerPosition;
-                    if (stickerBundle == null) {
+
+                    //Uri test=Uri.parse(R.drawable.a1);
+                    if (stickerBundle != null) {
                         Bundle extras = getIntent().getExtras();
-                        if (extras == null) {
-                            stickerPosition = null;
+                        if (extras != null) {
+                            stickerPosition = (Uri) stickerBundle.getSerializable("id");
+                            AddSticker(stickerPosition);
                         } else {
-                            stickerPosition = extras.getString("id");
+                            stickerPosition = null;
+                            Log.d("null","extras");
                         }
                     } else {
-                        stickerPosition = (String) stickerBundle.getSerializable("id");
+                        stickerPosition = null;
+                        Log.d("null","bundle");
                     }
-                    AddSticker(stickerPosition);
+                    Log.d("id",stickerPosition+"");
+                    */
                     break;
                 case border:
                     Bundle boarderBundle = data.getExtras();
@@ -505,17 +518,6 @@ public class DisplayImageActivity extends Activity {
         mainLayout.addView(imageView[i], lp1);
     }
 
-    //add sticker
-    public void AddStickeFromDrawabler(Drawable drawable){
-        i++;
-        imageView[i] = new myImageView(this, ((BitmapDrawable) drawable).getBitmap());
-        //imageView[i].setImageBitmap(mBitmap);
-        imageView[i].setOnTouchListener(movingEventListener);
-        RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp1.height = 200;
-        lp1.width = 200;
-        mainLayout.addView(imageView[i], lp1);
-    }
 
 
     //test method
@@ -526,15 +528,13 @@ public class DisplayImageActivity extends Activity {
     }
 
     //get the bitmap from sticker id
-    public Bitmap getResource(int i){
-        SharedPreferences sharedPreferencesOut = getSharedPreferences("sticker", Context.MODE_PRIVATE);
-        String temp=sharedPreferencesOut.getString("stickers", "");
-        Log.d("Get prefference", temp);
+    public Bitmap getResource(Uri imageUri){
+        Log.d("name", imageUri.toString());
+        BitmapFactory.Options option = new BitmapFactory.Options();
+        //option.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeFile(imageUri.toString());
+        return Bitmap.createScaledBitmap(bitmap,1000,1000,true);
 
-        TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
-        Bitmap bm=BitmapFactory.decodeResource(getResources(), ar.getResourceId(i, 0));
-        ar.recycle();
-        return bm;
     }
 
     //get the bitmap from border id
@@ -750,32 +750,6 @@ public class DisplayImageActivity extends Activity {
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
-
-    public static Drawable LoadImageFromWebOperations(String url) {
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, null);
-            return d;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public Bitmap getBitmapFromURL(String src) {
-        try {
-            java.net.URL url = new java.net.URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         Bitmap bitmap;
