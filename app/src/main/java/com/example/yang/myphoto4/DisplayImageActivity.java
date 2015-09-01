@@ -64,6 +64,10 @@ import android.view.animation.TranslateAnimation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.Display;
 import android.R.anim;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import static android.R.anim.*;
 
 public class DisplayImageActivity extends Activity {
@@ -322,26 +326,22 @@ public class DisplayImageActivity extends Activity {
     {
         // TODO Auto-generated method stub
         animationTranslate = new TranslateAnimation(0, toX, 0, toY);
-        animationTranslate.setAnimationListener(new AnimationListener()
-        {
+        animationTranslate.setAnimationListener(new AnimationListener() {
 
             @Override
-            public void onAnimationStart(Animation animation)
-            {
+            public void onAnimationStart(Animation animation) {
                 // TODO Auto-generated method stub
 
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation)
-            {
+            public void onAnimationRepeat(Animation animation) {
                 // TODO Auto-generated method stub
 
             }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
                 // TODO Auto-generated method stub
                 params = new RelativeLayout.LayoutParams(0, 0);
                 params.height = 200;
@@ -367,20 +367,33 @@ public class DisplayImageActivity extends Activity {
                 case RESULT_CANCELED:
                     break;
                 case sticker:
+                    Uri stickerPosition;
+                    Log.d("intent",data.getStringExtra("id"));
+                    if(data.getStringExtra("id")!=null){
+                        stickerPosition = Uri.parse(data.getStringExtra("id"));
+                        Log.d("position",stickerPosition+"");
+                        AddSticker(stickerPosition);
+                    }
+                    /*
                     Bundle stickerBundle = data.getExtras();
                     //print(stickerBundle.toString());
-                    String stickerPosition;
-                    if (stickerBundle == null) {
+
+                    //Uri test=Uri.parse(R.drawable.a1);
+                    if (stickerBundle != null) {
                         Bundle extras = getIntent().getExtras();
-                        if (extras == null) {
-                            stickerPosition = null;
+                        if (extras != null) {
+                            stickerPosition = (Uri) stickerBundle.getSerializable("id");
+                            AddSticker(stickerPosition);
                         } else {
-                            stickerPosition = extras.getString("id");
+                            stickerPosition = null;
+                            Log.d("null","extras");
                         }
                     } else {
-                        stickerPosition = (String) stickerBundle.getSerializable("id");
+                        stickerPosition = null;
+                        Log.d("null","bundle");
                     }
-                    AddSticker(stickerPosition);
+                    Log.d("id",stickerPosition+"");
+                    */
                     break;
                 case border:
                     Bundle boarderBundle = data.getExtras();
@@ -435,7 +448,7 @@ public class DisplayImageActivity extends Activity {
     private void chooseSticker() {
         Intent intent = new Intent();
         intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
-        //intent.putExtra("type", "sticker");
+        //require more than 1GB to run
         startActivityForResult(intent, sticker);
     }
 
@@ -494,27 +507,16 @@ public class DisplayImageActivity extends Activity {
 
     //delete sticker
     public void deleteSticker(myImageView mimageView){
-        mimageView.setImageBitmap(getResource(1), new Point(0, 0), 0, 0);
+        //?
+        //mimageView.setImageBitmap(getResource(1), new Point(0, 0), 0, 0);
         mainLayout.removeView(mimageView);
     }
 
     //add sticker
-    public void AddSticker(String name){
-        int a = Integer.parseInt(name);
+    public void AddSticker(Uri name){
+        //int a = Integer.parseInt(name);
         i++;
-        imageView[i] = new myImageView(this, getResource(a));
-        //imageView[i].setImageBitmap(mBitmap);
-        imageView[i].setOnTouchListener(movingEventListener);
-        RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp1.height = 200;
-        lp1.width = 200;
-        mainLayout.addView(imageView[i], lp1);
-    }
-
-    //add sticker
-    public void AddStickeFromDrawabler(Drawable drawable){
-        i++;
-        imageView[i] = new myImageView(this, ((BitmapDrawable) drawable).getBitmap());
+        imageView[i] = new myImageView(this, getResource(name));
         //imageView[i].setImageBitmap(mBitmap);
         imageView[i].setOnTouchListener(movingEventListener);
         RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -524,7 +526,7 @@ public class DisplayImageActivity extends Activity {
     }
 
 
-    //test method
+    //add border
     public void addBorder(String name) {
         int a = Integer.parseInt(name);
         Bitmap mBitmap = getBorderResource(a);
@@ -532,16 +534,12 @@ public class DisplayImageActivity extends Activity {
     }
 
     //get the bitmap from sticker id
-    public Bitmap getResource(int i){
-        SharedPreferences sharedPreferencesOut = getSharedPreferences("sticker", Context.MODE_PRIVATE);
-        String temp=sharedPreferencesOut.getString("stickers", "");
-        Log.d("Get prefference", temp);
+    public Bitmap getResource(Uri imageUri){
+        Bitmap bitmap = myUtil.getBitmap(getPath(imageUri));
+        return bitmap;
 
-        TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
-        Bitmap bm=BitmapFactory.decodeResource(getResources(), ar.getResourceId(i, 0));
-        ar.recycle();
-        return bm;
     }
+
 
     //get the bitmap from border id
     public Bitmap getBorderResource(int i){
@@ -757,32 +755,6 @@ public class DisplayImageActivity extends Activity {
         Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
-
-    public static Drawable LoadImageFromWebOperations(String url) {
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, null);
-            return d;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public Bitmap getBitmapFromURL(String src) {
-        try {
-            java.net.URL url = new java.net.URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         Bitmap bitmap;

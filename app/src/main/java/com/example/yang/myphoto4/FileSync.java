@@ -71,7 +71,6 @@ public class FileSync extends Activity implements View.OnClickListener {
         password = getIntent().getStringExtra("password");
         gridView = (GridView) findViewById(R.id.contentList);
         //listView.setAdapter(adapter);
-
     }
 
     Handler myHandler = new Handler() {
@@ -236,9 +235,9 @@ public class FileSync extends Activity implements View.OnClickListener {
                     //save for use
                     SharedPreferences sharedPreferences = getSharedPreferences("sticker", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("stickers", json.getString(TAG_STICKER));
+                    editor.putString("stickers", json.toString());
                     editor.commit();
-                    //Log.d("Save sticker list", json.toString());
+                    Log.d("Save sticker list", json.toString());
 
                     pDialog.dismiss();
                     return json.getString(TAG_STICKER);
