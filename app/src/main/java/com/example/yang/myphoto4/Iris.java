@@ -539,7 +539,7 @@ public class Iris extends Activity {
     }
 
     private Bitmap redIris(int eyeWidth, int eyeHeight){
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.eye_green);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.eye_colored);
         int width = bm.getWidth();
         int height = bm.getHeight();
         float scaleWidth = ((float) eyeWidth)/ width;
