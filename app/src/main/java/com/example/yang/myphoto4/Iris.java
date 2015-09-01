@@ -611,5 +611,6 @@ public class Iris extends Activity {
         //intent.putExtra("myPath", myPath);
         startActivity(intent);
         //setContentView(R.layout.null_layout);
+
     }
 }
