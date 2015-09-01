@@ -536,6 +536,7 @@ public class Iris extends Activity {
         canvas.drawBitmap(rightIrisBitmap, (int)(mMidX- ((rightEyeHeight*1.2)/2)), mMidY-(rightEyeHeight/2),p);
         //canvas.drawCircle(myMidX, myMidY, 20, p);
         //canvas.drawCircle(mMidX, mMidY, 20, p);
+
     }
 
     private Bitmap redIris(int eyeWidth, int eyeHeight){
