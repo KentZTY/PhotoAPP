@@ -32,6 +32,7 @@ public class Sticker_Selector extends Activity {
         setContentView(R.layout.activity_selector);
         GridView gridView=(GridView)findViewById(R.id.gridView);
         final ImageAdapter adapter = new ImageAdapter(this);
+
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -53,10 +54,12 @@ public class Sticker_Selector extends Activity {
     }
     public class ImageAdapter extends BaseAdapter {
         int size=300;
+
         private Context mContext;
 
         public ImageAdapter(Context c) {
             mContext = c;
+            getImages();
         }
 
         public int getCount() {
@@ -74,7 +77,7 @@ public class Sticker_Selector extends Activity {
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView;
-            getImages();
+
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
                 imageView = new ImageView(mContext);
@@ -85,7 +88,7 @@ public class Sticker_Selector extends Activity {
                 imageView = (ImageView) convertView;
             }
 
-            getImages();
+            //getImages();
             //Log.d("Uri passed",mThumbIds[position].toString());
             imageView.setImageURI(mThumbIds[position]);
             return imageView;
@@ -108,7 +111,9 @@ public class Sticker_Selector extends Activity {
                 //Integer[] temp = new Integer[len++];
                 for (int i = 0; i < len; i++){
                     resIds[i] = ar.getResourceId(i, 0);
-                    mThumbIds[i]=Uri.parse("android.resource://com.example.yang.myphoto4/"+ar.getResourceId(i,0));}
+                    mThumbIds[i]=Uri.parse("android.resource://com.example.yang.myphoto4/drawable/" + ar.getResourceId(i,0));
+                    Log.d("pic"+i,":"+mThumbIds[i]);
+                }
                 ar.recycle();
             }else{
                 try{

@@ -46,6 +46,7 @@ public class Border_Selector extends Activity {
 
         public BorderAdapter(Context c) {
             mContext = c;
+            getImages();
         }
 
         public int getCount() {
@@ -63,7 +64,7 @@ public class Border_Selector extends Activity {
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView;
-            getImages();
+
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
                 imageView = new ImageView(mContext);
@@ -74,7 +75,6 @@ public class Border_Selector extends Activity {
                 imageView = (ImageView) convertView;
             }
 
-            getImages();
             imageView.setImageResource(mThumbIds[position]);
             return imageView;
         }

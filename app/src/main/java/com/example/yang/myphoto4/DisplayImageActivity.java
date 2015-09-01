@@ -518,11 +518,18 @@ public class DisplayImageActivity extends Activity {
     //get the bitmap from sticker id
     public Bitmap getResource(Uri imageUri){
         Log.d("name", imageUri.toString());
-        BitmapFactory.Options option = new BitmapFactory.Options();
-        //option.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeFile(imageUri.toString());
-        return Bitmap.createScaledBitmap(bitmap,1000,1000,true);
-
+        if(bitmap!=null) {
+            return Bitmap.createScaledBitmap(bitmap, 1000, 1000, true);
+        }else{
+            try{
+                bitmap=MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                return  Bitmap.createScaledBitmap(bitmap, 1000, 1000, true);
+            }catch (Exception e){
+                Log.d("Exception", e.toString());
+                return null;
+            }
+        }
     }
 
 
