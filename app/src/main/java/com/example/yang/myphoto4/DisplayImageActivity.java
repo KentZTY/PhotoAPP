@@ -596,7 +596,6 @@ public class DisplayImageActivity extends Activity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
 
