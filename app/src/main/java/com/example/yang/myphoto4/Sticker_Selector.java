@@ -134,10 +134,6 @@ public class Sticker_Selector extends Activity {
 
         public String getDiskCacheDir(Context context) {
             String cachePath = null;
-            //Environment.getExtemalStorageState()
-            //Environment.MEDIA_MOUNTED
-            //getAbsolutePath()
-
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                     || !Environment.isExternalStorageRemovable()) {
                 cachePath = context.getExternalCacheDir().getPath();
