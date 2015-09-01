@@ -112,7 +112,7 @@ public class Iris extends Activity {
         (findViewById(R.id.redEye))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
-                        drawEye(redIris(20,15),redIris(20,15));
+                        drawEye(redIris((int) (leftEyeHeight * 1.2), leftEyeHeight), redIris((int) (rightEyeHeight * 1.2), rightEyeHeight));
                     }
                 });
     }
@@ -126,13 +126,13 @@ public class Iris extends Activity {
     public void initUI(){
         redEyeBtn = (Button)findViewById(R.id.redEye);
         myIrisImage =(ImageView)findViewById(R.id.mIrisImage);
-        LayoutParams params = myIrisImage.getLayoutParams();
+        //LayoutParams params = myIrisImage.getLayoutParams();
         createBack();
-        int h = srcImg.getHeight();
-        int w = srcImg.getWidth();
-        float r = (float)h/(float)w;
-        params.width = w_screen;
-        params.height = (int)(params.width * r);
+        //int h = srcImg.getHeight();
+        //int w = srcImg.getWidth();
+        //float r = (float)h/(float)w;
+        //params.width = w_screen;
+        //params.height = (int)(params.width * r);
         myIrisImage.setImageBitmap(srcImg);
     }
 
@@ -507,6 +507,7 @@ public class Iris extends Activity {
                 canvas.drawCircle(myMidX, myMidY, 20, p);
                 canvas.drawCircle(mMidX, mMidY, 20, p);
                 canvas.drawBitmap(redIris(20,20),400,400,p);*/
+
             }
         }
         return srcFace;
@@ -519,10 +520,10 @@ public class Iris extends Activity {
         p.setStrokeWidth(3);
         p.setStyle(Paint.Style.STROKE);
         p.setColor(Color.GREEN);
-        canvas.drawBitmap(leftIrisBitmap, myMidX, myMidY, p);
-        canvas.drawBitmap(rightIrisBitmap, mMidX, mMidY,p);
-        canvas.drawCircle(myMidX, myMidY, 20, p);
-        canvas.drawCircle(mMidX, mMidY, 20, p);
+        canvas.drawBitmap(leftIrisBitmap, (int)(myMidX- ((leftEyeHeight*1.2)/2)), myMidY-(leftEyeHeight/2), p);
+        canvas.drawBitmap(rightIrisBitmap, (int)(mMidX- ((rightEyeHeight*1.2)/2)), mMidY-(rightEyeHeight/2),p);
+        //canvas.drawCircle(myMidX, myMidY, 20, p);
+        //canvas.drawCircle(mMidX, mMidY, 20, p);
 
     }
 
