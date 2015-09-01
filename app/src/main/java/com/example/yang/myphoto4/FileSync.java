@@ -72,9 +72,6 @@ public class FileSync extends Activity implements View.OnClickListener {
         gridView = (GridView) findViewById(R.id.contentList);
         //listView.setAdapter(adapter);
 
-
-
-
     }
 
     Handler myHandler = new Handler() {
