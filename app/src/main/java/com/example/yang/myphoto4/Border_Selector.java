@@ -21,7 +21,7 @@ public class Border_Selector extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selector);
-        GridView gridView=(GridView)findViewById(R.id.gridView);
+        GridView gridView = (GridView) findViewById(R.id.gridView);
         gridView.setAdapter(new BorderAdapter(this));
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -41,8 +41,10 @@ public class Border_Selector extends Activity {
 
     public class BorderAdapter extends BaseAdapter {
 
-        int size=300;
+        int size = 300;
         private Context mContext;
+        // references to our images
+        private Integer[] mThumbIds = new Integer[getC()];
 
         public BorderAdapter(Context c) {
             mContext = c;
@@ -68,7 +70,7 @@ public class Border_Selector extends Activity {
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
                 imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(size,size));
+                imageView.setLayoutParams(new GridView.LayoutParams(size, size));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(8, 8, 8, 8);
             } else {
@@ -79,22 +81,19 @@ public class Border_Selector extends Activity {
             return imageView;
         }
 
-        // references to our images
-        private Integer[] mThumbIds=new Integer[getC()];
-
-
         public void getImages() {
             TypedArray ar = getResources().obtainTypedArray(R.array.border_cr);
             int len = ar.length();
             int[] resIds = new int[len];
             //Integer[] temp = new Integer[len++];
-            for (int i = 0; i < len; i++){
+            for (int i = 0; i < len; i++) {
                 resIds[i] = ar.getResourceId(i, 0);
-                mThumbIds[i]=resIds[i];}
+                mThumbIds[i] = resIds[i];
+            }
             ar.recycle();
         }
 
-        private int getC(){
+        private int getC() {
             TypedArray ar = getResources().obtainTypedArray(R.array.border_cr);
             int len = ar.length();
             ar.recycle();

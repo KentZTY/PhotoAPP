@@ -1,9 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
-    >
+    android:background="@drawable/bg">
 
     <ImageView
         android:id="@+id/imageView1"
@@ -51,9 +49,9 @@
         android:id="@+id/register"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:background="@drawable/selector"
         android:layout_alignRight="@+id/password"
         android:layout_below="@+id/password"
+        android:background="@drawable/selector"
         android:text="Register" />
 
 </RelativeLayout>

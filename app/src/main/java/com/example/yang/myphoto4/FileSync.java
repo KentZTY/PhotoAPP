@@ -52,20 +52,6 @@ public class FileSync extends Activity implements View.OnClickListener {
     String[] stickers;
 
     ImageView test;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_filesync);
-        syncButton = (ImageButton) findViewById(R.id.sync);
-        syncButton.setOnClickListener(this);
-        username = getIntent().getStringExtra("username");
-        password = getIntent().getStringExtra("password");
-        gridView = (GridView) findViewById(R.id.contentList);
-        //listView.setAdapter(adapter);
-    }
-
     Handler myHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -86,6 +72,29 @@ public class FileSync extends Activity implements View.OnClickListener {
         }
     };
 
+    static public String getDiskCacheDir(Context context) {
+        String cachePath = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            cachePath = context.getExternalCacheDir().getPath();
+        } else {
+            cachePath = context.getCacheDir().getPath();
+        }
+        return cachePath;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_filesync);
+        syncButton = (ImageButton) findViewById(R.id.sync);
+        syncButton.setOnClickListener(this);
+        username = getIntent().getStringExtra("username");
+        password = getIntent().getStringExtra("password");
+        gridView = (GridView) findViewById(R.id.contentList);
+        //listView.setAdapter(adapter);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -99,58 +108,42 @@ public class FileSync extends Activity implements View.OnClickListener {
         }
     }
 
-    class MyViewBinder implements SimpleAdapter.ViewBinder
-    {
+    public void showPics() {
+        print("showPics");
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for (String name : stickers) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("title", name);
+            map.put("info", "");
+            Uri uri = Uri.parse(new File(getDiskCacheDir(getBaseContext()) + "/5.png").toString());
+            //Bitmap bitmap= MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            map.put("img", uri);
+
+            list.add(map);
+        }
+        SimpleAdapter adapter = new SimpleAdapter(FileSync.this, list, R.layout.vlist,
+                new String[]{"PIC", "TITLE"}, new int[]{R.id.griditem_pic,
+                R.id.griditem_title,});
+        adapter.setViewBinder(new MyViewBinder());
+        gridView.setAdapter(adapter);
+    }
+
+    public void print(String info) {
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+    }
+
+    class MyViewBinder implements SimpleAdapter.ViewBinder {
         @Override
-        public boolean setViewValue(View view, Object data,String textRepresentation)
-        {
-            if((view instanceof ImageView) & (data instanceof Uri))
-            {
+        public boolean setViewValue(View view, Object data, String textRepresentation) {
+            if ((view instanceof ImageView) & (data instanceof Uri)) {
                 ImageView iv = (ImageView) view;
-                Uri uri=(Uri)data;
+                Uri uri = (Uri) data;
                 iv.setImageURI(uri);
                 return true;
             }
             return false;
         }
 
-    }
-
-
-
-    public void showPics(){
-        print("showPics");
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        for(String name:stickers){
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("title", name);
-            map.put("info", "");
-            Uri uri=Uri.parse(new File(getDiskCacheDir(getBaseContext()) + "/5.png").toString());
-            //Bitmap bitmap= MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-            map.put("img", uri);
-
-            list.add(map);
-        }
-        SimpleAdapter adapter = new SimpleAdapter(FileSync.this,list,R.layout.vlist,
-                new String[] { "PIC", "TITLE" }, new int[] { R.id.griditem_pic,
-                R.id.griditem_title, });
-        adapter.setViewBinder(new MyViewBinder());
-        gridView.setAdapter(adapter);
-    }
-
-    public void print(String info){
-        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
-    }
-
-    static public String getDiskCacheDir(Context context) {
-        String cachePath = null;
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()) {
-            cachePath = context.getExternalCacheDir().getPath();
-        } else {
-            cachePath = context.getCacheDir().getPath();
-        }
-        return cachePath;
     }
 
     class AttemptSync extends AsyncTask<String, String, String> {
@@ -199,26 +192,27 @@ public class FileSync extends Activity implements View.OnClickListener {
 
                 //print(success+"");
                 if (success == 1) {
-                    JSONArray stickersJ=json.getJSONArray(TAG_STICKER);
-                    stickers=new String[stickersJ.length()];
-                    for(int i=0;i<stickersJ.length();i++){
-                        stickers[i]=""+ stickersJ.get(i);
+                    JSONArray stickersJ = json.getJSONArray(TAG_STICKER);
+                    stickers = new String[stickersJ.length()];
+                    for (int i = 0; i < stickersJ.length(); i++) {
+                        stickers[i] = "" + stickersJ.get(i);
                     }
-                    List<String> URLs= Arrays.asList(stickers);
-                    try{
-                        new ImageDownloader( getDiskCacheDir(getBaseContext()), URLs, new ImageDownloader.DownloadStateListener() {
+                    List<String> URLs = Arrays.asList(stickers);
+                    try {
+                        new ImageDownloader(getDiskCacheDir(getBaseContext()), URLs, new ImageDownloader.DownloadStateListener() {
 
                             @Override
                             public void onFinish() {
-                                failure=false;
+                                failure = false;
                             }
 
                             @Override
                             public void onFailed() {
-                                failure=true;
+                                failure = true;
                             }
                         }).startDownload();
-                    }catch(Exception e){Log.d("download","failed");
+                    } catch (Exception e) {
+                        Log.d("download", "failed");
                     }
 
                     //save for use
@@ -251,7 +245,7 @@ public class FileSync extends Activity implements View.OnClickListener {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once product deleted
             pDialog.dismiss();
-            if(failure==false){
+            if (failure == false) {
                 myHandler.sendEmptyMessage(0);
             }
 

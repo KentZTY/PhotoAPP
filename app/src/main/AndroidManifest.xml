@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.yang.myphoto4" >
+    package="com.example.yang.myphoto4">
 
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -13,10 +13,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +26,7 @@
         <activity
             android:name=".DisplayImageActivity"
             android:label="@string/title_activity_display_image"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.MainActivity" />
@@ -34,7 +34,7 @@
         <activity
             android:name=".ShareImageActivity"
             android:label="@string/title_activity_share_image"
-            android:parentActivityName=".DisplayImageActivity" >
+            android:parentActivityName=".DisplayImageActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
@@ -42,7 +42,7 @@
         <activity
             android:name=".Sticker_Selector"
             android:label="@string/title_activity_share_image"
-            android:parentActivityName=".DisplayImageActivity" >
+            android:parentActivityName=".DisplayImageActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
@@ -50,7 +50,7 @@
         <activity
             android:name=".Border_Selector"
             android:label="@string/title_activity_share_image"
-            android:parentActivityName=".DisplayImageActivity" >
+            android:parentActivityName=".DisplayImageActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
@@ -58,7 +58,7 @@
         <activity
             android:name=".Help"
             android:label="@string/title_activity_share_image"
-            android:parentActivityName=".DisplayImageActivity" >
+            android:parentActivityName=".DisplayImageActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
@@ -66,7 +66,7 @@
         <activity
             android:name=".Login"
             android:label="@string/title_activity_share_image"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
@@ -74,7 +74,7 @@
         <activity
             android:name=".Register"
             android:label="@string/title_activity_share_image"
-            android:parentActivityName=".Login" >
+            android:parentActivityName=".Login">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
@@ -82,7 +82,7 @@
         <activity
             android:name=".FileSync"
             android:label="@string/title_activity_share_image"
-            android:parentActivityName=".Login" >
+            android:parentActivityName=".Login">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.DisplayImageActivity" />
@@ -90,7 +90,7 @@
         <activity
             android:name=".Iris"
             android:label="@string/title_activity_iris"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.yang.myphoto4.MainActivity" />

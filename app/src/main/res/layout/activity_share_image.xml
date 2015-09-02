@@ -3,66 +3,66 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg1"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.yang.myphoto4.ShareImageActivity"
-    android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+    tools:context="com.example.yang.myphoto4.ShareImageActivity">
 
     <ImageButton
+        android:id="@+id/homeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/homeButton"
-        android:background="@drawable/homeselector"
-        android:src="@drawable/home"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:clickable="false" />
+        android:layout_alignParentTop="true"
+        android:background="@drawable/homeselector"
+        android:clickable="false"
+        android:src="@drawable/home" />
 
     <ImageButton
+        android:id="@+id/shareButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shareButton"
-        android:src="@drawable/sharebt"
-        android:background="@drawable/shareselector"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="125dp" />
+        android:layout_marginBottom="125dp"
+        android:background="@drawable/shareselector"
+        android:src="@drawable/sharebt" />
 
     <TextView
+        android:id="@+id/myPathView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/myPathView"
-        android:layout_marginBottom="62dp"
         android:layout_above="@+id/shareButton"
+        android:layout_marginBottom="62dp"
+        android:layout_toEndOf="@+id/imageView2"
         android:layout_toRightOf="@+id/imageView2"
-        android:layout_toEndOf="@+id/imageView2" />
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="100dp"
         android:layout_height="20dp"
-        android:id="@+id/imageView2"
-        android:background="@android:color/transparent"
-        android:src="@drawable/arrow"
         android:layout_alignBottom="@+id/myPathView"
+        android:layout_alignEnd="@+id/homeButton"
+        android:layout_alignParentEnd="false"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
         android:layout_alignRight="@+id/homeButton"
-        android:layout_alignEnd="@+id/homeButton"
-        android:layout_alignParentEnd="false" />
+        android:background="@android:color/transparent"
+        android:src="@drawable/arrow" />
 
     <TextView
+        android:id="@+id/warningView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/warningView"
         android:layout_above="@+id/myPathView"
+        android:layout_toEndOf="@+id/imageView2"
         android:layout_toRightOf="@+id/imageView2"
-        android:layout_toEndOf="@+id/imageView2" />
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
