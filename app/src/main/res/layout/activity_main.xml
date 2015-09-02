@@ -34,7 +34,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:id="@+id/sync"
-        android:src="@drawable/login"
+        android:src="@drawable/logins"
         android:background="@drawable/selector"
         android:layout_alignTop="@+id/irisButton"
         android:layout_toLeftOf="@+id/irisButton"
