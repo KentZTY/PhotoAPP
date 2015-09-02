@@ -361,6 +361,7 @@ public class HighlightView {
         mMode = ModifyMode.None;
         init();
     }
+
     public enum ModifyMode {
         None, Move, Grow
     }

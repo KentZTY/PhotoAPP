@@ -53,6 +53,7 @@ public abstract class ImageViewTouchBase extends ImageView {
         super(context);
         init();
     }
+
     public ImageViewTouchBase(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
