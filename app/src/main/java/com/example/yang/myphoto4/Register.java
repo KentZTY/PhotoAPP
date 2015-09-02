@@ -21,14 +21,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Register extends Activity implements OnClickListener{
+public class Register extends Activity implements OnClickListener {
 
-    private EditText user, pass;
-    private Button  mRegister;
-
-    // Progress Dialog
-    private ProgressDialog pDialog;
-
+    //testing on Emulator:
+    private static final String LOGIN_URL = "http://raptor.kent.ac.uk/~wz57/Ree/Register.php";
+    //ids
+    private static final String TAG_SUCCESS = "success";
+    private static final String TAG_MESSAGE = "message";
     // JSON parser class
     JSONParser jsonParser = new JSONParser();
 
@@ -39,16 +38,13 @@ public class Register extends Activity implements OnClickListener{
     //put your local ip instead,  on windows, run CMD > ipconfig
     //or in mac's terminal type ifconfig and look for the ip under en0 or en1
     // private static final String LOGIN_URL = "http://xxx.xxx.x.x:1234/webservice/register.php";
-
-    //testing on Emulator:
-    private static final String LOGIN_URL = "http://raptor.kent.ac.uk/~wz57/Ree/Register.php";
+    private EditText user, pass;
 
     //testing from a real server:
     //private static final String LOGIN_URL = "http://www.yourdomain.com/webservice/register.php";
-
-    //ids
-    private static final String TAG_SUCCESS = "success";
-    private static final String TAG_MESSAGE = "message";
+    private Button mRegister;
+    // Progress Dialog
+    private ProgressDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +52,10 @@ public class Register extends Activity implements OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
 
-        user = (EditText)findViewById(R.id.username);
-        pass = (EditText)findViewById(R.id.password);
+        user = (EditText) findViewById(R.id.username);
+        pass = (EditText) findViewById(R.id.password);
 
-        mRegister = (Button)findViewById(R.id.register);
+        mRegister = (Button) findViewById(R.id.register);
         mRegister.setOnClickListener(this);
 
     }
@@ -72,11 +68,15 @@ public class Register extends Activity implements OnClickListener{
 
     }
 
+    private void print(String info) {
+        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+    }
+
     class CreateUser extends AsyncTask<String, String, String> {
 
         /**
          * Before starting background thread Show Progress Dialog
-         * */
+         */
         boolean failure = false;
 
         @Override
@@ -109,7 +109,7 @@ public class Register extends Activity implements OnClickListener{
 
                 //Posting user data to script
                 JSONObject json = jsonParser.makeHttpRequest(
-                        LOGIN_URL, "POST", params,"null");
+                        LOGIN_URL, "POST", params, "null");
 
                 // full json response
                 Log.d("Login attempt", json.toString());
@@ -120,7 +120,7 @@ public class Register extends Activity implements OnClickListener{
                     Log.d("User Created!", json.toString());
                     finish();
                     return json.getString(TAG_MESSAGE);
-                }else{
+                } else {
                     Log.d("Login Failure!", json.getString(TAG_MESSAGE));
                     return json.getString(TAG_MESSAGE);
 
@@ -132,21 +132,19 @@ public class Register extends Activity implements OnClickListener{
             return null;
 
         }
+
         /**
          * After completing background task Dismiss the progress dialog
-         * **/
+         **/
         protected void onPostExecute(String file_url) {
             // dismiss the dialog once product deleted
             //pDialog.dismiss();
-            if (file_url != null){
+            if (file_url != null) {
                 Toast.makeText(Register.this, file_url, Toast.LENGTH_LONG).show();
             }
 
         }
 
-    }
-    private void print(String info) {
-        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
 }

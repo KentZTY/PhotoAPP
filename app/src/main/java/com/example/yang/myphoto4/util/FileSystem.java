@@ -39,8 +39,7 @@ public class FileSystem {
      * create dir
      *
      * @param context
-     * @param dirName
-     *            folder name
+     * @param dirName folder name
      * @return
      */
     public static File createFileDir(Context context, String dirName) {
