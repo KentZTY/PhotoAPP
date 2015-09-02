@@ -4,5 +4,12 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
-
+    <style name="popup_in_out" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_down_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_down_out</item>
+    </style>
+    <style name="popup_show_out" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_show_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_show_out</item>
+    </style>
 </resources>

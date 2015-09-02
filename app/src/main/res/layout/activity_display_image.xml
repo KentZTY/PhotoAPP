@@ -7,7 +7,7 @@
     android:id="@+id/stickerView"
     android:gravity="center"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-    <ImageView
+    <com.example.yang.myphoto4.image.view.CropImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/imageView"
@@ -64,6 +64,16 @@
         android:layout_alignParentBottom="true"
         android:layout_above="@id/sticker" >
     </Button>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/borderselector"
+        android:id="@+id/edit_photo"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_above="@id/border"/>
 
     <Button
         android:layout_width="wrap_content"
