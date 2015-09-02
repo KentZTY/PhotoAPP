@@ -38,12 +38,12 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
-
 import com.example.yang.myphoto4.image.util.EditImage;
 import com.example.yang.myphoto4.image.util.ReverseAnimation;
 import com.example.yang.myphoto4.image.view.CropImageView;
@@ -53,7 +53,6 @@ import com.example.yang.myphoto4.image.view.ToneView;
 import com.example.yang.myphoto4.util.myUtil;
 import com.example.yang.myphoto4.view.MenuView;
 import com.example.yang.myphoto4.view.OnMenuClickListener;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -63,7 +62,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
 
 public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
     private int screenWidth;
@@ -82,15 +80,56 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     private static final int DRAG = 4;
     private static final int ZOOM_OR_ROTATE = 5;
     private static final int DELETE = 6;
+    public static DisplayImageActivity instance = null;
+    private static int width, height;
+    private static Boolean isClick = false;
+    RelativeLayout mainLayout;
     int mode = NONE;
     Paint paint;
     String myPath;
     public static DisplayImageActivity instance = null;
     private Button stickerButton, clearButton, borderButton, openButton, saveButton, editButton;
+
+    ProgressBar progressbar = null;
+    Handler myHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    showProcessBar();
+                    saveButton.setClickable(false);
+                    break;
+                case 2:
+                    progressbar.setVisibility(View.GONE);
+                    saveButton.setClickable(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+    private int screenWidth;
+    private int screenHeight;
+    private int i;
+    private myImageView currentImage;
+    private myImageView[] imageView;
+    private ImageView myImage;
+    private ImageView borderImage;
+    Runnable myRun = new Runnable() {
+        @Override
+        public void run() {
+            shareImage();
+            myHandler.sendEmptyMessage(2);
+        }
+    };
+    private Button stickerButton, clearButton, borderButton, openButton, saveButton;
+
     private Animation animationTranslate, animationRotate, animationScale;
     private static int width, height;
     private RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, 0);
     private RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(0, 0);
+
     private static Boolean isClick = false;
     private final int STATE_CROP = 0x1;
     private final int STATE_NONE = STATE_CROP << 2;
@@ -117,11 +156,42 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     private long currentclicktime = 0;
     private MenuView mSecondaryListMenu;
 
+    private OnTouchListener movingEventListener = new OnTouchListener() {
+
+        public boolean onTouch(View v, MotionEvent event) {
+
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_DOWN:
+                    modeChooser(v, event);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (mode == DELETE) {
+                        deleteSticker((myImageView) v);
+                    }
+                    break;
+                case MotionEvent.ACTION_POINTER_UP:
+                    mode = NONE;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (mode == ZOOM_OR_ROTATE) {
+                        zoomAndRotate(v, event);
+                    }
+                    if (mode == DRAG) {
+                        drag(v, event);
+                    }
+                    break;
+            }
+            return true;
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_image);
         mainLayout = (RelativeLayout) findViewById(R.id.stickerView);
+
         //myImage =(ImageView)findViewById(R.id.imageView);
         myImage = (CropImageView) findViewById(R.id.imageView);
         borderImage = (ImageView) findViewById(R.id.borderView);
@@ -187,6 +257,9 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         });
 
         Button helpButton = (Button) findViewById(R.id.help);
+
+        ImageButton helpButton = (ImageButton) findViewById(R.id.help);
+
         helpButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -299,6 +372,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
 
     }
 
+
     Handler myHandler = new Handler() {
 
         @Override
@@ -362,6 +436,9 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         });
         return animationRotate;
     }
+     /*
+         * Receive image uri. Get image path. Display image.
+         **/
 
     protected Animation animTranslate(float toX, float toY, final int lastX, final int lastY,
                                       final Button button, long durationMillis) {
@@ -509,7 +586,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     //get the filepath from uri
     public String getPath(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
-        ContentResolver cr = DisplayImageActivity.this.getContentResolver();
+        ContentResolver cr = this.getContentResolver();
         Cursor cursor = cr.query(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
@@ -525,7 +602,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         Canvas c = new Canvas(output);
         myImage.draw(c);
         borderImage.draw(c);
-        for (int a = i; a > 0; a--) {
+        for (int a = 1; a <= i; a++) {
             paint.reset();
             c.translate(imageView[a].viewL, imageView[a].viewT);
             Bitmap bm = imageView[a].getBitmap();
@@ -577,7 +654,6 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         mainLayout.addView(imageView[i], lp1);
     }
 
-
     //add border
     public void addBorder(String name) {
         int a = Integer.parseInt(name);
@@ -588,13 +664,20 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     //get the bitmap from sticker id
     public Bitmap getResource(Uri imageUri) {
         Log.d("name", imageUri.toString());
-        BitmapFactory.Options option = new BitmapFactory.Options();
-        //option.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeFile(imageUri.toString());
         System.out.println("bitmap:" + bitmap);
-        return Bitmap.createScaledBitmap(bitmap, 1000, 1000, true);
+        if (bitmap != null) {
+            return Bitmap.createScaledBitmap(bitmap, 1000, 1000, true);
+        } else {
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                return Bitmap.createScaledBitmap(bitmap, 1000, 1000, true);
+            } catch (Exception e) {
+                Log.d("Exception", e.toString());
+                return null;
+            }
+        }
     }
-
 
     //get the bitmap from border id
     public Bitmap getBorderResource(int i) {

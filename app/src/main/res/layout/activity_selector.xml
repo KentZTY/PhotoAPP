@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-    android:background="@drawable/bg">
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
     <GridView
+        android:id="@+id/gridView"
+        style="@style/Platform.AppCompat"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/gridView"
         android:layout_gravity="center"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="2dp"
-        android:horizontalSpacing="2dp"
-        android:gravity="center"
-        android:drawSelectorOnTop="false"
-        android:columnWidth="100dp"
-        android:choiceMode="singleChoice"
-        android:stretchMode="spacingWidthUniform"
         android:layout_margin="0dp"
-        style="@style/Platform.AppCompat" />
+        android:choiceMode="singleChoice"
+        android:columnWidth="100dp"
+        android:drawSelectorOnTop="false"
+        android:gravity="center"
+        android:horizontalSpacing="2dp"
+        android:numColumns="auto_fit"
+        android:stretchMode="spacingWidthUniform"
+        android:verticalSpacing="2dp" />
 </LinearLayout>

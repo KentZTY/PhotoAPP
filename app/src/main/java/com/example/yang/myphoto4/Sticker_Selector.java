@@ -28,17 +28,18 @@ public class Sticker_Selector extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selector);
-        GridView gridView=(GridView)findViewById(R.id.gridView);
+        GridView gridView = (GridView) findViewById(R.id.gridView);
         final ImageAdapter adapter = new ImageAdapter(this);
+
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 Intent intent = new Intent(Sticker_Selector.this, DisplayImageActivity.class);
                 //intent.putExtra("id",position + "");
-                String sid=adapter.getItem(position) + "";
-                Log.d("id",sid);
-                intent.putExtra("id",sid);
+                String sid = adapter.getItem(position) + "";
+                Log.d("id", sid);
+                intent.putExtra("id", sid);
                 setResult(RESULT_OK, intent);
 
                 setContentView(R.layout.null_layout);
@@ -49,12 +50,17 @@ public class Sticker_Selector extends Activity {
         });
 
     }
+
     public class ImageAdapter extends BaseAdapter {
-        int size=300;
+        int size = 300;
+
         private Context mContext;
+        // references to our images
+        private Uri[] mThumbIds = new Uri[getC()];
 
         public ImageAdapter(Context c) {
             mContext = c;
+            getImages();
         }
 
         public int getCount() {
@@ -72,56 +78,55 @@ public class Sticker_Selector extends Activity {
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView;
-            getImages();
+
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
                 imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(size,size));
+                imageView.setLayoutParams(new GridView.LayoutParams(size, size));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(8, 8, 8, 8);
             } else {
                 imageView = (ImageView) convertView;
             }
 
-            getImages();
+            //getImages();
             //Log.d("Uri passed",mThumbIds[position].toString());
             imageView.setImageURI(mThumbIds[position]);
             return imageView;
         }
 
-        // references to our images
-        private Uri[] mThumbIds=new Uri[getC()];
-
-
         public void getImages() {
 
             SharedPreferences sharedPreferencesOut = getSharedPreferences("sticker", Context.MODE_MULTI_PROCESS);
-            String temp=sharedPreferencesOut.getString("stickers", "def");
+            String temp = sharedPreferencesOut.getString("stickers", "def");
             Log.d("Get prefference", temp);
-            if (temp.equals("def")){
-                Log.d("temp","null" );
+            if (temp.equals("def")) {
+                Log.d("temp", "null");
                 TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
                 int len = ar.length();
                 int[] resIds = new int[len];
                 //Integer[] temp = new Integer[len++];
-                for (int i = 0; i < len; i++){
+                for (int i = 0; i < len; i++) {
                     resIds[i] = ar.getResourceId(i, 0);
-                    mThumbIds[i]=Uri.parse("android.resource://com.example.yang.myphoto4/"+ar.getResourceId(i,0));}
+                    mThumbIds[i] = Uri.parse("android.resource://com.example.yang.myphoto4/drawable/" + ar.getResourceId(i, 0));
+                    Log.d("pic" + i, ":" + mThumbIds[i]);
+                }
                 ar.recycle();
-            }else{
-                try{
-                    Log.d("temp","not null" );
+            } else {
+                try {
+                    Log.d("temp", "not null");
                     JSONObject jsonObject = new JSONObject(temp);
                     JSONArray ar = jsonObject.getJSONArray("sticker");
                     int len = ar.length();
                     Uri[] resIds = new Uri[len];
                     //Integer[] temp = new Integer[len++];
-                    for (int i = 0; i < len; i++){
+                    for (int i = 0; i < len; i++) {
                         Log.d("id", ar.getString(i));
-                        resIds[i] =Uri.parse(new File(getDiskCacheDir(getBaseContext())+"/"+ar.getString(i))+".png");
-                        mThumbIds[i]=resIds[i];}
-                }catch (Exception e){
-                    Log.d("Exception",e.toString());
+                        resIds[i] = Uri.parse(new File(getDiskCacheDir(getBaseContext()) + "/" + ar.getString(i)) + ".png");
+                        mThumbIds[i] = resIds[i];
+                    }
+                } catch (Exception e) {
+                    Log.d("Exception", e.toString());
 
                 }
 
@@ -140,7 +145,7 @@ public class Sticker_Selector extends Activity {
             return cachePath;
         }
 
-        private int getC(){
+        private int getC() {
             TypedArray ar = getResources().obtainTypedArray(R.array.sticker);
             int len = ar.length();
             return len;

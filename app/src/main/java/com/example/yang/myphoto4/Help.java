@@ -11,18 +11,19 @@ import android.widget.ImageView;
  */
 public class Help extends Activity {
     ImageView helpImage;
-    int i=0;
+    int i = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
-        helpImage=(ImageView)findViewById(R.id.helpImage);
+        helpImage = (ImageView) findViewById(R.id.helpImage);
         helpImage.setImageDrawable(getResources().getDrawable(R.drawable.help0));
         helpImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 i++;
-                switch (i){
+                switch (i) {
                     case 1:
                         helpImage.setImageDrawable(getResources().getDrawable(R.drawable.help0));
                         break;
@@ -30,7 +31,7 @@ public class Help extends Activity {
                         helpImage.setImageDrawable(getResources().getDrawable(R.drawable.help1));
                         break;
                     default:
-                        i=0;
+                        i = 0;
                         end();
                         break;
 

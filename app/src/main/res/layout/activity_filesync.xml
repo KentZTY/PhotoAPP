@@ -1,29 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="207dp">
 
         <ImageButton
+            android:id="@+id/sync"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="right"
+            android:background="@drawable/selector"
+            android:scaleType="center"
+            android:src="@drawable/syncs" />
+
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/sync"
-            android:src="@drawable/syncs"
-            android:scaleType="center"
-            android:layout_gravity="right"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_above="@+id/sync"
+            android:layout_centerHorizontal="true"
+            android:text="Press below to synchronize" />
     </RelativeLayout>
 
     <GridView
+        android:id="@+id/contentList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/contentList"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
 </LinearLayout>
