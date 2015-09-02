@@ -12,7 +12,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity {
     private static final int SELECT_PICTURE = 1;
     private static final int REQUEST_CAPTURE_CAMERA = 2;
     private static final int REQUEST_CAMERA_IRIS = 3;
@@ -24,7 +24,7 @@ public class MainActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(getIntent().getBooleanExtra("close", false)){
+        if (getIntent().getBooleanExtra("close", false)) {
             DisplayImageActivity.instance.finish();
         }
 
@@ -70,10 +70,9 @@ public class MainActivity extends Activity{
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
-                                    Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                                    startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
-                        }
-                        else {
+                            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
+                        } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -84,26 +83,26 @@ public class MainActivity extends Activity{
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
-                            Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                             startActivityForResult(intent, REQUEST_CAMERA_IRIS);
-                        }
-                        else {
+                        } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
-        /*
-         * Get image data(uri) and image path.
-         * Deliver image Uri to DisplayImageActivity.
-         **/
+
+    /*
+     * Get image data(uri) and image path.
+     * Deliver image Uri to DisplayImageActivity.
+     **/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Intent intent = new Intent();
-            if(requestCode != REQUEST_CAMERA_IRIS){
+            if (requestCode != REQUEST_CAMERA_IRIS) {
                 intent.setClass(MainActivity.this, DisplayImageActivity.class);
-                switch (requestCode){
+                switch (requestCode) {
                     case SELECT_PICTURE:
                         uri = data.getData();
                         selectedImagePath1 = getPath(uri);
@@ -115,7 +114,8 @@ public class MainActivity extends Activity{
                     default:
                         break;
                 }
-            }if(requestCode == REQUEST_CAMERA_IRIS){
+            }
+            if (requestCode == REQUEST_CAMERA_IRIS) {
                 intent.setClass(MainActivity.this, Iris.class);
                 uri = data.getData();
             }
@@ -129,7 +129,7 @@ public class MainActivity extends Activity{
          **/
 
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         ContentResolver cr = this.getContentResolver();
         Cursor cursor = cr.query(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);

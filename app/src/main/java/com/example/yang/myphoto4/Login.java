@@ -37,14 +37,66 @@ public class Login extends Activity implements OnClickListener {
     JSONParser jsonParser = new JSONParser();
 
     //php login script location:
+    View.OnKeyListener onChangeLine = new View.OnKeyListener() {
 
+        @Override
+
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+
+                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if (imm.isActive()) {
+
+                    imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+
+
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+    };
+    View.OnKeyListener onSubmit = new View.OnKeyListener() {
+
+        @Override
+
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+
+                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if (imm.isActive()) {
+
+                    imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+
+
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+    };
     //localhost :
     //testing on your device
     //put your local ip instead,  on windows, run CMD > ipconfig
     //or in mac's terminal type ifconfig and look for the ip under en0 or en1
     // private static final String LOGIN_URL = "http://xxx.xxx.x.x:1234/webservice/login.php";
     private EditText user, pass;
-
     //testing from a real server:
     //private static final String LOGIN_URL = "http://www.yourdomain.com/webservice/login.php";
     private Button mSubmit, mRegister;
@@ -75,63 +127,6 @@ public class Login extends Activity implements OnClickListener {
         mRegister.setOnClickListener(this);
 
     }
-
-    View.OnKeyListener onChangeLine=new View.OnKeyListener() {
-
-        @Override
-
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-
-            if(keyCode == KeyEvent.KEYCODE_ENTER){
-
-                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                if(imm.isActive()){
-
-                    imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );
-
-
-                }
-
-                return true;
-
-            }
-
-            return false;
-
-        }
-
-    };
-
-    View.OnKeyListener onSubmit=new View.OnKeyListener() {
-
-        @Override
-
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-
-            if(keyCode == KeyEvent.KEYCODE_ENTER){
-
-                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                if(imm.isActive()){
-
-                    imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0 );
-
-
-
-                }
-
-                return true;
-
-            }
-
-            return false;
-
-        }
-
-    };
 
     @Override
     public void onClick(View v) {
@@ -225,7 +220,6 @@ public class Login extends Activity implements OnClickListener {
             return null;
 
         }
-
 
 
         /**

@@ -26,10 +26,10 @@ import java.util.List;
 
 public class JSONParser {
 
+    public static String PHPSESSID = null;
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
-    public static String PHPSESSID =null;
 
     // constructor
     public JSONParser() {
@@ -98,19 +98,19 @@ public class JSONParser {
     // function get json from url
     // by making HTTP POST or GET mehtod
     public JSONObject makeHttpRequest(String url, String method,
-                                      List<NameValuePair> params,String PHPSESSID) {
+                                      List<NameValuePair> params, String PHPSESSID) {
 
         // Making HTTP request
         try {
 
             // check for request method
-            if(method == "POST"){
+            if (method == "POST") {
                 // request method is POST
                 // defaultHttpClient
                 DefaultHttpClient httpClient = new DefaultHttpClient();
                 HttpPost httpPost = new HttpPost(url);
                 httpPost.setEntity(new UrlEncodedFormEntity(params));
-                if(null != PHPSESSID){
+                if (null != PHPSESSID) {
                     httpPost.setHeader("Cookie", "PHPSESSID=" + PHPSESSID);
                 }
 
@@ -118,7 +118,7 @@ public class JSONParser {
                 HttpEntity httpEntity = httpResponse.getEntity();
                 is = httpEntity.getContent();
 
-            }else if(method == "GET"){
+            } else if (method == "GET") {
                 // request method is GET
                 DefaultHttpClient httpClient = new DefaultHttpClient();
                 String paramString = URLEncodedUtils.format(params, "utf-8");
@@ -177,7 +177,8 @@ public class JSONParser {
         return jObj;
 
     }
-    public String getPHPSESSID(){
+
+    public String getPHPSESSID() {
         return PHPSESSID;
     }
 }

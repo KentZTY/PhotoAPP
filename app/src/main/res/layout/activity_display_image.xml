@@ -1,104 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/stickerView"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="0dp"
-    android:paddingBottom="0dp"
-    android:id="@+id/stickerView"
-    android:gravity="center"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
         android:id="@+id/imageView"
-        android:clickable="true"
-        android:longClickable="false"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"/>
-
-    <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:clickable="true"
+        android:longClickable="false" />
+
+    <ImageView
         android:id="@+id/borderView"
-        android:focusableInTouchMode="true"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:clickable="false"
-        android:scaleType="fitXY"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"/>
+        android:focusableInTouchMode="true"
+        android:scaleType="fitXY" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/clear"
-        android:background="@drawable/clearselector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="0dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true">
-    </Button>
+        android:background="@drawable/clearselector"></Button>
 
     <Button
-        android:layout_width= "wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/save"
-        android:background="@drawable/saveselector"
-        android:layout_alignTop="@+id/clear"
-        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="0dp">
-    </Button>
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/clear"
+        android:layout_marginRight="0dp"
+        android:background="@drawable/saveselector"></Button>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/stickerselector"
         android:id="@+id/sticker"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="0dp"
-        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@id/clear"
-        android:layout_alignParentLeft="true">
-    </Button>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="0dp"
+        android:background="@drawable/stickerselector"></Button>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/borderselector"
         android:id="@+id/border"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="0dp"
-        android:layout_alignParentBottom="true"
-        android:layout_above="@id/sticker"
-        android:layout_alignParentLeft="true">
-    </Button>
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/openselector"
-        android:id="@+id/open"
+        android:layout_above="@id/sticker"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="0dp"
-        android:layout_alignParentBottom="true"
+        android:background="@drawable/borderselector"></Button>
+
+    <Button
+        android:id="@+id/open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@id/border"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true">
-    </Button>
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="0dp"
+        android:background="@drawable/openselector"></Button>
 
     <ImageButton
+        android:id="@+id/help"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:text="Help"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:background="@drawable/selector"
         android:src="@drawable/questionmark"
-        android:id="@+id/help"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:text="Help" />
 
 </RelativeLayout>

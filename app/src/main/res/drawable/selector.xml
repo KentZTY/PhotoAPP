@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:state_pressed="true" android:drawable="@drawable/buttonfocusbg" />
-<item android:state_pressed="false" android:drawable="@drawable/buttonbg" />
+    <item android:drawable="@drawable/buttonfocusbg" android:state_pressed="true" />
+    <item android:drawable="@drawable/buttonbg" android:state_pressed="false" />
 </selector>
