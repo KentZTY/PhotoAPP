@@ -82,7 +82,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/borderselector" />
+        android:background="@drawable/editselector" />
 
     <Button
         android:id="@+id/open"
