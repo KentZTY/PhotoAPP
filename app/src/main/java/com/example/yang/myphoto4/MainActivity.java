@@ -1,7 +1,10 @@
 package com.example.yang.myphoto4;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -19,6 +22,8 @@ public class MainActivity extends Activity {
     private String selectedImagePath1;
     private Uri uri;
 
+    private int isSysCamera=0;
+    private String[] selectItem=new String[]{"SystemCamera","MyCamera"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,10 +39,44 @@ public class MainActivity extends Activity {
         (findViewById(R.id.photoButton))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+                        String state = Environment.getExternalStorageState();
+                        if (state.equals(Environment.MEDIA_MOUNTED)) {
+                            Dialog dialog =new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("Camera")
+                                    .setSingleChoiceItems(selectItem, 0, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            isSysCamera=which;
+                                        }
+                                    })
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (isSysCamera==0){
+                                                Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                                startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
+
+                                            }else {
+                                                Intent intent=new Intent();
+                                                intent.setClass(MainActivity.this,CameraActivity.class);
+                                                startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
+                                            }
+                                            dialog.dismiss();
+                                            isSysCamera=0;
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .create();
+                            dialog.show();
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
 
