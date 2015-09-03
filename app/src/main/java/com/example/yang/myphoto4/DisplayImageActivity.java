@@ -41,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+
 import com.example.yang.myphoto4.image.util.EditImage;
 import com.example.yang.myphoto4.image.util.ReverseAnimation;
 import com.example.yang.myphoto4.image.view.CropImageView;
@@ -49,6 +50,7 @@ import com.example.yang.myphoto4.image.view.ToneView;
 import com.example.yang.myphoto4.util.myUtil;
 import com.example.yang.myphoto4.view.MenuView;
 import com.example.yang.myphoto4.view.OnMenuClickListener;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -490,9 +492,9 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     }
 
     private void initBitmap() {
-        if(mBitmap.getWidth() == 0 || mBitmap.getHeight() == 0)return;
+        if (mBitmap.getWidth() == 0 || mBitmap.getHeight() == 0) return;
         int scale = Math.max(screenWidth / mBitmap.getWidth(), screenHeight / mBitmap.getHeight());
-        if(scale == 0) return;
+        if (scale == 0) return;
         Matrix matrix = new Matrix();
         System.out.println("scale:" + scale);
         matrix.postScale(scale, scale);

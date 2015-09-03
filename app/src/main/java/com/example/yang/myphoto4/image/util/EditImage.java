@@ -155,6 +155,7 @@ public class EditImage {
 
     /**
      * Constructor method
+     *
      * @param context
      * @param imageView
      * @param bm

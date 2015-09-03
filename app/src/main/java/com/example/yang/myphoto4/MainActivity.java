@@ -75,28 +75,28 @@ public class MainActivity extends Activity {
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
-                            Dialog dialog =new AlertDialog.Builder(MainActivity.this)
+                            Dialog dialog = new AlertDialog.Builder(MainActivity.this)
                                     .setTitle("Camera")
                                     .setSingleChoiceItems(selectItem, 0, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            isSysCamera=which;
+                                            isSysCamera = which;
                                         }
                                     })
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            if (isSysCamera==0){
-                                                Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                            if (isSysCamera == 0) {
+                                                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                                                 startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
 
-                                            }else {
-                                                Intent intent=new Intent();
-                                                intent.setClass(MainActivity.this,CameraActivity.class);
+                                            } else {
+                                                Intent intent = new Intent();
+                                                intent.setClass(MainActivity.this, CameraActivity.class);
                                                 startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
                                             }
                                             dialog.dismiss();
-                                            isSysCamera=0;
+                                            isSysCamera = 0;
                                         }
                                     })
                                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -107,8 +107,7 @@ public class MainActivity extends Activity {
                                     })
                                     .create();
                             dialog.show();
-                        }
-                        else {
+                        } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
                     }

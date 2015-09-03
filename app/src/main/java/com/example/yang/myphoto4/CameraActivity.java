@@ -1,16 +1,5 @@
 package com.example.yang.myphoto4;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,39 +25,50 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class CameraActivity extends Activity {
-	 private View layout;
-	 private Camera camera;
-	 private Camera.Parameters parameters = null;
-	 private final Timer timer = new Timer();
-	 private TimerTask task;
-	 private int mCount=0;
-     private int mCaptureCount=0;
-	 private LinearLayout linearLayout;
-
-	 private List<String> listPath = new ArrayList<String>();
-	 int i = 0;	//
-	 private String cameraPath;
-	 private Button takePicture;
-
-    private Bitmap HDRbitmap=null;
-    private Paint paint=null;
-    private Canvas canvas=null;
+    private final Timer timer = new Timer();
+    int i = 0;    //
+    Bundle bundle = null; //
+    private View layout;
+    private Camera camera;
+    private Camera.Parameters parameters = null;
+    private TimerTask task;
+    private int mCount = 0;
+    private int mCaptureCount = 0;
+    private LinearLayout linearLayout;
+    private List<String> listPath = new ArrayList<String>();
+    private String cameraPath;
+    private Button takePicture;
+    private Bitmap HDRbitmap = null;
+    private Paint paint = null;
+    private Canvas canvas = null;
     private Uri uri;
 
-
-	 Bundle bundle = null; //
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture_image);
 
         layout = this.findViewById(R.id.buttonLayout);
-        linearLayout = (LinearLayout)findViewById(R.id.linearlayout_images);
-        takePicture=(Button) findViewById(R.id.takepicture);
+        linearLayout = (LinearLayout) findViewById(R.id.linearlayout_images);
+        takePicture = (Button) findViewById(R.id.takepicture);
 
-        SurfaceView surfaceView = (SurfaceView)findViewById(R.id.surfaceView);
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceView.getHolder()
                 .setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         surfaceView.getHolder().setFixedSize(176, 144);
@@ -78,36 +78,17 @@ public class CameraActivity extends Activity {
         takePicture.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCount=0;
-                if (timer!=null) {
-                    if (task!=null) {
+                mCount = 0;
+                if (timer != null) {
+                    if (task != null) {
                         task.cancel();
                     }
                 }
-                task=new MyTimerTask();
+                task = new MyTimerTask();
                 timer.schedule(task, 100, 2000);
             }
         });
     }
-
-    class MyTimerTask extends TimerTask{
-		@Override
-		public void run() {
-            if(camera!=null&&mCount<=3){
-                parameters=camera.getParameters();
-                mCount++;
-                if(mCount==1){
-                    parameters.setExposureCompensation(-2);
-                }else if(mCount==2){
-                    parameters.setExposureCompensation(0);
-                }else if(mCount==3){
-                    parameters.setExposureCompensation(2);
-                }
-                camera.setParameters(parameters);
-                camera.takePicture(null, null, new MyPictureCallback());
-            }
-	       }
-		}
 
     //save image
     public void saveBitmap(Bitmap bm) {
@@ -116,12 +97,12 @@ public class CameraActivity extends Activity {
         String fileName = formatter.format(now) + ".png";
         File f;
         try {
-            cameraPath= Environment.getExternalStorageDirectory().toString()
-                    +File.separator
-                    +"Pictures"
-                    +File.separator
+            cameraPath = Environment.getExternalStorageDirectory().toString()
+                    + File.separator
+                    + "Pictures"
+                    + File.separator
                     + fileName;
-            f=new File(cameraPath);
+            f = new File(cameraPath);
             FileOutputStream out = new FileOutputStream(f);
             bm.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.flush();
@@ -134,20 +115,102 @@ public class CameraActivity extends Activity {
             e.printStackTrace();
         }
 
-        try{
-            uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm,null,null));
+        try {
+            uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm, null, null));
             //MediaStore.Images.Media.insertImage(this.getContentResolver(), cameraPath, fileName, null);
             //CameraActivity.this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(cameraPath))));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void getImageView(byte[] data) {
+        mCaptureCount++;
+        final View view = getLayoutInflater().inflate(R.layout.image_item, null);
+        final ImageView imageView = (ImageView) view.findViewById(R.id.photoshare_item_image);
+        imageView.setImageBitmap(getCompressImageBitmap(data));
+        linearLayout.addView(view);
+        try {
+            if (mCount == 1) {
+                int width = BitmapFactory.decodeByteArray(data, 0, data.length).getWidth();
+                int height = BitmapFactory.decodeByteArray(data, 0, data.length).getHeight();
+                HDRbitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                paint = new Paint();
+                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
+                canvas = new Canvas(HDRbitmap);
+            }
+            canvas.drawBitmap(BitmapFactory.decodeByteArray(data, 0, data.length), 0, 0, paint);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (mCount == 3) {
+            saveBitmap(HDRbitmap);
+            Intent intent = new Intent();
+            intent.setData(uri);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+    }
+
+    private Bitmap getCompressImageBitmap(byte[] data) {
+        Bitmap bmp = null;
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(data, 0, data.length, opts);
+        //opts.inSampleSize = ImageTools.computeSampleSize(opts, -1, 150*150);
+        opts.inSampleSize = 16;
+        opts.inJustDecodeBounds = false;
+        try {
+            bmp = BitmapFactory.decodeByteArray(data, 0, data.length, opts);
+        } catch (OutOfMemoryError e) {
+        }
+        return bmp;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (camera != null) {
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+        }
+        if (timer != null) {
+            timer.cancel();
+        }
+        if (task != null) {
+            task.cancel();
+            task = null;
+        }
+        if (HDRbitmap != null) {
+            HDRbitmap.recycle();
+            HDRbitmap = null;
+        }
+    }
+
+    class MyTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            if (camera != null && mCount <= 3) {
+                parameters = camera.getParameters();
+                mCount++;
+                if (mCount == 1) {
+                    parameters.setExposureCompensation(-2);
+                } else if (mCount == 2) {
+                    parameters.setExposureCompensation(0);
+                } else if (mCount == 3) {
+                    parameters.setExposureCompensation(2);
+                }
+                camera.setParameters(parameters);
+                camera.takePicture(null, null, new MyPictureCallback());
+            }
         }
     }
 
     private final class SurfaceCallback implements Callback {
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width,
-                int height) {
+                                   int height) {
             parameters = camera.getParameters();
             parameters.setPictureFormat(PixelFormat.JPEG);
             parameters.setPreviewSize(width, height);
@@ -172,7 +235,7 @@ public class CameraActivity extends Activity {
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
             if (camera != null) {
-            	camera.stopPreview();
+                camera.stopPreview();
                 camera.release();
                 camera = null;
             }
@@ -183,18 +246,18 @@ public class CameraActivity extends Activity {
                     .getRotation();
             int degree = 0;
             switch (rotation) {
-            case Surface.ROTATION_0:
-                degree = 90;
-                break;
-            case Surface.ROTATION_90:
-                degree = 0;
-                break;
-            case Surface.ROTATION_180:
-                degree = 270;
-                break;
-            case Surface.ROTATION_270:
-                degree = 180;
-                break;
+                case Surface.ROTATION_0:
+                    degree = 90;
+                    break;
+                case Surface.ROTATION_90:
+                    degree = 0;
+                    break;
+                case Surface.ROTATION_180:
+                    degree = 270;
+                    break;
+                case Surface.ROTATION_270:
+                    degree = 180;
+                    break;
             }
             return degree;
         }
@@ -210,70 +273,6 @@ public class CameraActivity extends Activity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void getImageView(byte[] data){
-        mCaptureCount++;
-        final View view = getLayoutInflater().inflate(R.layout.image_item, null);
-        final ImageView imageView = (ImageView)view.findViewById(R.id.photoshare_item_image);
-        imageView.setImageBitmap(getCompressImageBitmap(data));
-        linearLayout.addView(view);
-        try{
-                if(mCount==1){
-                    int width=BitmapFactory.decodeByteArray(data,0,data.length).getWidth();
-                    int height=BitmapFactory.decodeByteArray(data,0,data.length).getHeight();
-                    HDRbitmap=Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
-                    paint=new Paint();
-                    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
-                    canvas=new Canvas(HDRbitmap);
-                }
-            canvas.drawBitmap(BitmapFactory.decodeByteArray(data, 0, data.length), 0, 0, paint);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        if(mCount==3){
-            saveBitmap(HDRbitmap);
-            Intent intent=new Intent();
-            intent.setData(uri);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
-    }
-
-    private Bitmap getCompressImageBitmap(byte[] data){
-        Bitmap bmp = null;
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inJustDecodeBounds = true;
-        BitmapFactory.decodeByteArray(data,0,data.length,opts);
-        //opts.inSampleSize = ImageTools.computeSampleSize(opts, -1, 150*150);
-        opts.inSampleSize=16;
-        opts.inJustDecodeBounds = false;
-        try {
-            bmp=BitmapFactory.decodeByteArray(data,0,data.length,opts);
-        } catch (OutOfMemoryError e) {
-        }
-        return bmp;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (camera != null) {
-            camera.stopPreview();
-            camera.release();
-            camera = null;
-        }
-        if (timer!=null){
-            timer.cancel();
-        }
-        if (task!=null){
-            task.cancel();
-            task=null;
-        }
-        if (HDRbitmap!=null){
-            HDRbitmap.recycle();
-            HDRbitmap=null;
         }
     }
 }

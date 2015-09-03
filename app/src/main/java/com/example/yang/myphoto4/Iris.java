@@ -2,7 +2,6 @@ package com.example.yang.myphoto4;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -24,7 +23,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -50,21 +48,6 @@ public class Iris extends Activity {
     RelativeLayout mainLayout;
     Bitmap srcImg = null;
     Bitmap srcFace = null;
-    Thread checkFaceThread = new Thread() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            Bitmap faceBitmap = detectFace();
-            mainHandler.sendEmptyMessage(2);
-            Message m = new Message();
-            m.what = 0;
-            m.obj = faceBitmap;
-            mainHandler.sendMessage(m);
-        }
-
-    };
-
     private ImageView myIrisImage = null;
     Handler mainHandler = new Handler() {
 
@@ -87,6 +70,20 @@ public class Iris extends Activity {
                 default:
                     break;
             }
+        }
+
+    };
+    Thread checkFaceThread = new Thread() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Bitmap faceBitmap = detectFace();
+            mainHandler.sendEmptyMessage(2);
+            Message m = new Message();
+            m.what = 0;
+            m.obj = faceBitmap;
+            mainHandler.sendMessage(m);
         }
 
     };
