@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -577,7 +578,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     //delete sticker
     public void deleteSticker(myImageView mimageView) {
         //?
-        //mimageView.setImageBitmap(getResource(1), new Point(0, 0), 0, 0);
+        mimageView.setImageBitmap(mBitmap, new Point(0, 0), 0, 0);
         mainLayout.removeView(mimageView);
     }
 
@@ -703,14 +704,14 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
                 currentImage = (myImageView) v;
             }
             ((myImageView) v).pA.set(event.getX() + ((myImageView) v).viewL, event.getY() + ((myImageView) v).viewT);
-            if (((myImageView) v).isactiondownicon((int) event.getX(), (int) event.getY()) == 2) {
+            if (((myImageView) v).isActionDownIcon((int) event.getX(), (int) event.getY()) == 2) {
                 mode = ZOOM_OR_ROTATE;
             }
-            if (((myImageView) v).isactiondownicon((int) event.getX(), (int) event.getY()) == 1) {
+            if (((myImageView) v).isActionDownIcon((int) event.getX(), (int) event.getY()) == 1) {
                 mode = DELETE;
             }
 
-            if (((myImageView) v).isactiondownicon((int) event.getX(), (int) event.getY()) == 0) {
+            if (((myImageView) v).isActionDownIcon((int) event.getX(), (int) event.getY()) == 0) {
                 mode = DRAG;
             }
         }
