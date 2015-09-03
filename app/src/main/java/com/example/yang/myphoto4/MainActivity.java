@@ -22,8 +22,8 @@ public class MainActivity extends Activity {
     private String selectedImagePath1;
     private Uri uri;
 
-    private int isSysCamera=0;
-    private String[] selectItem=new String[]{"SystemCamera","MyCamera"};
+    private int isSysCamera = 0;
+    private String[] selectItem = new String[]{"SystemCamera", "MyCamera"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,40 @@ public class MainActivity extends Activity {
          * Select image button. Use intent to open gallery and select image.
          **/
         (findViewById(R.id.photoButton))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+                    }
+                });
+
+        (findViewById(R.id.sync))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        Intent intent = new Intent();
+                        intent.setClass(MainActivity.this, Login.class);
+                        //intent.putExtra("close", true);
+                        startActivity(intent);
+                    }
+                });
+
+        (findViewById(R.id.helpmain))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        Intent help = new Intent();
+                        help.setClass(MainActivity.this, Help.class);
+                        startActivity(help);
+                    }
+                });
+
+        /*
+         * Camera function button. Check out SD card.
+         * Use intent to open local applications for camera(image capture).
+         * Create image file.
+         **/
+        (findViewById(R.id.cameraButton))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
@@ -75,43 +109,6 @@ public class MainActivity extends Activity {
                             dialog.show();
                         }
                         else {
-                            Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
-        (findViewById(R.id.sync))
-                .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View arg0) {
-                        Intent intent = new Intent();
-                        intent.setClass(MainActivity.this, Login.class);
-                        //intent.putExtra("close", true);
-                        startActivity(intent);
-                    }
-                });
-
-        (findViewById(R.id.helpmain))
-                .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View arg0) {
-                        Intent help = new Intent();
-                        help.setClass(MainActivity.this, Help.class);
-                        startActivity(help);
-                    }
-                });
-
-        /*
-         * Camera function button. Check out SD card.
-         * Use intent to open local applications for camera(image capture).
-         * Create image file.
-         **/
-        (findViewById(R.id.cameraButton))
-                .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View arg0) {
-                        String state = Environment.getExternalStorageState();
-                        if (state.equals(Environment.MEDIA_MOUNTED)) {
-                            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
-                        } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
                     }

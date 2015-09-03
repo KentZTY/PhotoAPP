@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.ImageView;
-
 import com.example.yang.myphoto4.image.util.RotateBitmap;
 
 

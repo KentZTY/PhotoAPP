@@ -233,10 +233,6 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         createBack();
     }
 
-    public void initBitmap(){
-
-    }
-
     private void initialButton() {
         // TODO Auto-generated method stub
         Display display = getWindowManager().getDefaultDisplay();
@@ -530,13 +526,22 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         String filePath = getPath(uri);
         System.out.print(filePath);
         mBitmap = myUtil.getBitmap(filePath);
-        Bitmap.createBitmap(mBitmap, 0, 0, screenWidth, screenHeight);
+        initBitmap();
         myImage.setImageBitmap(mBitmap);
         myImage.setImageBitmapResetBase(mBitmap, true);//recursive calls，try to reset the specific image
         mEditImage = new EditImage(this, myImage, mBitmap);//editing image
         myImage.setEditImage(mEditImage);//after editing, continue to perform other functions rendered by this method
         mTmpBmp = mBitmap.copy(Bitmap.Config.ARGB_8888, true);
         return uri;
+    }
+
+    private void initBitmap() {
+        Matrix matrix = new Matrix();
+        int scale = Math.max(screenWidth / mBitmap.getWidth(), screenHeight / mBitmap.getHeight());
+        System.out.println("scale:" + scale);
+        matrix.postScale(scale, scale);
+        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
+        myImage.setImageBitmap(mBitmap);
     }
 
     private void showProcessBar() {
@@ -946,7 +951,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
                         scale *= 2;
                         break;
                     case 4:
-                        scale *= 4;
+                        scale *= 2;
                         break;
                 }
 
