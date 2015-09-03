@@ -8,9 +8,6 @@ import android.provider.MediaStore;
 
 public final class ImageTools {
 
-    /**
-     *
-     * */
     public static int computeSampleSize(BitmapFactory.Options options, int minSideLength, int maxNumOfPixels) {
         int initialSize = computeInitialSampleSize(options, minSideLength, maxNumOfPixels);
         int roundedSize;

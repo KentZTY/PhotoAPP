@@ -233,6 +233,10 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         createBack();
     }
 
+    public void initBitmap(){
+
+    }
+
     private void initialButton() {
         // TODO Auto-generated method stub
         Display display = getWindowManager().getDefaultDisplay();
@@ -526,10 +530,11 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         String filePath = getPath(uri);
         System.out.print(filePath);
         mBitmap = myUtil.getBitmap(filePath);
+        Bitmap.createBitmap(mBitmap, 0, 0, screenWidth, screenHeight);
         myImage.setImageBitmap(mBitmap);
-        myImage.setImageBitmapResetBase(mBitmap, true);//递归调用将图片的具体视图进行重置
-        mEditImage = new EditImage(this, myImage, mBitmap);//编辑图片
-        myImage.setEditImage(mEditImage);//当编辑渲染操作完成时，还能继续进行其他的功能渲染通过这个方法
+        myImage.setImageBitmapResetBase(mBitmap, true);//recursive calls，try to reset the specific image
+        mEditImage = new EditImage(this, myImage, mBitmap);//editing image
+        myImage.setEditImage(mEditImage);//after editing, continue to perform other functions rendered by this method
         mTmpBmp = mBitmap.copy(Bitmap.Config.ARGB_8888, true);
         return uri;
     }

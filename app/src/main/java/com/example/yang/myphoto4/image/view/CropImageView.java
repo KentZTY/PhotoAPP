@@ -5,9 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-
 import com.example.yang.myphoto4.image.util.EditImage;
-
 import java.util.ArrayList;
 
 public class CropImageView extends ImageViewTouchBase {
@@ -118,7 +116,7 @@ public class CropImageView extends ImageViewTouchBase {
                             for (int i = 0; i < mHighlightViews.size(); i++) { // CR:
                                 HighlightView hv = mHighlightViews.get(i);
                                 int edge = hv.getHit(event.getX(), event.getY());
-                                // 如果是按住了选中框，则变换模式
+                                // If selected frame is hoolded then change mode
                                 if (edge != HighlightView.GROW_NONE) {
                                     mMotionEdge = edge;
                                     mMotionHighlightView = hv;

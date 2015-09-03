@@ -17,23 +17,23 @@ import android.widget.TextView;
 import com.example.yang.myphoto4.R;
 
 /**
- * @author eying
+ * @author bloodmarray
  */
 public class ToneView {
     private static final int TEXT_WIDTH = 50;
     private final int MIDDLE_VALUE = 127;
     /**
-     * 饱和度
+     * saturation
      */
     private TextView mSaturation;
     private SeekBar mSaturationBar;
     /**
-     * 色调
+     * hue
      */
     private TextView mHue;
     private SeekBar mHueBar;
     /**
-     * 亮度
+     * lumination
      */
     private TextView mLum;
     private SeekBar mLumBar;
@@ -44,19 +44,19 @@ public class ToneView {
     private ColorMatrix mHueMatrix;
     private ColorMatrix mAllMatrix;
     /**
-     * 亮度
+     * lumination
      */
     private float mLightnessValue = 1F;
     /**
-     * 饱和度
+     * saturation
      */
     private float mSaturationValue = 0F;
     /**
-     * 色相
+     * hue
      */
     private float mHueValue = 0F;
     /**
-     * 处理后的图片
+     * edited image
      */
     private Bitmap mBitmap;
 
@@ -156,7 +156,7 @@ public class ToneView {
     }
 
     /**
-     * 返回处理后的图片
+     * return to edited image
      *
      * @return
      */
@@ -165,20 +165,20 @@ public class ToneView {
     }
 
     /**
-     * @param flag 比特位0 表示是否改变色相，比位1表示是否改变饱和度,比特位2表示是否改变明亮度
+     * @param flag bit0 means whether hue changed，bit1 whether saturation changed,bit2 means whether lumination changed
      */
     public Bitmap handleImage(Bitmap bm, int flag) {
         Bitmap bmp = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), Bitmap.Config.ARGB_8888);
-        // 创建一个相同尺寸的可变的位图区,用于绘制调色后的图片
-        Canvas canvas = new Canvas(bmp); // 得到画笔对象
-        Paint paint = new Paint(); // 新建paint
-        paint.setAntiAlias(true); // 设置抗锯齿,也即是边缘做平滑处理
+        // Create a variable of the same size of drawing area, for drawing editted image
+        Canvas canvas = new Canvas(bmp);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true); // Set the anti-aliasing, doing smoothing edges
         if (null == mAllMatrix) {
             mAllMatrix = new ColorMatrix();
         }
 
         if (null == mLightnessMatrix) {
-            mLightnessMatrix = new ColorMatrix(); // 用于颜色变换的矩阵，android位图颜色变化处理主要是靠该对象完成
+            mLightnessMatrix = new ColorMatrix(); // android bitmap color operations are mainly depend on color matrix
         }
 
         if (null == mSaturationMatrix) {
@@ -190,39 +190,37 @@ public class ToneView {
         }
 
         switch (flag) {
-            case 0: // 需要改变色相
-                // f 表示亮度比例，取值小于1，表示亮度减弱，否则亮度增强
+            case 0: // need to change the hue
+                // f means brightness proportion，if less than 1，means reduce the brightness，or means increase the brightness
                 mHueMatrix.reset();
-                mHueMatrix.setScale(mHueValue, mHueValue, mHueValue, 1); // 红、绿、蓝三分量按相同的比例,最后一个参数1表示透明度不做变化，此函数详细说明参考
-                // // android
-                // doc
-                Log.d("may", "改变色相");
+                mHueMatrix.setScale(mHueValue, mHueValue, mHueValue, 1); // //R,G,B,1
+                Log.d("may", "change saturation");
                 break;
-            case 1: // 需要改变饱和度
-                // saturation 饱和度值，最小可设为0，此时对应的是灰度图(也就是俗话的“黑白图”)，
-                // 为1表示饱和度不变，设置大于1，就显示过饱和
+            case 1: // saturation that needs to change
+                // saturation value，minimum value  can be 0，that means black and white image
+                // 1 means saturaion isn't be changed，if setted greater than 1，image would be over saturated
                 mSaturationMatrix.reset();
                 mSaturationMatrix.setSaturation(mSaturationValue);
-                Log.d("may", "改变饱和度");
+                Log.d("may", "change saturation");
                 break;
-            case 2: // 亮度
-                // hueColor就是色轮旋转的角度,正值表示顺时针旋转，负值表示逆时针旋转
-                mLightnessMatrix.reset(); // 设为默认值
-                mLightnessMatrix.setRotate(0, mLightnessValue); // 控制让红色区在色轮上旋转hueColor葛角度
-                mLightnessMatrix.setRotate(1, mLightnessValue); // 控制让绿红色区在色轮上旋转hueColor葛角度
-                mLightnessMatrix.setRotate(2, mLightnessValue); // 控制让蓝色区在色轮上旋转hueColor葛角度
-                // 这里相当于改变的是全图的色相
-                Log.d("may", "改变亮度");
+            case 2: // lumination
+                // hueColor is the rotation angle of the color wheel,During means clockwise, negative means counterclockwise
+                mLightnessMatrix.reset(); // set to default
+                mLightnessMatrix.setRotate(0, mLightnessValue); // let red area  rotation hueColor angles on the color wheel
+                mLightnessMatrix.setRotate(1, mLightnessValue); // let green area  rotation hueColor angles on the color wheel
+                mLightnessMatrix.setRotate(2, mLightnessValue); // let blue area  rotation hueColor angles on the color wheel
+                // change the hole image hue
+                Log.d("may", "change lumination");
                 break;
         }
         mAllMatrix.reset();
         mAllMatrix.postConcat(mHueMatrix);
-        mAllMatrix.postConcat(mSaturationMatrix); // 效果叠加
-        mAllMatrix.postConcat(mLightnessMatrix); // 效果叠加
+        mAllMatrix.postConcat(mSaturationMatrix); // stacking effect
+        mAllMatrix.postConcat(mLightnessMatrix); // stacking effect
 
-        paint.setColorFilter(new ColorMatrixColorFilter(mAllMatrix));// 设置颜色变换效果
-        canvas.drawBitmap(bm, 0, 0, paint); // 将颜色变化后的图片输出到新创建的位图区
-        // 返回新的位图，也即调色处理后的图片
+        paint.setColorFilter(new ColorMatrixColorFilter(mAllMatrix));// Set the color transformation effect
+        canvas.drawBitmap(bm, 0, 0, paint); // output edited image to the newly created a drawing area
+        // return to mew image
         mBitmap = bmp;
         return bmp;
     }

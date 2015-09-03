@@ -32,7 +32,7 @@ public class ToneMenuView {
         mIsShow = true;
 
         mPopup = new PopupWindow(context);
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();//调色的度量
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();//the amount of color modification
 
         mToneView = new ToneView(context);
         View view = mToneView.getParentView();
@@ -55,7 +55,7 @@ public class ToneMenuView {
         mPopup.setFocusable(true);
         mPopup.setOutsideTouchable(true);
         mPopup.setTouchable(true);
-        // 设置背景为null，就不会出现黑色背景，按返回键PopupWindow就会消失
+        // set background to null to avoid black background. Touch return button the PopupWindow would dissappear
         mPopup.setBackgroundDrawable(null);
         mPopup.showAtLocation(view, Gravity.BOTTOM | Gravity.CENTER, 0, 0);
         return true;

@@ -154,8 +154,7 @@ public class EditImage {
     };
 
     /**
-     * Constructor method 构造方法
-     *
+     * Constructor method
      * @param context
      * @param imageView
      * @param bm
@@ -171,7 +170,7 @@ public class EditImage {
     }
 
     /**
-     * 图片裁剪
+     * cropping
      */
     public void crop(Bitmap bm) {
         mBitmap = bm;
@@ -179,7 +178,7 @@ public class EditImage {
     }
 
     /**
-     * 图片旋转
+     * rotation
      *
      * @param degree
      */
@@ -193,21 +192,21 @@ public class EditImage {
     }
 
     /**
-     * 图片反转
+     * reverse
      */
     public Bitmap reverse(Bitmap bmp, int flag) {
         float[] floats = null;
         switch (flag) {
-            case 0: // 水平反转
+            case 0: // level reverse
                 floats = new float[]{-1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f};
                 break;
-            case 1: // 垂直反转
+            case 1: // vertical reverse
                 floats = new float[]{1f, 0f, 0f, 0f, -1f, 0f, 0f, 0f, 1f};
                 break;
         }
         if (floats != null) {
             Matrix matrix = new Matrix();
-            matrix.setValues(floats);//通过使用Matrix进行图片的反转
+            matrix.setValues(floats);//reverse the image by using matrix
             Bitmap bm = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
             return bm;
         }
@@ -215,7 +214,7 @@ public class EditImage {
     }
 
     /**
-     * 图片缩放
+     * zooming
      */
     public Bitmap resize(Bitmap bm, float scale) {
         Bitmap BitmapOrg = bm;
@@ -227,7 +226,7 @@ public class EditImage {
     }
 
     /**
-     * 图片缩放
+     * zooming
      */
     public Bitmap resize(Bitmap bm, int w, int h) {
         Bitmap BitmapOrg = bm;
@@ -276,7 +275,7 @@ public class EditImage {
     }
 
     /**
-     * 裁剪并保存
+     * cropping and saving
      */
     public Bitmap cropAndSave(Bitmap bm) {
         final Bitmap bmp = onSaveClicked(bm);
@@ -286,7 +285,7 @@ public class EditImage {
     }
 
     /**
-     * 取消裁剪
+     * cancel cropping
      */
     public void cropCancel() {
         mImageView.setState(CropImageView.STATE_NONE);
@@ -312,7 +311,7 @@ public class EditImage {
         return croppedImage;
     }
 
-    //将处理过的图片保存到本地
+    //save the edited image
     public String saveToLocal(Bitmap bm) {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
@@ -331,7 +330,7 @@ public class EditImage {
             return null;
         }
 
-        return path;//返回给 path
+        return path;//return to path
     }
 
     private void showProgressDialog(String msg, Runnable job, Handler handler) {

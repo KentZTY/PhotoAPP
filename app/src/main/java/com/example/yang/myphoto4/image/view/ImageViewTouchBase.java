@@ -16,15 +16,15 @@ import com.example.yang.myphoto4.image.util.RotateBitmap;
 public abstract class ImageViewTouchBase extends ImageView {
 
     /**
-     * 高亮状态
+     * hight state
      */
     public static final int STATE_HIGHLIGHT = 0x0;
     /**
-     * 涂鸦状态
+     * doodle stat
      */
     public static final int STATE_DOODLE = STATE_HIGHLIGHT + 1;
     /**
-     * 没有任何操作
+     * doodle state
      */
     public static final int STATE_NONE = STATE_HIGHLIGHT + 2;
     /**/
