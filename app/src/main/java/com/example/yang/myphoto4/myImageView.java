@@ -20,7 +20,6 @@ import android.util.FloatMath;
 import android.widget.ImageView;
 
 public class myImageView extends ImageView {
-    private final Context mcontext;
     private final Paint paint;
     public boolean isEditable = false;
     public Bitmap mBitmap, delmB, ctrlmB;
@@ -50,7 +49,6 @@ public class myImageView extends ImageView {
 
     public myImageView(Context context, Bitmap mBitmap) {
         super(context);
-        mcontext = context;
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Style.STROKE);
@@ -59,7 +57,6 @@ public class myImageView extends ImageView {
 
     public myImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mcontext = context;
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Style.STROKE);
@@ -68,14 +65,13 @@ public class myImageView extends ImageView {
 
     public myImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mcontext = context;
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Style.STROKE);
         init(mBitmap);
     }
 
-    public static Point roationPoint(Point target, Point source, float degree) {
+    public static Point rotationPoint(Point target, Point source, float degree) {
         source.x = source.x - target.x;
         source.y = source.y - target.y;
         double alpha = 0;
@@ -201,17 +197,17 @@ public class myImageView extends ImageView {
                 cpoint.y - rotatedImageH / 2);
     }
 
-    public void drawRectR(int l, int t, int r, int b, float jd) {
+    public void drawRectR(int l, int t, int r, int b, float angle) {
 
         Point p1 = new Point(l, t);
         Point p2 = new Point(r, t);
         Point p3 = new Point(r, b);
         Point p4 = new Point(l, b);
         Point tp = new Point((l + r) / 2, (t + b) / 2);
-        np1 = roationPoint(tp, p1, jd);
-        np2 = roationPoint(tp, p2, jd);
-        np3 = roationPoint(tp, p3, jd);
-        np4 = roationPoint(tp, p4, jd);
+        np1 = rotationPoint(tp, p1, angle);
+        np2 = rotationPoint(tp, p2, angle);
+        np3 = rotationPoint(tp, p3, angle);
+        np4 = rotationPoint(tp, p4, angle);
         int w = 0;
         int h = 0;
         int maxn = 0;
@@ -294,7 +290,7 @@ public class myImageView extends ImageView {
     /*
      * None = 0, Delete = 1, Zoom and Rotate = 2.
      */
-    public int isactiondownicon(int x, int y) {
+    public int isActionDownIcon(int x, int y) {
         int xx = x;
         int yy = y;
         int kk1 = ((xx - iconP1.x) * (xx - iconP1.x) + (yy - iconP1.y)

@@ -44,11 +44,8 @@ public class Iris extends Activity {
     Button redEyeBtn = null;
     float myMidX, myMidY, mMidX, mMidY;
     String myCache = null;
-    Context context = this;
     ProgressBar progressBar = null;
     int myBlack = 80;
-    Bitmap myLeftEye = null;
-    Bitmap myRightEye = null;
     int leftEyeWidth, rightEyeWidth, leftEyeHeight, rightEyeHeight, myLeft, myTop, mLeft, mTop;
     RelativeLayout mainLayout;
     Bitmap srcImg = null;
@@ -67,8 +64,7 @@ public class Iris extends Activity {
         }
 
     };
-    private int w_screen;
-    private int h_screen;
+
     private ImageView myIrisImage = null;
     Handler mainHandler = new Handler() {
 
@@ -94,7 +90,6 @@ public class Iris extends Activity {
         }
 
     };
-    private ImageView[] imageViews;
 
     public static Bitmap toGrayScale(Bitmap bmpOriginal) {
         int width, height;
@@ -116,12 +111,8 @@ public class Iris extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iris);
-        DisplayMetrics dm = getResources().getDisplayMetrics();
         mainLayout = (RelativeLayout) findViewById(R.id.irisView);
         myCache = FileSync.getDiskCacheDir(this);
-        imageViews = new ImageView[2];
-        w_screen = dm.widthPixels;
-        h_screen = dm.heightPixels;
         initUI();
         initFaceDetect();
         mainHandler.sendEmptyMessage(1);

@@ -2,7 +2,6 @@ package com.example.yang.myphoto4;
 
 import android.R.anim;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -12,9 +11,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.media.ExifInterface;
+import android.graphics.Point;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -43,8 +41,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Toast;
-
 import com.example.yang.myphoto4.image.util.EditImage;
 import com.example.yang.myphoto4.image.util.ReverseAnimation;
 import com.example.yang.myphoto4.image.view.CropImageView;
@@ -53,17 +49,13 @@ import com.example.yang.myphoto4.image.view.ToneView;
 import com.example.yang.myphoto4.util.myUtil;
 import com.example.yang.myphoto4.view.MenuView;
 import com.example.yang.myphoto4.view.OnMenuClickListener;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
 
 public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
     private static final int sticker = 1;
@@ -87,7 +79,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     int mode = NONE;
     Paint paint;
     String myPath;
-    ProgressBar progressbar = null;
+    ProgressBar progressBar = null;
     Handler myHandler = new Handler() {
 
         @Override
@@ -98,7 +90,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
                     saveButton.setClickable(false);
                     break;
                 case 2:
-                    progressbar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     saveButton.setClickable(true);
                     break;
                 default:
@@ -168,44 +160,6 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     private int rotcount = 0;
     private int mState;
 
-    /*
-     * Get image rotate degree
-     **/
-    public static int readPictureDegree(String path) {
-        int degree = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(path);
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    degree = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    degree = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    degree = 270;
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return degree;
-    }
-
-    /*
-     * Rotate image
-     **/
-    public static Bitmap rotatingImageView(int angle, Bitmap bitmap) {
-
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        System.out.println("angle2=" + angle);
-        int bWidth = bitmap.getWidth();
-        int bHeight = bitmap.getHeight();
-        return Bitmap.createBitmap(bitmap, 0, 0,
-                bWidth, bHeight, matrix, true);
-    }
      /*
          * Receive image uri. Get image path. Display image.
          **/
@@ -536,8 +490,10 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     }
 
     private void initBitmap() {
-        Matrix matrix = new Matrix();
+        if(mBitmap.getWidth() == 0 || mBitmap.getHeight() == 0)return;
         int scale = Math.max(screenWidth / mBitmap.getWidth(), screenHeight / mBitmap.getHeight());
+        if(scale == 0) return;
+        Matrix matrix = new Matrix();
         System.out.println("scale:" + scale);
         matrix.postScale(scale, scale);
         mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
@@ -546,13 +502,13 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
 
     private void showProcessBar() {
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.stickerView);
-        progressbar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
+        progressBar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        progressbar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         //progressBar.setLayoutParams(params);
-        mainLayout.addView(progressbar, params);
+        mainLayout.addView(progressBar, params);
 
     }
 
@@ -625,7 +581,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     //delete sticker
     public void deleteSticker(myImageView mimageView) {
         //?
-        //mimageView.setImageBitmap(getResource(1), new Point(0, 0), 0, 0);
+        mimageView.setImageBitmap(mBitmap, new Point(0, 0), 0, 0);
         mainLayout.removeView(mimageView);
     }
 
@@ -751,14 +707,14 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
                 currentImage = (myImageView) v;
             }
             ((myImageView) v).pA.set(event.getX() + ((myImageView) v).viewL, event.getY() + ((myImageView) v).viewT);
-            if (((myImageView) v).isactiondownicon((int) event.getX(), (int) event.getY()) == 2) {
+            if (((myImageView) v).isActionDownIcon((int) event.getX(), (int) event.getY()) == 2) {
                 mode = ZOOM_OR_ROTATE;
             }
-            if (((myImageView) v).isactiondownicon((int) event.getX(), (int) event.getY()) == 1) {
+            if (((myImageView) v).isActionDownIcon((int) event.getX(), (int) event.getY()) == 1) {
                 mode = DELETE;
             }
 
-            if (((myImageView) v).isactiondownicon((int) event.getX(), (int) event.getY()) == 0) {
+            if (((myImageView) v).isActionDownIcon((int) event.getX(), (int) event.getY()) == 0) {
                 mode = DRAG;
             }
         }
@@ -832,11 +788,6 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         ((myImageView) v).pA.y = ((myImageView) v).pB.y;
         ((myImageView) v).setCPoint(((myImageView) v).cpoint);
 
-    }
-
-    //print debug info
-    public void print(String info) {
-        Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
     }
 
     private void initMenu() {
@@ -1004,13 +955,6 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         myImage.invalidate();
     }
 
-    private void prepareResize(int state, int imageViewState) {
-        resetToOriginal();
-        mEditImage.mSaving = false;
-        mState = state;
-        myImage.setState(imageViewState);
-    }
-
     private void resetToOriginal() {
         mTmpBmp = mBitmap;
         myImage.setImageBitmap(mBitmap);
@@ -1078,45 +1022,6 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-    }
-
-    private class LoadImage extends AsyncTask<String, String, Bitmap> {
-        Bitmap bitmap;
-        ProgressDialog pDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog = new ProgressDialog(DisplayImageActivity.this);
-            pDialog.setMessage("Loading Image ....");
-            pDialog.show();
-
-        }
-
-        protected Bitmap doInBackground(String... args) {
-            try {
-                bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return bitmap;
-        }
-
-        protected void onPostExecute(Bitmap image) {
-
-            if (image != null) {
-                //AddStickeFromDrawabler(image);
-                myImage.setImageBitmap(image);
-                pDialog.dismiss();
-
-            } else {
-
-                pDialog.dismiss();
-                Toast.makeText(DisplayImageActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
-
-            }
-        }
     }
 }
 
