@@ -430,10 +430,15 @@ public class Display_Image extends Activity {
 
     private Uri createBack() {
         Uri uri = getIntent().getData();
+        String filePath;
         if(uri==null){
             uri=getLastPhotoOrVideo();
         }
-        String filePath = getIntent().getStringExtra("myPath");
+        if(getIntent().getStringExtra("myPath") != null){
+        filePath = getIntent().getStringExtra("myPath");}
+        else{
+            filePath = uri.getPath();
+        }
         Log.d("URI", uri+".uri");
         myImage.setImageBitmap(myUtil.getBitmap(filePath));
         myBitmap = myUtil.getBitmap(filePath);
