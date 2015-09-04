@@ -94,7 +94,6 @@ public class Iris extends Activity {
         }
 
     };
-    private ImageView[] imageViews;
 
     public static Bitmap toGrayScale(Bitmap bmpOriginal) {
         int width, height;
@@ -119,7 +118,6 @@ public class Iris extends Activity {
         DisplayMetrics dm = getResources().getDisplayMetrics();
         mainLayout = (RelativeLayout) findViewById(R.id.irisView);
         myCache = Sticker_FileSync.getDiskCacheDir(this);
-        imageViews = new ImageView[2];
         w_screen = dm.widthPixels;
         h_screen = dm.heightPixels;
         initUI();
@@ -588,12 +586,11 @@ public class Iris extends Activity {
         return cursor.getString(column_index);
     }
 
-    private Uri createBack() {
+    private void createBack() {
         final Uri uri = getIntent().getData();
         String filePath = getPath(uri);
         System.out.print(filePath);
         srcImg = myUtil.getBitmap(filePath);
-        return uri;
     }
 
     public void shareImage() {
