@@ -588,7 +588,11 @@ public class Iris extends Activity {
 
     private void createBack() {
         final Uri uri = getIntent().getData();
-        String filePath = getPath(uri);
+        String filePath;
+        if(getIntent().getStringExtra("myPath") != null){
+            filePath = getIntent().getStringExtra("myPath");
+        }else{
+        filePath= getPath(uri);}
         System.out.print(filePath);
         srcImg = myUtil.getBitmap(filePath);
     }

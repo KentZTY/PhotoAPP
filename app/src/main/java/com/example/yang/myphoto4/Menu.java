@@ -134,6 +134,9 @@ public class Menu extends Activity {
             }
             if (requestCode == REQUEST_CAMERA_IRIS) {
                 intent.setClass(Menu.this, Iris.class);
+                selectedImagePath1 = getPath(uri);
+                System.out.println("Image Path : " + selectedImagePath1);
+                intent.putExtra("myPath", selectedImagePath1);
             }
             intent.setData(uri);
             startActivityForResult(intent, 0);
