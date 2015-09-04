@@ -80,7 +80,7 @@ public class Menu extends Activity {
                             uri = Uri.fromFile(file); // create
                             i.putExtra(MediaStore.EXTRA_OUTPUT,uri); // set the image file
 
-                            startActivityForResult(i, REQUEST_CAPTURE_CAMERA);
+                            startActivityForResult(i, REQUEST_CAMERA_IRIS);
                         } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
@@ -92,8 +92,13 @@ public class Menu extends Activity {
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
-                            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, REQUEST_CAMERA_IRIS);
+                            Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+                            File file = getOutputMediaFile(1);
+                            uri = Uri.fromFile(file); // create
+                            i.putExtra(MediaStore.EXTRA_OUTPUT, uri); // set the image file
+
+                            startActivityForResult(i, REQUEST_CAPTURE_CAMERA);
                         } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
@@ -127,7 +132,6 @@ public class Menu extends Activity {
             }
             if (requestCode == REQUEST_CAMERA_IRIS) {
                 intent.setClass(Menu.this, Iris.class);
-                uri = data.getData();
             }
             intent.setData(uri);
             startActivityForResult(intent, 0);
