@@ -81,7 +81,7 @@ public class Menu extends Activity {
                             uri = Uri.fromFile(file); // create
                             i.putExtra(MediaStore.EXTRA_OUTPUT,uri); // set the image file
 
-                            startActivityForResult(i, REQUEST_CAMERA_IRIS);
+                            startActivityForResult(i, REQUEST_CAPTURE_CAMERA);
                         } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
@@ -99,7 +99,7 @@ public class Menu extends Activity {
                             uri = Uri.fromFile(file); // create
                             i.putExtra(MediaStore.EXTRA_OUTPUT,uri); // set the image file
 
-                            startActivityForResult(i, REQUEST_CAPTURE_CAMERA);
+                            startActivityForResult(i, REQUEST_CAMERA_IRIS);
                         } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
