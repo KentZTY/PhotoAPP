@@ -92,6 +92,8 @@ public class MainActivity extends Activity {
                 });
     }
 
+
+
     /*
      * Get image data(uri) and image path.
      * Deliver image Uri to DisplayImageActivity.
