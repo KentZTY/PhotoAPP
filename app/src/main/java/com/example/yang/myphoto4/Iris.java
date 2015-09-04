@@ -53,20 +53,6 @@ public class Iris extends Activity {
     RelativeLayout mainLayout;
     Bitmap srcImg = null;
     Bitmap srcFace = null;
-    Thread checkFaceThread = new Thread() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            Bitmap faceBitmap = detectFace();
-            mainHandler.sendEmptyMessage(2);
-            Message m = new Message();
-            m.what = 0;
-            m.obj = faceBitmap;
-            mainHandler.sendMessage(m);
-        }
-
-    };
     private int w_screen;
     private int h_screen;
     private ImageView myIrisImage = null;
@@ -91,6 +77,20 @@ public class Iris extends Activity {
                 default:
                     break;
             }
+        }
+
+    };
+    Thread checkFaceThread = new Thread() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Bitmap faceBitmap = detectFace();
+            mainHandler.sendEmptyMessage(2);
+            Message m = new Message();
+            m.what = 0;
+            m.obj = faceBitmap;
+            mainHandler.sendMessage(m);
         }
 
     };
@@ -585,12 +585,7 @@ public class Iris extends Activity {
 
     private void createBack() {
         final Uri uri = getIntent().getData();
-        String filePath;
-        if (getIntent().getStringExtra("myPath") != null) {
-            filePath = getIntent().getStringExtra("myPath");
-        } else {
-            filePath = uri.getPath();
-        }
+        String filePath = uri.getPath();
         System.out.print(filePath);
         srcImg = myUtil.getBitmap(filePath);
     }
