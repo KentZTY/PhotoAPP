@@ -4,6 +4,8 @@ import android.R.anim;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -13,6 +15,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -69,7 +73,7 @@ public class DisplayImageActivity extends Activity {
     private Bitmap myBitmap;
     Paint paint;
     String myPath;
-    ProgressBar progressbar = null;
+    ProgressBar progressBar = null;
     Handler myHandler = new Handler() {
 
         @Override
@@ -80,7 +84,7 @@ public class DisplayImageActivity extends Activity {
                     saveButton.setClickable(false);
                     break;
                 case 2:
-                    progressbar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     saveButton.setClickable(true);
                     break;
                 default:
@@ -135,6 +139,10 @@ public class DisplayImageActivity extends Activity {
             return true;
         }
     };
+
+     /*
+         * Receive image uri. Get image path. Display image.
+         **/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -425,23 +433,41 @@ public class DisplayImageActivity extends Activity {
     }
 
     private Uri createBack() {
-        final Uri uri = getIntent().getData();
-        String filePath = getPath(uri);
-        System.out.print(filePath);
+        Uri uri = getIntent().getData();
+        if(uri==null){
+            uri=getLastPhotoOrVideo();
+        }
+        String filePath = uri.getPath();
+        Log.d("URI", uri+".uri");
         myImage.setImageBitmap(myUtil.getBitmap(filePath));
         myBitmap = myUtil.getBitmap(filePath);
         return uri;
     }
 
+    private Uri getLastPhotoOrVideo() {
+        Uri uri;
+        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.ImageColumns.ORIENTATION}, MediaStore.Images.Media.DATE_ADDED, null, "date_added ASC");
+        if(cursor != null && cursor.moveToFirst())
+        {
+            do {
+                uri = Uri.parse(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+            }while(cursor.moveToNext());
+            cursor.close();
+        }else{
+            return null;
+        }
+        return uri;
+    }
+
     private void showProcessBar() {
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.stickerView);
-        progressbar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
+        progressBar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        progressbar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         //progressBar.setLayoutParams(params);
-        mainLayout.addView(progressbar, params);
+        mainLayout.addView(progressBar, params);
 
     }
 
@@ -465,9 +491,18 @@ public class DisplayImageActivity extends Activity {
     //get the filepath from uri
     public String getPath(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
+        /*
         ContentResolver cr = this.getContentResolver();
         Cursor cursor = cr.query(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        */
+        CursorLoader cursorLoader = new CursorLoader(
+                this,
+                uri, projection, null, null, null);
+        Cursor cursor = cursorLoader.loadInBackground();
+
+        int column_index =
+                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
