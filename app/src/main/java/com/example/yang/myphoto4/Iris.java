@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.yang.myphoto4.util.myUtil;
 
@@ -121,7 +122,11 @@ public class Iris extends Activity {
         w_screen = dm.widthPixels;
         h_screen = dm.heightPixels;
         initUI();
+        try{
         initFaceDetect();
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(), "Found no face", Toast.LENGTH_SHORT).show();
+        }
         mainHandler.sendEmptyMessage(1);
         checkFaceThread.start();
 
@@ -575,15 +580,6 @@ public class Iris extends Activity {
         progressBar.setVisibility(View.VISIBLE);
         //progressBar.setLayoutParams(params);
         mainLayout.addView(progressBar, params);
-    }
-
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        ContentResolver cr = this.getContentResolver();
-        Cursor cursor = cr.query(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
     }
 
     private void createBack() {
