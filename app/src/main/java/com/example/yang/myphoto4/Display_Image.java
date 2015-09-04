@@ -433,7 +433,7 @@ public class Display_Image extends Activity {
         if (uri == null) {
             uri = getLastPhotoOrVideo();
         }
-        String filePath = uri.getPath();
+        String filePath = getIntent().getStringExtra("myPath");
         Log.d("URI", uri + ".uri");
         myImage.setImageBitmap(myUtil.getBitmap(filePath));
         myBitmap = myUtil.getBitmap(filePath);
