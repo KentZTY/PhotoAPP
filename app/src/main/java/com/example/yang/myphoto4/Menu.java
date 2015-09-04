@@ -120,7 +120,6 @@ public class Menu extends Activity {
                         System.out.println("Image Path : " + selectedImagePath1);
                         break;
                     case REQUEST_CAPTURE_CAMERA:
-                        uri = data.getData();
                         break;
                     default:
                         break;
