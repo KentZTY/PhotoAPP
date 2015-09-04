@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -65,6 +66,7 @@ public class DisplayImageActivity extends Activity {
     private static Boolean isClick = false;
     RelativeLayout mainLayout;
     int mode = NONE;
+    private Bitmap myBitmap;
     Paint paint;
     String myPath;
     ProgressBar progressbar = null;
@@ -427,6 +429,7 @@ public class DisplayImageActivity extends Activity {
         String filePath = getPath(uri);
         System.out.print(filePath);
         myImage.setImageBitmap(myUtil.getBitmap(filePath));
+        myBitmap = myUtil.getBitmap(filePath);
         return uri;
     }
 
@@ -502,7 +505,7 @@ public class DisplayImageActivity extends Activity {
     //delete sticker
     public void deleteSticker(myImageView mimageView) {
         //?
-        //mimageView.setImageBitmap(getResource(1), new Point(0, 0), 0, 0);
+        mimageView.setImageBitmap(myBitmap, new Point(0, 0), 0, 0);
         mainLayout.removeView(mimageView);
     }
 
