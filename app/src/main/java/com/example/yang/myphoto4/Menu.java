@@ -93,11 +93,9 @@ public class Menu extends Activity {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
                             Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-
                             File file = getOutputMediaFile(1);
                             uri = Uri.fromFile(file); // create
                             i.putExtra(MediaStore.EXTRA_OUTPUT, uri); // set the image file
-
                             startActivityForResult(i, REQUEST_CAMERA_IRIS);
                         } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
