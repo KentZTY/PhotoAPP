@@ -13,6 +13,10 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.File;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 public class Menu extends Activity {
     private static final int SELECT_PICTURE = 1;
     private static final int REQUEST_CAPTURE_CAMERA = 2;
@@ -71,8 +75,13 @@ public class Menu extends Activity {
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
-                            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
+                            Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+                            File file=getOutputMediaFile(1);
+                            uri = Uri.fromFile(file); // create
+                            i.putExtra(MediaStore.EXTRA_OUTPUT,uri); // set the image file
+
+                            startActivityForResult(i, REQUEST_CAPTURE_CAMERA);
                         } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
@@ -146,19 +155,28 @@ public class Menu extends Activity {
         super.onConfigurationChanged(config);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    /** Create a File for saving an image */
+    private  File getOutputMediaFile(int type){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "MyApplication");
 
-        outState.putParcelable("uri", uri);
-    }
+        /**Create the storage directory if it does not exist*/
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
 
-    // Recover the saved state when the activity is recreated.
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+        /**Create a media file name*/
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == 1){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_"+ timeStamp + ".png");
+        } else {
+            return null;
+        }
 
-        uri= savedInstanceState.getParcelable("uri");
-
+        return mediaFile;
     }
 }
