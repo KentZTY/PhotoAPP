@@ -12,7 +12,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class Menu extends Activity {
     private static final int SELECT_PICTURE = 1;
     private static final int REQUEST_CAPTURE_CAMERA = 2;
     private static final int REQUEST_CAMERA_IRIS = 3;
@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (getIntent().getBooleanExtra("close", false)) {
-            DisplayImageActivity.instance.finish();
+            Display_Image.instance.finish();
         }
 
         /*
@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         Intent intent = new Intent();
-                        intent.setClass(MainActivity.this, Login.class);
+                        intent.setClass(Menu.this, Sticker_Login.class);
                         //intent.putExtra("close", true);
                         startActivity(intent);
                     }
@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         Intent help = new Intent();
-                        help.setClass(MainActivity.this, Help.class);
+                        help.setClass(Menu.this, Help.class);
                         startActivity(help);
                     }
                 });
@@ -96,14 +96,14 @@ public class MainActivity extends Activity {
 
     /*
      * Get image data(uri) and image path.
-     * Deliver image Uri to DisplayImageActivity.
+     * Deliver image Uri to Display_Image.
      **/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Intent intent = new Intent();
             if (requestCode != REQUEST_CAMERA_IRIS) {
-                intent.setClass(MainActivity.this, DisplayImageActivity.class);
+                intent.setClass(Menu.this, Display_Image.class);
                 switch (requestCode) {
                     case SELECT_PICTURE:
                         uri = data.getData();
@@ -118,7 +118,7 @@ public class MainActivity extends Activity {
                 }
             }
             if (requestCode == REQUEST_CAMERA_IRIS) {
-                intent.setClass(MainActivity.this, Iris.class);
+                intent.setClass(Menu.this, Iris.class);
                 uri = data.getData();
             }
             intent.setData(uri);

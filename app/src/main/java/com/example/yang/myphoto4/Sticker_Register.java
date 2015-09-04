@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Register extends Activity implements OnClickListener {
+public class Sticker_Register extends Activity implements OnClickListener {
 
     //testing on Emulator:
     private static final String LOGIN_URL = "http://raptor.kent.ac.uk/~wz57/Ree/Register.php";
@@ -31,7 +31,7 @@ public class Register extends Activity implements OnClickListener {
     // JSON parser class
     JSONParser jsonParser = new JSONParser();
 
-    //php login script
+    //php activity_login script
 
     //localhost :
     //testing on your device
@@ -50,7 +50,7 @@ public class Register extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register);
+        setContentView(R.layout.activity_register);
 
         user = (EditText) findViewById(R.id.username);
         pass = (EditText) findViewById(R.id.password);
@@ -83,7 +83,7 @@ public class Register extends Activity implements OnClickListener {
         protected void onPreExecute() {
             super.onPreExecute();
             /*
-            pDialog = new ProgressDialog(Register.this);
+            pDialog = new ProgressDialog(Sticker_Register.this);
             pDialog.setMessage("Creating User...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
@@ -140,7 +140,7 @@ public class Register extends Activity implements OnClickListener {
             // dismiss the dialog once product deleted
             //pDialog.dismiss();
             if (file_url != null) {
-                Toast.makeText(Register.this, file_url, Toast.LENGTH_LONG).show();
+                Toast.makeText(Sticker_Register.this, file_url, Toast.LENGTH_LONG).show();
             }
 
         }
