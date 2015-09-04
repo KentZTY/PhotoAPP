@@ -9,13 +9,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Menu extends Activity {
     private static final int SELECT_PICTURE = 1;
@@ -117,6 +116,24 @@ public class Menu extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Intent intent = new Intent();
+            switch (requestCode){
+                case SELECT_PICTURE:
+                    intent.setClass(Menu.this, Display_Image.class);
+                    uri = data.getData();
+                    selectedImagePath1 = getPath(uri);
+                    System.out.println("Image Path : " + selectedImagePath1);
+                    intent.putExtra("myPath", selectedImagePath1);
+                    break;
+                case REQUEST_CAPTURE_CAMERA:
+                    intent.setClass(Menu.this, Display_Image.class);
+                    break;
+                case REQUEST_CAMERA_IRIS:
+                    intent.setClass(Menu.this, Iris.class);
+                    break;
+                default:
+                    break;
+            }
+            /*
             if (requestCode != REQUEST_CAMERA_IRIS) {
                 intent.setClass(Menu.this, Display_Image.class);
                 switch (requestCode) {
@@ -135,6 +152,7 @@ public class Menu extends Activity {
             if (requestCode == REQUEST_CAMERA_IRIS) {
                 intent.setClass(Menu.this, Iris.class);
             }
+            */
             intent.setData(uri);
             startActivityForResult(intent, 0);
             //finish();
