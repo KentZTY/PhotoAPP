@@ -3,7 +3,7 @@ package com.example.yang.myphoto4;
 import android.R.anim;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -54,14 +54,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class DisplayImageActivity extends Activity {
+public class Display_Image extends Activity {
     private static final int sticker = 1;
     private static final int border = 2;
     private static final int NONE = 3;
     private static final int DRAG = 4;
     private static final int ZOOM_OR_ROTATE = 5;
     private static final int DELETE = 6;
-    public static DisplayImageActivity instance = null;
+    public static Display_Image instance = null;
     private static int width, height;
     private static Boolean isClick = false;
     RelativeLayout mainLayout;
@@ -69,7 +69,7 @@ public class DisplayImageActivity extends Activity {
     private Bitmap myBitmap;
     Paint paint;
     String myPath;
-    ProgressBar progressbar = null;
+    ProgressBar progressBar = null;
     Handler myHandler = new Handler() {
 
         @Override
@@ -80,7 +80,7 @@ public class DisplayImageActivity extends Activity {
                     saveButton.setClickable(false);
                     break;
                 case 2:
-                    progressbar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                     saveButton.setClickable(true);
                     break;
                 default:
@@ -135,6 +135,10 @@ public class DisplayImageActivity extends Activity {
             return true;
         }
     };
+
+     /*
+         * Receive image uri. Get image path. Display image.
+         **/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,7 +199,7 @@ public class DisplayImageActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent help = new Intent();
-                help.setClass(DisplayImageActivity.this, Help.class);
+                help.setClass(Display_Image.this, Help.class);
                 startActivity(help);
             }
         });
@@ -291,7 +295,7 @@ public class DisplayImageActivity extends Activity {
     protected Animation setAnimScale(float toX, float toY) {
         // TODO Auto-generated method stub
         animationScale = new ScaleAnimation(1f, toX, 1f, toY, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animationScale.setInterpolator(DisplayImageActivity.this, anim.bounce_interpolator);
+        animationScale.setInterpolator(Display_Image.this, anim.bounce_interpolator);
         animationScale.setDuration(500);
         animationScale.setFillAfter(false);
         return animationScale;
@@ -425,30 +429,48 @@ public class DisplayImageActivity extends Activity {
     }
 
     private Uri createBack() {
-        final Uri uri = getIntent().getData();
-        String filePath = getPath(uri);
-        System.out.print(filePath);
+        Uri uri = getIntent().getData();
+        if(uri==null){
+            uri=getLastPhotoOrVideo();
+        }
+        String filePath = uri.getPath();
+        Log.d("URI", uri+".uri");
         myImage.setImageBitmap(myUtil.getBitmap(filePath));
         myBitmap = myUtil.getBitmap(filePath);
         return uri;
     }
 
+    private Uri getLastPhotoOrVideo() {
+        Uri uri;
+        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.ImageColumns.ORIENTATION}, MediaStore.Images.Media.DATE_ADDED, null, "date_added ASC");
+        if(cursor != null && cursor.moveToFirst())
+        {
+            do {
+                uri = Uri.parse(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+            }while(cursor.moveToNext());
+            cursor.close();
+        }else{
+            return null;
+        }
+        return uri;
+    }
+
     private void showProcessBar() {
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.stickerView);
-        progressbar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
+        progressBar = new ProgressBar(Display_Image.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        progressbar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         //progressBar.setLayoutParams(params);
-        mainLayout.addView(progressbar, params);
+        mainLayout.addView(progressBar, params);
 
     }
 
     //Create a intent to choose stickers
     private void chooseSticker() {
         Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
+        intent.setClass(Display_Image.this, Selector_Sticker.class);
         //require more than 1GB to run
         startActivityForResult(intent, sticker);
     }
@@ -456,7 +478,7 @@ public class DisplayImageActivity extends Activity {
     //Creat a intent to choose boarders
     private void chooseBorder() {
         Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, Border_Selector.class);
+        intent.setClass(Display_Image.this, Selector_Border.class);
         //intent.putExtra("type", "border");
         startActivityForResult(intent, border);
         //print("success");
@@ -465,9 +487,18 @@ public class DisplayImageActivity extends Activity {
     //get the filepath from uri
     public String getPath(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
+        /*
         ContentResolver cr = this.getContentResolver();
         Cursor cursor = cr.query(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        */
+        CursorLoader cursorLoader = new CursorLoader(
+                this,
+                uri, projection, null, null, null);
+        Cursor cursor = cursorLoader.loadInBackground();
+
+        int column_index =
+                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
@@ -579,7 +610,7 @@ public class DisplayImageActivity extends Activity {
 
     public void shareImage() {
         Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
+        intent.setClass(Display_Image.this, ShareImageActivity.class);
         Bitmap bm = outputImage(imageView);
         saveBitmap(bm);
         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm, null, null));
@@ -727,7 +758,7 @@ public class DisplayImageActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(DisplayImageActivity.this);
+            pDialog = new ProgressDialog(Display_Image.this);
             pDialog.setMessage("Loading Image ....");
             pDialog.show();
 
@@ -753,7 +784,7 @@ public class DisplayImageActivity extends Activity {
             } else {
 
                 pDialog.dismiss();
-                Toast.makeText(DisplayImageActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Display_Image.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
 
             }
         }

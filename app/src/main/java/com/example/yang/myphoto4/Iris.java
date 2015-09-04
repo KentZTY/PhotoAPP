@@ -118,7 +118,7 @@ public class Iris extends Activity {
         setContentView(R.layout.activity_iris);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         mainLayout = (RelativeLayout) findViewById(R.id.irisView);
-        myCache = FileSync.getDiskCacheDir(this);
+        myCache = Sticker_FileSync.getDiskCacheDir(this);
         imageViews = new ImageView[2];
         w_screen = dm.widthPixels;
         h_screen = dm.heightPixels;
@@ -598,7 +598,7 @@ public class Iris extends Activity {
 
     public void shareImage() {
         Intent intent = new Intent();
-        intent.setClass(Iris.this, DisplayImageActivity.class);
+        intent.setClass(Iris.this, Display_Image.class);
         myUtil.saveBitmap(srcFace, myCache);
         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), srcFace, null, null));
         intent.setData(uri);

@@ -16,7 +16,7 @@ import android.widget.ImageView;
 /**
  * Created by Ree on 2015/7/31.
  */
-public class Border_Selector extends Activity {
+public class Selector_Border extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +26,7 @@ public class Border_Selector extends Activity {
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Intent intent = new Intent(Border_Selector.this, DisplayImageActivity.class);
+                Intent intent = new Intent(Selector_Border.this, Display_Image.class);
                 intent.putExtra("id", position + "");
                 setResult(RESULT_OK, intent);
                 setContentView(R.layout.null_layout);

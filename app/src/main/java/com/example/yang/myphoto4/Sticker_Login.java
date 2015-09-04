@@ -25,7 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Login extends Activity implements OnClickListener {
+public class Sticker_Login extends Activity implements OnClickListener {
 
     //testing on Emulator:
     private static final String LOGIN_URL = "http://raptor.kent.ac.uk/~wz57/Ree/Login.php";
@@ -36,7 +36,7 @@ public class Login extends Activity implements OnClickListener {
     // JSON parser class
     JSONParser jsonParser = new JSONParser();
 
-    //php login script location:
+    //php activity_login script location:
     View.OnKeyListener onChangeLine = new View.OnKeyListener() {
 
         @Override
@@ -107,7 +107,7 @@ public class Login extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.activity_login);
 
         //setup input fields
         user = (EditText) findViewById(R.id.username);
@@ -122,7 +122,7 @@ public class Login extends Activity implements OnClickListener {
         mSubmit = (Button) findViewById(R.id.login);
         mRegister = (Button) findViewById(R.id.register);
 
-        //register listeners
+        //activity_register listeners
         mSubmit.setOnClickListener(this);
         mRegister.setOnClickListener(this);
 
@@ -136,7 +136,7 @@ public class Login extends Activity implements OnClickListener {
                 new AttemptLogin().execute();
                 break;
             case R.id.register:
-                Intent i = new Intent(this, Register.class);
+                Intent i = new Intent(this, Sticker_Register.class);
                 i.putExtra("username", user.getText().toString());
                 i.putExtra("password", pass.getText().toString());
                 startActivity(i);
@@ -162,13 +162,13 @@ public class Login extends Activity implements OnClickListener {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            pDialog = new ProgressDialog(Login.this);
+            pDialog = new ProgressDialog(Sticker_Login.this);
             pDialog.setMessage("Attempting login...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
 
-            //print("Attempting login...");
+            //print("Attempting activity_login...");
         }
 
         @Override
@@ -200,7 +200,7 @@ public class Login extends Activity implements OnClickListener {
                 if (success == 1) {
                     Log.d("Login Successful!", json.toString());
                     pDialog.dismiss();
-                    Intent i = new Intent(Login.this, FileSync.class);
+                    Intent i = new Intent(Sticker_Login.this, Sticker_FileSync.class);
                     //i.putExtra("PHPSESSID",PHPSESSID);
                     i.putExtra("username", username);
                     i.putExtra("password", password);
@@ -229,7 +229,7 @@ public class Login extends Activity implements OnClickListener {
             // dismiss the dialog once product deleted
             //pDialog.dismiss();
             if (file_url != null) {
-                Toast.makeText(Login.this, file_url, Toast.LENGTH_LONG).show();
+                Toast.makeText(Sticker_Login.this, file_url, Toast.LENGTH_LONG).show();
             }
 
         }
