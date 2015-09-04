@@ -127,9 +127,6 @@ public class Menu extends Activity {
                     break;
                 case REQUEST_CAMERA_IRIS:
                     intent.setClass(Menu.this, Iris.class);
-                    selectedImagePath1 = getPath(uri);
-                    System.out.println("Image Path : " + selectedImagePath1);
-                    intent.putExtra("myPath", selectedImagePath1);
                     break;
                 default:
                     break;
