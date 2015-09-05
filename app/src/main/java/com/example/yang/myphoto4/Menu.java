@@ -76,9 +76,9 @@ public class Menu extends Activity {
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
                             Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-                            File file=getOutputMediaFile(1);
+                            File file = getOutputMediaFile(1);
                             uri = Uri.fromFile(file); // create
-                            i.putExtra(MediaStore.EXTRA_OUTPUT,uri); // set the image file
+                            i.putExtra(MediaStore.EXTRA_OUTPUT, uri); // set the image file
 
                             startActivityForResult(i, REQUEST_CAPTURE_CAMERA);
                         } else {
@@ -103,7 +103,6 @@ public class Menu extends Activity {
                     }
                 });
     }
-
 
 
     /*
@@ -131,29 +130,6 @@ public class Menu extends Activity {
                 default:
                     break;
             }
-            /*
-            if (requestCode != REQUEST_CAMERA_IRIS) {
-                intent.setClass(Menu.this, Display_Image.class);
-                switch (requestCode) {
-                    case SELECT_PICTURE:
-                        uri = data.getData();
-                        selectedImagePath1 = getPath(uri);
-                        System.out.println("Image Path : " + selectedImagePath1);
-                        intent.putExtra("myPath", selectedImagePath1);
-                        break;
-                    case REQUEST_CAPTURE_CAMERA:
-                        break;
-                    default:
-                        break;
-                }
-            }
-            if (requestCode == REQUEST_CAMERA_IRIS) {
-                intent.setClass(Menu.this, Iris.class);
-                selectedImagePath1 = getPath(uri);
-                System.out.println("Image Path : " + selectedImagePath1);
-                intent.putExtra("myPath", selectedImagePath1);
-            }
-            */
             intent.setData(uri);
             startActivityForResult(intent, 0);
             //finish();
@@ -178,14 +154,16 @@ public class Menu extends Activity {
         super.onConfigurationChanged(config);
     }
 
-    /** Create a File for saving an image */
-    private  File getOutputMediaFile(int type){
+    /**
+     * Create a File for saving an image
+     */
+    private File getOutputMediaFile(int type) {
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "MyApplication");
 
         /**Create the storage directory if it does not exist*/
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
                 return null;
             }
         }
@@ -193,9 +171,9 @@ public class Menu extends Activity {
         /**Create a media file name*/
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        if (type == 1){
+        if (type == 1) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".png");
+                    "IMG_" + timeStamp + ".png");
         } else {
             return null;
         }
