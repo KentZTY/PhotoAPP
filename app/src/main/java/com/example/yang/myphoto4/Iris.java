@@ -134,6 +134,7 @@ public class Iris extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         drawEye(redIris((int) (leftEyeHeight * 1.3), leftEyeHeight), redIris((int) (rightEyeHeight * 1.3), rightEyeHeight));
+                        myIrisImage.invalidate();
                     }
                 });
         (findViewById(R.id.modify))
