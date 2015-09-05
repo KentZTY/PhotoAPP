@@ -47,7 +47,7 @@ public class Iris extends Activity {
     String myCache = null;
     Context context = this;
     ProgressBar progressBar = null;
-    int myBlack = 80;
+    int myBlack = 60;
     Bitmap myLeftEye = null;
     Bitmap myRightEye = null;
     int leftEyeWidth, rightEyeWidth, leftEyeHeight, rightEyeHeight, myLeft, myTop, mLeft, mTop;
