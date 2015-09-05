@@ -45,27 +45,13 @@ public class Iris extends Activity {
     String myCache = null;
     Context context = this;
     ProgressBar progressBar = null;
-    int myBlack = 80;
+    int myBlack = 60;
     Bitmap myLeftEye = null;
     Bitmap myRightEye = null;
     int leftEyeWidth, rightEyeWidth, leftEyeHeight, rightEyeHeight, myLeft, myTop, mLeft, mTop;
     RelativeLayout mainLayout;
     Bitmap srcImg = null;
     Bitmap srcFace = null;
-    Thread checkFaceThread = new Thread() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            Bitmap faceBitmap = detectFace();
-            mainHandler.sendEmptyMessage(2);
-            Message m = new Message();
-            m.what = 0;
-            m.obj = faceBitmap;
-            mainHandler.sendMessage(m);
-        }
-
-    };
     private int w_screen;
     private int h_screen;
     private ImageView myIrisImage = null;
@@ -90,6 +76,20 @@ public class Iris extends Activity {
                 default:
                     break;
             }
+        }
+
+    };
+    Thread checkFaceThread = new Thread() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Bitmap faceBitmap = detectFace();
+            mainHandler.sendEmptyMessage(2);
+            Message m = new Message();
+            m.what = 0;
+            m.obj = faceBitmap;
+            mainHandler.sendMessage(m);
         }
 
     };
