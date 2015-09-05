@@ -54,20 +54,6 @@ public class Iris extends Activity {
     RelativeLayout mainLayout;
     Bitmap srcImg = null;
     Bitmap srcFace = null;
-    Thread checkFaceThread = new Thread() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            Bitmap faceBitmap = detectFace();
-            mainHandler.sendEmptyMessage(2);
-            Message m = new Message();
-            m.what = 0;
-            m.obj = faceBitmap;
-            mainHandler.sendMessage(m);
-        }
-
-    };
     private int w_screen;
     private int h_screen;
     private ImageView myIrisImage = null;
@@ -92,6 +78,20 @@ public class Iris extends Activity {
                 default:
                     break;
             }
+        }
+
+    };
+    Thread checkFaceThread = new Thread() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Bitmap faceBitmap = detectFace();
+            mainHandler.sendEmptyMessage(2);
+            Message m = new Message();
+            m.what = 0;
+            m.obj = faceBitmap;
+            mainHandler.sendMessage(m);
         }
 
     };
@@ -122,9 +122,9 @@ public class Iris extends Activity {
         w_screen = dm.widthPixels;
         h_screen = dm.heightPixels;
         initUI();
-        try{
-        initFaceDetect();
-        }catch (Exception e){
+        try {
+            initFaceDetect();
+        } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Found no face", Toast.LENGTH_SHORT).show();
         }
         mainHandler.sendEmptyMessage(1);
@@ -137,7 +137,7 @@ public class Iris extends Activity {
                             drawEye(redIris((int) (leftEyeHeight * 1.3), leftEyeHeight), redIris((int) (rightEyeHeight * 1.3), rightEyeHeight));
                             myIrisImage.invalidate();
                         } catch (Exception e) {
-                            Log.d("Draw fail",e.toString());
+                            Log.d("Draw fail", e.toString());
                             Toast.makeText(getApplicationContext(), "Can't find your face, please take a photo on your front face", Toast.LENGTH_SHORT).show();
                         }
 
@@ -602,9 +602,21 @@ public class Iris extends Activity {
         myUtil.saveBitmap(srcFace, myCache);
         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), srcFace, null, null));
         intent.setData(uri);
-        //intent.putExtra("myPath", myPath);
+        String path = getPath(uri);
+        System.out.println("Image Path : " + path);
+        intent.putExtra("myPath", path);
         startActivity(intent);
         //setContentView(R.layout.null_layout);
 
+    }
+
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        ContentResolver cr = this.getContentResolver();
+        Cursor cursor = cr.query(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String filePath = cursor.getString(column_index);
+        return filePath;
     }
 }

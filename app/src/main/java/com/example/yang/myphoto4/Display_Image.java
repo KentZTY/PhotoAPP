@@ -66,7 +66,6 @@ public class Display_Image extends Activity {
     private static Boolean isClick = false;
     RelativeLayout mainLayout;
     int mode = NONE;
-    private Bitmap myBitmap;
     Paint paint;
     String myPath;
     ProgressBar progressBar = null;
@@ -88,6 +87,7 @@ public class Display_Image extends Activity {
             }
         }
     };
+    private Bitmap myBitmap;
     private int screenWidth;
     private int screenHeight;
     private int i;
@@ -431,15 +431,15 @@ public class Display_Image extends Activity {
     private Uri createBack() {
         Uri uri = getIntent().getData();
         String filePath;
-        if(uri==null){
-            uri=getLastPhotoOrVideo();
+        if (uri == null) {
+            uri = getLastPhotoOrVideo();
         }
-        if(getIntent().getStringExtra("myPath") != null){
-        filePath = getIntent().getStringExtra("myPath");}
-        else{
+        if (getIntent().getStringExtra("myPath") != null) {
+            filePath = getIntent().getStringExtra("myPath");
+        } else {
             filePath = uri.getPath();
         }
-        Log.d("URI", uri+".uri");
+        Log.d("URI", uri + ".uri");
         myImage.setImageBitmap(myUtil.getBitmap(filePath));
         myBitmap = myUtil.getBitmap(filePath);
         return uri;
@@ -448,13 +448,12 @@ public class Display_Image extends Activity {
     private Uri getLastPhotoOrVideo() {
         Uri uri;
         Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.ImageColumns.ORIENTATION}, MediaStore.Images.Media.DATE_ADDED, null, "date_added ASC");
-        if(cursor != null && cursor.moveToFirst())
-        {
+        if (cursor != null && cursor.moveToFirst()) {
             do {
                 uri = Uri.parse(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
             cursor.close();
-        }else{
+        } else {
             return null;
         }
         return uri;
