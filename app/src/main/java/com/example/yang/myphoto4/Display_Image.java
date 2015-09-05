@@ -280,8 +280,6 @@ public class Display_Image extends Activity {
                 clearStickers();
             }
         });
-
-
     }
 
     private void moveBack() {
@@ -653,6 +651,9 @@ public class Display_Image extends Activity {
             }
             if (currentImage == null) {
                 mode = NONE;
+            }
+            if(isClick){
+                moveBack();
             }
         }
         if (v != myImage) {
