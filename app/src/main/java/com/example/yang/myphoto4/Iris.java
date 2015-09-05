@@ -52,6 +52,20 @@ public class Iris extends Activity {
     RelativeLayout mainLayout;
     Bitmap srcImg = null;
     Bitmap srcFace = null;
+    Thread checkFaceThread = new Thread() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Bitmap faceBitmap = detectFace();
+            mainHandler.sendEmptyMessage(2);
+            Message m = new Message();
+            m.what = 0;
+            m.obj = faceBitmap;
+            mainHandler.sendMessage(m);
+        }
+
+    };
     private int w_screen;
     private int h_screen;
     private ImageView myIrisImage = null;
@@ -76,20 +90,6 @@ public class Iris extends Activity {
                 default:
                     break;
             }
-        }
-
-    };
-    Thread checkFaceThread = new Thread() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            Bitmap faceBitmap = detectFace();
-            mainHandler.sendEmptyMessage(2);
-            Message m = new Message();
-            m.what = 0;
-            m.obj = faceBitmap;
-            mainHandler.sendMessage(m);
         }
 
     };
@@ -132,8 +132,14 @@ public class Iris extends Activity {
         (findViewById(R.id.BLUEEYE))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
-                        drawEye(redIris((int) (leftEyeHeight * 1.3), leftEyeHeight), redIris((int) (rightEyeHeight * 1.3), rightEyeHeight));
-                        myIrisImage.invalidate();
+                        try {
+                            drawEye(redIris((int) (leftEyeHeight * 1.3), leftEyeHeight), redIris((int) (rightEyeHeight * 1.3), rightEyeHeight));
+                            myIrisImage.invalidate();
+                        } catch (Exception e) {
+                            Log.d("Draw fail",e.toString());
+                            Toast.makeText(getApplicationContext(), "Can't find your face, please take a photo on your front face", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
         (findViewById(R.id.modify))
