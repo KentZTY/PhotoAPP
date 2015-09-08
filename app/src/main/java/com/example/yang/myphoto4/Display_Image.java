@@ -54,14 +54,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class DisplayImageActivity extends Activity {
+public class Display_Image extends Activity {
     private static final int sticker = 1;
     private static final int border = 2;
     private static final int NONE = 3;
     private static final int DRAG = 4;
     private static final int ZOOM_OR_ROTATE = 5;
     private static final int DELETE = 6;
-    public static DisplayImageActivity instance = null;
+    public static Display_Image instance = null;
     private static int width, height;
     private static Boolean isClick = false;
     RelativeLayout mainLayout;
@@ -199,7 +199,7 @@ public class DisplayImageActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent help = new Intent();
-                help.setClass(DisplayImageActivity.this, Help.class);
+                help.setClass(Display_Image.this, Help.class);
                 startActivity(help);
             }
         });
@@ -295,7 +295,7 @@ public class DisplayImageActivity extends Activity {
     protected Animation setAnimScale(float toX, float toY) {
         // TODO Auto-generated method stub
         animationScale = new ScaleAnimation(1f, toX, 1f, toY, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animationScale.setInterpolator(DisplayImageActivity.this, anim.bounce_interpolator);
+        animationScale.setInterpolator(Display_Image.this, anim.bounce_interpolator);
         animationScale.setDuration(500);
         animationScale.setFillAfter(false);
         return animationScale;
@@ -456,7 +456,7 @@ public class DisplayImageActivity extends Activity {
 
     private void showProcessBar() {
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.stickerView);
-        progressBar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
+        progressBar = new ProgressBar(Display_Image.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
@@ -469,7 +469,7 @@ public class DisplayImageActivity extends Activity {
     //Create a intent to choose stickers
     private void chooseSticker() {
         Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
+        intent.setClass(Display_Image.this, Selector_Sticker.class);
         //require more than 1GB to run
         startActivityForResult(intent, sticker);
     }
@@ -477,7 +477,7 @@ public class DisplayImageActivity extends Activity {
     //Creat a intent to choose boarders
     private void chooseBorder() {
         Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, Border_Selector.class);
+        intent.setClass(Display_Image.this, Selector_Border.class);
         //intent.putExtra("type", "border");
         startActivityForResult(intent, border);
         //print("success");
@@ -609,7 +609,7 @@ public class DisplayImageActivity extends Activity {
 
     public void shareImage() {
         Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
+        intent.setClass(Display_Image.this, ShareImageActivity.class);
         Bitmap bm = outputImage(imageView);
         saveBitmap(bm);
         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm, null, null));
@@ -757,7 +757,7 @@ public class DisplayImageActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(DisplayImageActivity.this);
+            pDialog = new ProgressDialog(Display_Image.this);
             pDialog.setMessage("Loading Image ....");
             pDialog.show();
 
@@ -783,7 +783,7 @@ public class DisplayImageActivity extends Activity {
             } else {
 
                 pDialog.dismiss();
-                Toast.makeText(DisplayImageActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Display_Image.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
 
             }
         }

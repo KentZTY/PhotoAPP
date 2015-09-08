@@ -53,20 +53,6 @@ public class Iris extends Activity {
     RelativeLayout mainLayout;
     Bitmap srcImg = null;
     Bitmap srcFace = null;
-    Thread checkFaceThread = new Thread() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            Bitmap faceBitmap = detectFace();
-            mainHandler.sendEmptyMessage(2);
-            Message m = new Message();
-            m.what = 0;
-            m.obj = faceBitmap;
-            mainHandler.sendMessage(m);
-        }
-
-    };
     private int w_screen;
     private int h_screen;
     private ImageView myIrisImage = null;
@@ -94,6 +80,20 @@ public class Iris extends Activity {
         }
 
     };
+    Thread checkFaceThread = new Thread() {
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Bitmap faceBitmap = detectFace();
+            mainHandler.sendEmptyMessage(2);
+            Message m = new Message();
+            m.what = 0;
+            m.obj = faceBitmap;
+            mainHandler.sendMessage(m);
+        }
+
+    };
     private ImageView[] imageViews;
 
     public static Bitmap toGrayScale(Bitmap bmpOriginal) {
@@ -118,7 +118,7 @@ public class Iris extends Activity {
         setContentView(R.layout.activity_iris);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         mainLayout = (RelativeLayout) findViewById(R.id.irisView);
-        myCache = FileSync.getDiskCacheDir(this);
+        myCache = Sticker_FileSync.getDiskCacheDir(this);
         imageViews = new ImageView[2];
         w_screen = dm.widthPixels;
         h_screen = dm.heightPixels;
@@ -174,11 +174,7 @@ public class Iris extends Activity {
         int w = rect.width();
         int h = rect.height();
         int s = w * h;
-        if (s < 10000) {
-            return false;
-        } else {
-            return true;
-        }
+        return s >= 10000;
     }
 
     public Bitmap detectFace() {
@@ -226,8 +222,8 @@ public class Iris extends Activity {
                 if (!isFinal) {
                     if (myLeftEyeX < eyeLeft.x + 40) {
                         if (myLeftEyeY > eyeLeft.y - 40) {
-                            if (myColor.red(mBitmap.getPixel(myLeftEyeX, myLeftEyeY)) < myBlack) {
-                                myFactor = 255 - myColor.red(mBitmap.getPixel(myLeftEyeX, myLeftEyeY));
+                            if (Color.red(mBitmap.getPixel(myLeftEyeX, myLeftEyeY)) < myBlack) {
+                                myFactor = 255 - Color.red(mBitmap.getPixel(myLeftEyeX, myLeftEyeY));
                                 myTotalX += myLeftEyeX * myFactor;
                                 myTotalY += myLeftEyeY * myFactor;
                                 myCount += myFactor;
@@ -257,19 +253,19 @@ public class Iris extends Activity {
             }
 
             if (secAlgo) {
-                if (myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y)) > myBlack || myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y + 2)) > myBlack || myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y - 2)) > myBlack
-                        || myColor.red(mBitmap.getPixel(eyeLeft.x - 2, eyeLeft.y)) > myBlack || myColor.red(mBitmap.getPixel(eyeLeft.x + 2, eyeLeft.y)) > myBlack) {
+                if (Color.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y)) > myBlack || Color.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y + 2)) > myBlack || Color.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y - 2)) > myBlack
+                        || Color.red(mBitmap.getPixel(eyeLeft.x - 2, eyeLeft.y)) > myBlack || Color.red(mBitmap.getPixel(eyeLeft.x + 2, eyeLeft.y)) > myBlack) {
                     myLeft = myLeft + 8;
                     myRight = myLeft;
                     for (i = 0; i < 300; i++) {
                         if (notLeftEye) {
-                            if (myColor.red(mBitmap.getPixel(myLeft, myTop)) > myBlack || myColor.red(mBitmap.getPixel(myLeft + 1, myTop)) > myBlack || myColor.red(mBitmap.getPixel(myLeft - 1, myTop)) > myBlack
-                                    || myColor.red(mBitmap.getPixel(myLeft, myTop + 1)) > myBlack || myColor.red(mBitmap.getPixel(myLeft, myTop - 1)) > myBlack) {
+                            if (Color.red(mBitmap.getPixel(myLeft, myTop)) > myBlack || Color.red(mBitmap.getPixel(myLeft + 1, myTop)) > myBlack || Color.red(mBitmap.getPixel(myLeft - 1, myTop)) > myBlack
+                                    || Color.red(mBitmap.getPixel(myLeft, myTop + 1)) > myBlack || Color.red(mBitmap.getPixel(myLeft, myTop - 1)) > myBlack) {
                                 myTop--;
                             } else {
-                                if (myColor.red(mBitmap.getPixel(myLeft + 2, myTop)) < myBlack && myColor.red(mBitmap.getPixel(myLeft - 2, myTop)) < myBlack
-                                        && myColor.red(mBitmap.getPixel(myLeft, myTop + 2)) < myBlack && myColor.red(mBitmap.getPixel(myLeft, myTop - 2)) < myBlack) {
-                                    if (myColor.red(mBitmap.getPixel(myLeft, myTop + 5)) < myBlack && myColor.red(mBitmap.getPixel(myLeft, myTop - 5)) < myBlack) {
+                                if (Color.red(mBitmap.getPixel(myLeft + 2, myTop)) < myBlack && Color.red(mBitmap.getPixel(myLeft - 2, myTop)) < myBlack
+                                        && Color.red(mBitmap.getPixel(myLeft, myTop + 2)) < myBlack && Color.red(mBitmap.getPixel(myLeft, myTop - 2)) < myBlack) {
+                                    if (Color.red(mBitmap.getPixel(myLeft, myTop + 5)) < myBlack && Color.red(mBitmap.getPixel(myLeft, myTop - 5)) < myBlack) {
                                         myTop = myTop - 8;
                                         myBottom = myTop;
                                         finalLeftEyeY = myTop;
@@ -293,10 +289,10 @@ public class Iris extends Activity {
             if (isFinal && !notLeftEye) {
                 for (i = 0; i < 20; i++) {
                     if (isLeftTrue) {
-                        if (myColor.red(mBitmap.getPixel(myLeft, finalLeftEyeY)) < myBlack) {
+                        if (Color.red(mBitmap.getPixel(myLeft, finalLeftEyeY)) < myBlack) {
                             myLeft--;
                         } else {
-                            if (myColor.red(mBitmap.getPixel(myLeft - 7, finalLeftEyeY)) < myBlack) {
+                            if (Color.red(mBitmap.getPixel(myLeft - 7, finalLeftEyeY)) < myBlack) {
                                 myLeft--;
                             } else {
                                 myLeft++;
@@ -308,10 +304,10 @@ public class Iris extends Activity {
 
                 for (i = 0; i < 20; i++) {
                     if (isRightTrue) {
-                        if (myColor.red(mBitmap.getPixel(myRight, finalLeftEyeY)) < myBlack) {
+                        if (Color.red(mBitmap.getPixel(myRight, finalLeftEyeY)) < myBlack) {
                             myRight++;
                         } else {
-                            if (myColor.red(mBitmap.getPixel(myRight + 7, finalLeftEyeY)) < myBlack) {
+                            if (Color.red(mBitmap.getPixel(myRight + 7, finalLeftEyeY)) < myBlack) {
                                 myRight++;
                             } else {
                                 myRight--;
@@ -324,10 +320,10 @@ public class Iris extends Activity {
 
                 for (i = 0; i < 20; i++) {
                     if (isBottomTrue) {
-                        if (myColor.red(mBitmap.getPixel(finalLeftEyeX, myBottom)) < myBlack) {
+                        if (Color.red(mBitmap.getPixel(finalLeftEyeX, myBottom)) < myBlack) {
                             myBottom++;
                         } else {
-                            if (myColor.red(mBitmap.getPixel(finalLeftEyeX, myBottom + 7)) < myBlack) {
+                            if (Color.red(mBitmap.getPixel(finalLeftEyeX, myBottom + 7)) < myBlack) {
                                 myBottom++;
                             } else {
                                 myBottom--;
@@ -339,10 +335,10 @@ public class Iris extends Activity {
 
                 for (i = 0; i < 20; i++) {
                     if (isTopTrue) {
-                        if (myColor.red(mBitmap.getPixel(finalLeftEyeX, myTop)) < myBlack) {
+                        if (Color.red(mBitmap.getPixel(finalLeftEyeX, myTop)) < myBlack) {
                             myTop--;
                         } else {
-                            if (myColor.red(mBitmap.getPixel(finalLeftEyeX, myTop - 7)) < myBlack) {
+                            if (Color.red(mBitmap.getPixel(finalLeftEyeX, myTop - 7)) < myBlack) {
                                 myTop--;
                             } else {
                                 myTop++;
@@ -382,8 +378,8 @@ public class Iris extends Activity {
                 if (!isFinish) {
                     if (mRightEyeX < eyeRight.x + 40) {
                         if (mRightEyeY > eyeRight.y - 40) {
-                            if (myColor.red(mBitmap.getPixel(mRightEyeX, mRightEyeY)) < myBlack) {
-                                mFactor = 255 - myColor.red(mBitmap.getPixel(mRightEyeX, mRightEyeY));
+                            if (Color.red(mBitmap.getPixel(mRightEyeX, mRightEyeY)) < myBlack) {
+                                mFactor = 255 - Color.red(mBitmap.getPixel(mRightEyeX, mRightEyeY));
                                 mTotalX += mRightEyeX * mFactor;
                                 mTotalY += mRightEyeY * mFactor;
                                 mCount += mFactor;
@@ -413,19 +409,19 @@ public class Iris extends Activity {
             }
 
             if (secondAlgo) {
-                if (myColor.red(mBitmap.getPixel(eyeRight.x, eyeRight.y)) > myBlack || myColor.red(mBitmap.getPixel(eyeRight.x, eyeRight.y + 2)) > myBlack || myColor.red(mBitmap.getPixel(eyeRight.x, eyeRight.y - 2)) > myBlack
-                        || myColor.red(mBitmap.getPixel(eyeRight.x - 2, eyeRight.y)) > myBlack || myColor.red(mBitmap.getPixel(eyeRight.x + 2, eyeRight.y)) > myBlack) {
+                if (Color.red(mBitmap.getPixel(eyeRight.x, eyeRight.y)) > myBlack || Color.red(mBitmap.getPixel(eyeRight.x, eyeRight.y + 2)) > myBlack || Color.red(mBitmap.getPixel(eyeRight.x, eyeRight.y - 2)) > myBlack
+                        || Color.red(mBitmap.getPixel(eyeRight.x - 2, eyeRight.y)) > myBlack || Color.red(mBitmap.getPixel(eyeRight.x + 2, eyeRight.y)) > myBlack) {
                     mLeft = mLeft - 8;
                     mRight = mLeft;
                     for (i = 0; i < 300; i++) {
                         if (notRightEye) {
-                            if (myColor.red(mBitmap.getPixel(mLeft, mTop)) > myBlack || myColor.red(mBitmap.getPixel(mLeft + 1, mTop)) > myBlack || myColor.red(mBitmap.getPixel(mLeft - 1, mTop)) > myBlack
-                                    || myColor.red(mBitmap.getPixel(mLeft, mTop + 1)) > myBlack || myColor.red(mBitmap.getPixel(mLeft, mTop - 1)) > myBlack) {
+                            if (Color.red(mBitmap.getPixel(mLeft, mTop)) > myBlack || Color.red(mBitmap.getPixel(mLeft + 1, mTop)) > myBlack || Color.red(mBitmap.getPixel(mLeft - 1, mTop)) > myBlack
+                                    || Color.red(mBitmap.getPixel(mLeft, mTop + 1)) > myBlack || Color.red(mBitmap.getPixel(mLeft, mTop - 1)) > myBlack) {
                                 mTop--;
                             } else {
-                                if (myColor.red(mBitmap.getPixel(mLeft + 2, mTop)) < myBlack && myColor.red(mBitmap.getPixel(mLeft - 2, mTop)) < myBlack
-                                        && myColor.red(mBitmap.getPixel(mLeft, mTop + 2)) < myBlack && myColor.red(mBitmap.getPixel(mLeft, mTop - 2)) < myBlack) {
-                                    if (myColor.red(mBitmap.getPixel(mLeft, mTop + 5)) < myBlack && myColor.red(mBitmap.getPixel(mLeft, mTop - 5)) < myBlack) {
+                                if (Color.red(mBitmap.getPixel(mLeft + 2, mTop)) < myBlack && Color.red(mBitmap.getPixel(mLeft - 2, mTop)) < myBlack
+                                        && Color.red(mBitmap.getPixel(mLeft, mTop + 2)) < myBlack && Color.red(mBitmap.getPixel(mLeft, mTop - 2)) < myBlack) {
+                                    if (Color.red(mBitmap.getPixel(mLeft, mTop + 5)) < myBlack && Color.red(mBitmap.getPixel(mLeft, mTop - 5)) < myBlack) {
                                         mTop = mTop - 8;
                                         finalRightEyeY = mTop;
                                         mBottom = mTop;
@@ -450,10 +446,10 @@ public class Iris extends Activity {
             if (isFinish && !notRightEye) {
                 for (i = 0; i < 20; i++) {
                     if (leftTrue) {
-                        if (myColor.red(mBitmap.getPixel(mLeft, finalRightEyeY)) < myBlack) {
+                        if (Color.red(mBitmap.getPixel(mLeft, finalRightEyeY)) < myBlack) {
                             mLeft--;
                         } else {
-                            if (myColor.red(mBitmap.getPixel(mLeft - 7, finalRightEyeY)) < myBlack) {
+                            if (Color.red(mBitmap.getPixel(mLeft - 7, finalRightEyeY)) < myBlack) {
                                 mLeft--;
                             } else {
                                 mLeft++;
@@ -465,10 +461,10 @@ public class Iris extends Activity {
 
                 for (i = 0; i < 20; i++) {
                     if (rightTrue) {
-                        if (myColor.red(mBitmap.getPixel(mRight, finalRightEyeY)) < myBlack) {
+                        if (Color.red(mBitmap.getPixel(mRight, finalRightEyeY)) < myBlack) {
                             mRight++;
                         } else {
-                            if (myColor.red(mBitmap.getPixel(mRight + 7, finalRightEyeY)) < myBlack) {
+                            if (Color.red(mBitmap.getPixel(mRight + 7, finalRightEyeY)) < myBlack) {
                                 mRight++;
                             } else {
                                 mRight--;
@@ -480,10 +476,10 @@ public class Iris extends Activity {
 
                 for (i = 0; i < 20; i++) {
                     if (bottomTrue) {
-                        if (myColor.red(mBitmap.getPixel(finalRightEyeX, mBottom)) < myBlack) {
+                        if (Color.red(mBitmap.getPixel(finalRightEyeX, mBottom)) < myBlack) {
                             mBottom++;
                         } else {
-                            if (myColor.red(mBitmap.getPixel(finalRightEyeX, mBottom + 7)) < myBlack) {
+                            if (Color.red(mBitmap.getPixel(finalRightEyeX, mBottom + 7)) < myBlack) {
                                 mBottom++;
                             } else {
                                 mBottom--;
@@ -495,10 +491,10 @@ public class Iris extends Activity {
 
                 for (i = 0; i < 20; i++) {
                     if (topTrue) {
-                        if (myColor.red(mBitmap.getPixel(finalRightEyeX, mTop)) < myBlack) {
+                        if (Color.red(mBitmap.getPixel(finalRightEyeX, mTop)) < myBlack) {
                             mTop--;
                         } else {
-                            if (myColor.red(mBitmap.getPixel(finalRightEyeX, mTop - 7)) < myBlack) {
+                            if (Color.red(mBitmap.getPixel(finalRightEyeX, mTop - 7)) < myBlack) {
                                 mTop--;
                             } else {
                                 mTop++;
@@ -522,7 +518,7 @@ public class Iris extends Activity {
             Log.i(tag, "Right eye X: " + eyeRight.x + " Right eye Y: " + eyeRight.y);
             Log.i(tag, "myTotalX: " + myTotalX + " myTotalY: " + myTotalY + " myCount: " + myCount);
             Log.i(tag, "finalX: " + finalLeftEyeX + " finalY: " + finalLeftEyeY);
-            Log.i(tag, "Color int: " + myColor.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y)));
+            Log.i(tag, "Color int: " + Color.red(mBitmap.getPixel(eyeLeft.x, eyeLeft.y)));
 
             mMidX = (mLeft + mRight) / 2;
             mMidY = (mBottom + mTop) / 2;
@@ -598,7 +594,7 @@ public class Iris extends Activity {
 
     public void shareImage() {
         Intent intent = new Intent();
-        intent.setClass(Iris.this, DisplayImageActivity.class);
+        intent.setClass(Iris.this, Display_Image.class);
         myUtil.saveBitmap(srcFace, myCache);
         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), srcFace, null, null));
         intent.setData(uri);

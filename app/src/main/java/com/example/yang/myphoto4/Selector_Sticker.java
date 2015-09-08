@@ -25,7 +25,7 @@ import java.io.File;
 /**
  * Created by Ree on 2015/7/31.
  */
-public class Sticker_Selector extends Activity {
+public class Selector_Sticker extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +37,7 @@ public class Sticker_Selector extends Activity {
         gridView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Intent intent = new Intent(Sticker_Selector.this, DisplayImageActivity.class);
+                Intent intent = new Intent(Selector_Sticker.this, Display_Image.class);
                 //intent.putExtra("id",position + "");
                 String sid = adapter.getItem(position) + "";
                 Log.d("id", sid);
