@@ -15,7 +15,11 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Menu extends Activity {
     private static final int SELECT_PICTURE = 1;
     private static final int REQUEST_CAPTURE_CAMERA = 2;
     private static final int REQUEST_CAMERA_IRIS = 3;
@@ -30,7 +34,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (getIntent().getBooleanExtra("close", false)) {
-            DisplayImageActivity.instance.finish();
+            Display_Image.instance.finish();
         }
 
         /*
@@ -50,7 +54,7 @@ public class MainActivity extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         Intent intent = new Intent();
-                        intent.setClass(MainActivity.this, Login.class);
+                        intent.setClass(Menu.this, Sticker_Login.class);
                         //intent.putExtra("close", true);
                         startActivity(intent);
                     }
@@ -60,7 +64,7 @@ public class MainActivity extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         Intent help = new Intent();
-                        help.setClass(MainActivity.this, Help.class);
+                        help.setClass(Menu.this, Help.class);
                         startActivity(help);
                     }
                 });
@@ -75,7 +79,7 @@ public class MainActivity extends Activity {
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
-                            Dialog dialog = new AlertDialog.Builder(MainActivity.this)
+                            Dialog dialog = new AlertDialog.Builder(Menu.this)
                                     .setTitle("Camera")
                                     .setSingleChoiceItems(selectItem, 0, new DialogInterface.OnClickListener() {
                                         @Override
@@ -88,11 +92,18 @@ public class MainActivity extends Activity {
                                         public void onClick(DialogInterface dialog, int which) {
                                             if (isSysCamera == 0) {
                                                 Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                                File file = getOutputMediaFile(1);
+                                                uri = Uri.fromFile(file); // create
+                                                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri); // set the image file
+
                                                 startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
 
                                             } else {
                                                 Intent intent = new Intent();
-                                                intent.setClass(MainActivity.this, CameraActivity.class);
+                                                intent.setClass(Menu.this, CameraActivity.class);
+                                                File file = getOutputMediaFile(1);
+                                                uri = Uri.fromFile(file); // create
+                                                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri); // set the image file
                                                 startActivityForResult(intent, REQUEST_CAPTURE_CAMERA);
                                             }
                                             dialog.dismiss();
@@ -118,8 +129,11 @@ public class MainActivity extends Activity {
                     public void onClick(View arg0) {
                         String state = Environment.getExternalStorageState();
                         if (state.equals(Environment.MEDIA_MOUNTED)) {
-                            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, REQUEST_CAMERA_IRIS);
+                            Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                            File file = getOutputMediaFile(1);
+                            uri = Uri.fromFile(file); // create
+                            i.putExtra(MediaStore.EXTRA_OUTPUT, uri); // set the image file
+                            startActivityForResult(i, REQUEST_CAMERA_IRIS);
                         } else {
                             Toast.makeText(getApplicationContext(), "Make sure you've inserted SD card.", Toast.LENGTH_LONG).show();
                         }
@@ -127,32 +141,31 @@ public class MainActivity extends Activity {
                 });
     }
 
+
     /*
      * Get image data(uri) and image path.
-     * Deliver image Uri to DisplayImageActivity.
+     * Deliver image Uri to Display_Image.
      **/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Intent intent = new Intent();
-            if (requestCode != REQUEST_CAMERA_IRIS) {
-                intent.setClass(MainActivity.this, DisplayImageActivity.class);
-                switch (requestCode) {
-                    case SELECT_PICTURE:
-                        uri = data.getData();
-                        selectedImagePath1 = getPath(uri);
-                        System.out.println("Image Path : " + selectedImagePath1);
-                        break;
-                    case REQUEST_CAPTURE_CAMERA:
-                        uri = data.getData();
-                        break;
-                    default:
-                        break;
-                }
-            }
-            if (requestCode == REQUEST_CAMERA_IRIS) {
-                intent.setClass(MainActivity.this, Iris.class);
-                uri = data.getData();
+            switch (requestCode) {
+                case SELECT_PICTURE:
+                    intent.setClass(Menu.this, Display_Image.class);
+                    uri = data.getData();
+                    selectedImagePath1 = getPath(uri);
+                    System.out.println("Image Path : " + selectedImagePath1);
+                    intent.putExtra("myPath", selectedImagePath1);
+                    break;
+                case REQUEST_CAPTURE_CAMERA:
+                    intent.setClass(Menu.this, Display_Image.class);
+                    break;
+                case REQUEST_CAMERA_IRIS:
+                    intent.setClass(Menu.this, Iris.class);
+                    break;
+                default:
+                    break;
             }
             intent.setData(uri);
             startActivityForResult(intent, 0);
@@ -176,5 +189,32 @@ public class MainActivity extends Activity {
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
+    }
+
+    /**
+     * Create a File for saving an image
+     */
+    private File getOutputMediaFile(int type) {
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "MyApplication");
+
+        /**Create the storage directory if it does not exist*/
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+
+        /**Create a media file name*/
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == 1) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_" + timeStamp + ".png");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
     }
 }

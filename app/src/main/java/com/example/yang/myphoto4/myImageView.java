@@ -71,7 +71,7 @@ public class myImageView extends ImageView {
         init(mBitmap);
     }
 
-    public static Point rotationPoint(Point target, Point source, float degree) {
+    public static Point roationPoint(Point target, Point source, float degree) {
         source.x = source.x - target.x;
         source.y = source.y - target.y;
         double alpha = 0;
@@ -204,10 +204,12 @@ public class myImageView extends ImageView {
         Point p3 = new Point(r, b);
         Point p4 = new Point(l, b);
         Point tp = new Point((l + r) / 2, (t + b) / 2);
+        /*merge
         np1 = rotationPoint(tp, p1, angle);
         np2 = rotationPoint(tp, p2, angle);
         np3 = rotationPoint(tp, p3, angle);
         np4 = rotationPoint(tp, p4, angle);
+        */
         int w = 0;
         int h = 0;
         int maxn = 0;

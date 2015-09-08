@@ -38,8 +38,9 @@ import java.util.Map;
 /**
  * Created by Ree on 2015/8/23.
  */
-public class FileSync extends Activity implements View.OnClickListener {
+public class Sticker_FileSync extends Activity implements View.OnClickListener {
     private static final String Sync_URL = "http://raptor.kent.ac.uk/~wz57/Ree/Sync_mobile.php";
+    private static final String Image_URL = "http://raptor.kent.ac.uk/~wz57/Ree/drawables/";
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_STICKER = "sticker";
     public static String PHPSESSID = null;
@@ -50,6 +51,7 @@ public class FileSync extends Activity implements View.OnClickListener {
     GridView gridView;
     String[] stickers;
 
+    ImageView test;
     Handler myHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -60,7 +62,7 @@ public class FileSync extends Activity implements View.OnClickListener {
                     //test.setImageURI(Uri.parse(new File(getDiskCacheDir(getBaseContext()) + "/5.png").toString()));
                     print("Sync Success!");
                     Intent intent = new Intent();
-                    intent.setClass(FileSync.this, MainActivity.class);
+                    intent.setClass(Sticker_FileSync.this, Menu.class);
                     startActivity(intent);
                     finish();
                     break;
@@ -119,7 +121,7 @@ public class FileSync extends Activity implements View.OnClickListener {
 
             list.add(map);
         }
-        SimpleAdapter adapter = new SimpleAdapter(FileSync.this, list, R.layout.vlist,
+        SimpleAdapter adapter = new SimpleAdapter(Sticker_FileSync.this, list, R.layout.adapter_list,
                 new String[]{"PIC", "TITLE"}, new int[]{R.id.griditem_pic,
                 R.id.griditem_title,});
         adapter.setViewBinder(new MyViewBinder());
@@ -155,7 +157,7 @@ public class FileSync extends Activity implements View.OnClickListener {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            pDialog = new ProgressDialog(FileSync.this);
+            pDialog = new ProgressDialog(Sticker_FileSync.this);
             pDialog.setMessage("Attempting sync...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
@@ -225,7 +227,7 @@ public class FileSync extends Activity implements View.OnClickListener {
                 } else {
                     Log.d("Login Failure!", json.getString(TAG_STICKER));
                     pDialog.dismiss();
-                    Intent i = new Intent(FileSync.this, Login.class);
+                    Intent i = new Intent(Sticker_FileSync.this, Sticker_Login.class);
                     startActivity(i);
                     return json.getString(TAG_STICKER);
                 }

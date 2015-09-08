@@ -2,7 +2,7 @@ package com.example.yang.myphoto4;
 
 import android.R.anim;
 import android.app.Activity;
-import android.content.ContentResolver;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -59,14 +59,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
+public class Display_Image extends Activity {
     private static final int sticker = 1;
     private static final int border = 2;
     private static final int NONE = 3;
     private static final int DRAG = 4;
     private static final int ZOOM_OR_ROTATE = 5;
     private static final int DELETE = 6;
-    public static DisplayImageActivity instance = null;
+    public static Display_Image instance = null;
     private static int width, height;
     private static Boolean isClick = false;
     private final int STATE_CROP = 0x1;
@@ -128,6 +128,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     private ToneView mToneView;
     private long lastclicktime = 0;
     private long currentclicktime = 0;
+    private Bitmap myBitmap;
     private MenuView mSecondaryListMenu;
     private OnTouchListener movingEventListener = new OnTouchListener() {
 
@@ -229,7 +230,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent help = new Intent();
-                help.setClass(DisplayImageActivity.this, Help.class);
+                help.setClass(Display_Image.this, Help.class);
                 startActivity(help);
             }
         });
@@ -347,7 +348,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     protected Animation setAnimScale(float toX, float toY) {
         // TODO Auto-generated method stub
         animationScale = new ScaleAnimation(1f, toX, 1f, toY, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animationScale.setInterpolator(DisplayImageActivity.this, anim.bounce_interpolator);
+        animationScale.setInterpolator(Display_Image.this, anim.bounce_interpolator);
         animationScale.setDuration(500);
         animationScale.setFillAfter(false);
         return animationScale;
@@ -379,6 +380,9 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         });
         return animationRotate;
     }
+     /*
+         * Receive image uri. Get image path. Display image.
+         **/
 
     protected Animation animTranslate(float toX, float toY, final int lastX, final int lastY,
                                       final Button button, long durationMillis) {
@@ -478,10 +482,19 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     }
 
     private Uri createBack() {
-        final Uri uri = getIntent().getData();
-        String filePath = getPath(uri);
-        System.out.print(filePath);
-        mBitmap = myUtil.getBitmap(filePath);
+        Uri uri = getIntent().getData();
+        String filePath;
+        if (uri == null) {
+            uri = getLastPhotoOrVideo();
+        }
+        if (getIntent().getStringExtra("myPath") != null) {
+            filePath = getIntent().getStringExtra("myPath");
+        } else {
+            filePath = uri.getPath();
+        }
+        Log.d("URI", uri + ".uri");
+        myImage.setImageBitmap(myUtil.getBitmap(filePath));
+        myBitmap = myUtil.getBitmap(filePath);
         initBitmap();
         myImage.setImageBitmap(mBitmap);
         myImage.setImageBitmapResetBase(mBitmap, true);//recursive calls，try to reset the specific image
@@ -502,9 +515,23 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         myImage.setImageBitmap(mBitmap);
     }
 
+    private Uri getLastPhotoOrVideo() {
+        Uri uri;
+        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_ADDED, MediaStore.Images.ImageColumns.ORIENTATION}, MediaStore.Images.Media.DATE_ADDED, null, "date_added ASC");
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                uri = Uri.parse(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+            } while (cursor.moveToNext());
+            cursor.close();
+        } else {
+            return null;
+        }
+        return uri;
+    }
+
     private void showProcessBar() {
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.stickerView);
-        progressBar = new ProgressBar(DisplayImageActivity.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
+        progressBar = new ProgressBar(Display_Image.this, null, android.R.attr.progressBarStyleLargeInverse); //ViewGroup.LayoutParams.WRAP_CONTENT
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
@@ -517,7 +544,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     //Create a intent to choose stickers
     private void chooseSticker() {
         Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, Sticker_Selector.class);
+        intent.setClass(Display_Image.this, Selector_Sticker.class);
         //require more than 1GB to run
         startActivityForResult(intent, sticker);
     }
@@ -525,7 +552,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     //Creat a intent to choose boarders
     private void chooseBorder() {
         Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, Border_Selector.class);
+        intent.setClass(Display_Image.this, Selector_Border.class);
         //intent.putExtra("type", "border");
         startActivityForResult(intent, border);
         //print("success");
@@ -534,9 +561,18 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
     //get the filepath from uri
     public String getPath(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
-        ContentResolver cr = DisplayImageActivity.this.getContentResolver();
+        /*
+        ContentResolver cr = this.getContentResolver();
         Cursor cursor = cr.query(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        */
+        CursorLoader cursorLoader = new CursorLoader(
+                this,
+                uri, projection, null, null, null);
+        Cursor cursor = cursorLoader.loadInBackground();
+
+        int column_index =
+                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
@@ -549,7 +585,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         Canvas c = new Canvas(output);
         myImage.draw(c);
         borderImage.draw(c);
-        for (int a = i; a > 0; a--) {
+        for (int a = 1; a <= i; a++) {
             paint.reset();
             c.translate(imageView[a].viewL, imageView[a].viewT);
             Bitmap bm = imageView[a].getBitmap();
@@ -657,7 +693,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
 
     public void shareImage() {
         Intent intent = new Intent();
-        intent.setClass(DisplayImageActivity.this, ShareImageActivity.class);
+        intent.setClass(Display_Image.this, ShareImageActivity.class);
         Bitmap bm = outputImage(imageView);
         saveBitmap(bm);
         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bm, null, null));
@@ -696,6 +732,9 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
             }
             if (currentImage == null) {
                 mode = NONE;
+            }
+            if (isClick) {
+                moveBack();
             }
         }
         if (v != myImage) {
@@ -971,9 +1010,11 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
         mToneMenu.show();
         mState = STATE_TONE;
         mToneView = mToneMenu.getToneView();
+        /*
         mToneMenu.setHueBarListener(this);
         mToneMenu.setLumBarListener(this);
         mToneMenu.setSaturationBarListener(this);
+        */
     }
 
     @Override
@@ -986,7 +1027,7 @@ public class DisplayImageActivity extends Activity implements SeekBar.OnSeekBarC
                     mToneMenu.hide();
                     mToneMenu = null;
                 } else {
-                    DisplayImageActivity.this.finish();
+                    Display_Image.this.finish();
                 }
                 break;
             case KeyEvent.KEYCODE_MENU:
